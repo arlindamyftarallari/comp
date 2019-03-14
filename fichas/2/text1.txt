@@ -1,0 +1,25 @@
+\documentclass[onecolumn, 10pt] {article}
+\usepackage{graphix}
+\begin{document}
+\title{O Gato}
+\chapter{Introducao}
+Era uma vez um gato maltes...\\
+\section{Seccao1}
+Tocava piano e falava frances\\
+\section{Seccao2}
+...e dava uns toques de guitarra e falava ingles tambem\\
+\chapter{Desenvolvimento}
+Na verdade, o gato apenas:
+\begin{itemize}
+\item Miava
+\item Ronronava
+\item Fugia dos caes
+\end{itemize}
+\chapter{Conclusoes}
+Moral da historia:
+\begin{enumerate}
+\item Os animais sao nossos amigos
+\item Mesmo quando nao falam frances nem ingles
+\item Mesmo quando nao tocam piano nem guitarra
+\end{enumerate}
+\end{document}
