@@ -1,7 +1,3 @@
-#João Pedro Costa Ferreiro 2014197760
-#Guilherme Cardoso Gomes da Silva 2014226354
-
-
 #Meta 1
 lex gocompiler.l
 clang -o gocompiler lex.yy.c
