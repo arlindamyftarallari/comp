@@ -39,19 +39,27 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     NUMBER = 258,
-     UMINUS = 259
+     VAR = 258,
+     NUMBER = 259
    };
 #endif
 /* Tokens.  */
-#define NUMBER 258
-#define UMINUS 259
+#define VAR 258
+#define NUMBER 259
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+#line 17 "ficha4.exemplo.y"
+{
+int value;
+char* id;
+}
+/* Line 1529 of yacc.c.  */
+#line 62 "y.tab.h"
+	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1

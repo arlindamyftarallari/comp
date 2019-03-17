@@ -1,7 +1,7 @@
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
 
-typedef enum {integer, character, doub} basic_type;
+typedef enum {integer, character, doub} basic_type; //basic_type is a new data type that has values "integer", "character" and "doub"
 
 typedef struct _t1{
 	char name[32];

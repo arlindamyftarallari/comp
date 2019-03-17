@@ -2,12 +2,15 @@
 #include "y.tab.h"
 extern int yydebug;
 %}
+
 %%
-[0-9]+              {yylval.value=atoi(yytext);
-                     return NUMBER;}
-[a-zA-Z][a-zA-Z0-9_]*     {yylval.id=(char*)strdup(yytext);
-                     return VAR;}  
-[ \t]               ;
+[0-9]+              		{yylval.value = atoi(yytext);
+                    		return NUMBER;}
+
+[a-zA-Z][a-zA-Z0-9_]*     	{yylval.id = (char*)strdup(yytext);
+                     		return VAR;}  
+
+[ \t]               ; //does nothing for whitespaces
 \n|.                return yytext[0];
 
 %%

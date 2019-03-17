@@ -29,22 +29,21 @@ expression:
 	VAR '=' NUMBER {symlook($1)->value = $3;}	/*Guarda valor da variavel*/
 	| VAR	{printf("o valor da variavel %s e' %d\n", symlook($1)->name, symlook($1)->value);} /*Reproduz o valor*/
 	;
+
 %%
-symtab *symlook(char *varname)
-{
-int i;
-  
-for(i=0; i<NSYMS; i++)
- {
-        if(tab[i].name && strcmp(varname, tab[i].name)==0)   
-                return &tab[i];
-        if(!tab[i].name)
-        {
-                tab[i].name=varname;
-                return &tab[i];
-        }
- }
-yyerror("variaveis a mais...");
-    exit(1);
+
+symtab *symlook(char *varname) {
+	int i;
+	
+	for(i=0; i<NSYMS; i++) {
+			if (tab[i].name && strcmp(varname, tab[i].name)==0)   
+					return &tab[i];
+			if (!tab[i].name) { //the variable does not exist yet...
+					tab[i].name = varname;
+					return &tab[i]; //returns the pointer to a new variable
+			}
+	}
+	yyerror("variaveis a mais...");
+		exit(1);
 }
 
