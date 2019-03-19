@@ -1,14 +1,14 @@
 #Meta 1
-lex gocompiler.l
-clang -o gocompiler lex.yy.c
-zip -r gocompiler.zip gocompiler.l
+#lex gocompiler.l
+#clang -o gocompiler lex.yy.c
+#zip -r gocompiler.zip gocompiler.l
 
 
 #Meta 2
-flex uccompiler.l
+flex gocompiler.l
 yacc -d gocompiler.y
-clang -o uccompiler -Wall -Wno-unused-function *.c
-zip -r uccompiler.zip uccompiler.l uccompiler.y headers.h arvore.c
+clang -o gocompiler -Wall -Wno-unused-function *.c
+zip -r gocompiler.zip gocompiler.l gocompiler.y
 
 
 #Meta 3
