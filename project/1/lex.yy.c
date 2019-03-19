@@ -675,6 +675,10 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "gocompiler.l"
 #line 2 "gocompiler.l"
+    /* 
+    Hugo Brink 2016227204
+    Madalena Santos 2016226726
+    */
     #define COLUMN column+=yyleng;
     #define LINE line++; column=1;
     int line = 1, column = 1, errorflag = 0, errorline, errorcol;
@@ -685,7 +689,7 @@ char *yytext;
     void printerror(int type);
     char result[100] = "";
 
-#line 689 "lex.yy.c"
+#line 693 "lex.yy.c"
 
 #define INITIAL 0
 #define COMMENT 1
@@ -870,10 +874,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 43 "gocompiler.l"
+#line 47 "gocompiler.l"
 
 
-#line 877 "lex.yy.c"
+#line 881 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -958,308 +962,308 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 45 "gocompiler.l"
+#line 49 "gocompiler.l"
 {printtoken("RESERVED", yytext); COLUMN;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 47 "gocompiler.l"
+#line 51 "gocompiler.l"
 {printtoken("SEMICOLON", yytext); COLUMN;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 48 "gocompiler.l"
+#line 52 "gocompiler.l"
 {printtoken("BLANKID", yytext); COLUMN;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 49 "gocompiler.l"
+#line 53 "gocompiler.l"
 {printtoken("PACKAGE", yytext); COLUMN;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 50 "gocompiler.l"
+#line 54 "gocompiler.l"
 {printtoken("RETURN", yytext); COLUMN; BEGIN SEMICOLON;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 51 "gocompiler.l"
+#line 55 "gocompiler.l"
 {printtoken("AND", yytext); COLUMN;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 52 "gocompiler.l"
+#line 56 "gocompiler.l"
 {printtoken("ASSIGN", yytext); COLUMN;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 53 "gocompiler.l"
+#line 57 "gocompiler.l"
 {printtoken("STAR", yytext); COLUMN;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 54 "gocompiler.l"
+#line 58 "gocompiler.l"
 {printtoken("COMMA", yytext); COLUMN;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 55 "gocompiler.l"
+#line 59 "gocompiler.l"
 {printtoken("DIV", yytext); COLUMN;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 56 "gocompiler.l"
+#line 60 "gocompiler.l"
 {printtoken("EQ", yytext); COLUMN;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 57 "gocompiler.l"
+#line 61 "gocompiler.l"
 {printtoken("GE", yytext); COLUMN;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 58 "gocompiler.l"
+#line 62 "gocompiler.l"
 {printtoken("GT", yytext); COLUMN;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 59 "gocompiler.l"
+#line 63 "gocompiler.l"
 {printtoken("LBRACE", yytext); COLUMN;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 60 "gocompiler.l"
+#line 64 "gocompiler.l"
 {printtoken("LE", yytext); COLUMN;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 61 "gocompiler.l"
+#line 65 "gocompiler.l"
 {printtoken("LPAR", yytext); COLUMN;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 62 "gocompiler.l"
+#line 66 "gocompiler.l"
 {printtoken("LSQ", yytext); COLUMN;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 63 "gocompiler.l"
+#line 67 "gocompiler.l"
 {printtoken("LT", yytext); COLUMN;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 64 "gocompiler.l"
+#line 68 "gocompiler.l"
 {printtoken("MINUS", yytext); COLUMN;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 65 "gocompiler.l"
+#line 69 "gocompiler.l"
 {printtoken("MOD", yytext); COLUMN;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 66 "gocompiler.l"
+#line 70 "gocompiler.l"
 {printtoken("NE", yytext); COLUMN;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 67 "gocompiler.l"
+#line 71 "gocompiler.l"
 {printtoken("NOT", yytext); COLUMN;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 68 "gocompiler.l"
+#line 72 "gocompiler.l"
 {printtoken("OR", yytext); COLUMN;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 69 "gocompiler.l"
+#line 73 "gocompiler.l"
 {printtoken("PLUS", yytext); COLUMN;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 70 "gocompiler.l"
+#line 74 "gocompiler.l"
 {printtoken("RBRACE", yytext); COLUMN; BEGIN SEMICOLON;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 71 "gocompiler.l"
+#line 75 "gocompiler.l"
 {printtoken("RPAR", yytext); COLUMN; BEGIN SEMICOLON;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 72 "gocompiler.l"
+#line 76 "gocompiler.l"
 {printtoken("RSQ", yytext); COLUMN; BEGIN SEMICOLON;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 73 "gocompiler.l"
+#line 77 "gocompiler.l"
 {printtoken("ELSE", yytext); COLUMN;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 74 "gocompiler.l"
+#line 78 "gocompiler.l"
 {printtoken("FOR", yytext); COLUMN;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 75 "gocompiler.l"
+#line 79 "gocompiler.l"
 {printtoken("IF", yytext); COLUMN;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 76 "gocompiler.l"
+#line 80 "gocompiler.l"
 {printtoken("VAR", yytext); COLUMN;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 77 "gocompiler.l"
+#line 81 "gocompiler.l"
 {printtoken("INT", yytext); COLUMN;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 78 "gocompiler.l"
+#line 82 "gocompiler.l"
 {printtoken("FLOAT32", yytext); COLUMN;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 79 "gocompiler.l"
+#line 83 "gocompiler.l"
 {printtoken("BOOL", yytext); COLUMN;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 80 "gocompiler.l"
+#line 84 "gocompiler.l"
 {printtoken("STRING", yytext); COLUMN;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 81 "gocompiler.l"
+#line 85 "gocompiler.l"
 {printtoken("PRINT", yytext); COLUMN;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 82 "gocompiler.l"
+#line 86 "gocompiler.l"
 {printtoken("PARSEINT", yytext); COLUMN;}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 83 "gocompiler.l"
+#line 87 "gocompiler.l"
 {printtoken("FUNC", yytext); COLUMN;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 84 "gocompiler.l"
+#line 88 "gocompiler.l"
 {printtoken("CMDARGS", yytext); COLUMN;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 86 "gocompiler.l"
+#line 90 "gocompiler.l"
 {printtoken("ID", yytext); COLUMN; BEGIN SEMICOLON;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 87 "gocompiler.l"
+#line 91 "gocompiler.l"
 {printtoken("INTLIT", yytext); COLUMN; BEGIN SEMICOLON;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 88 "gocompiler.l"
+#line 92 "gocompiler.l"
 {printtoken("REALLIT", yytext); COLUMN; BEGIN SEMICOLON;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 90 "gocompiler.l"
+#line 94 "gocompiler.l"
 {printtoken("STRLIT START", yytext); BEGIN STRLIT; strcpy(result,"\""); errorline=line; errorcol=column; errorflag=0; COLUMN;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 91 "gocompiler.l"
+#line 95 "gocompiler.l"
 {printtoken("STRLIT END", yytext); strcat(result,"\""); if(errorflag==0){printtoken("STRLIT",result); BEGIN SEMICOLON;} else BEGIN 0; COLUMN;}
 	YY_BREAK
 case 45:
 /* rule 45 can match eol */
 YY_RULE_SETUP
-#line 92 "gocompiler.l"
+#line 96 "gocompiler.l"
 {printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); LINE; BEGIN 0;}
 	YY_BREAK
 case YY_STATE_EOF(STRLIT):
-#line 93 "gocompiler.l"
+#line 97 "gocompiler.l"
 {printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); BEGIN 0;}
 	YY_BREAK
 case 46:
 /* rule 46 can match eol */
 YY_RULE_SETUP
-#line 94 "gocompiler.l"
+#line 98 "gocompiler.l"
 {printf("Line %d, column %d: invalid escape sequence (%s)\n", line, column, yytext); errorflag=1; COLUMN;}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 95 "gocompiler.l"
+#line 99 "gocompiler.l"
 {strcat(result,yytext); COLUMN;}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 96 "gocompiler.l"
+#line 100 "gocompiler.l"
 {strcat(result, yytext); COLUMN;}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 98 "gocompiler.l"
+#line 102 "gocompiler.l"
 {printtoken("COMMENT", yytext);}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 100 "gocompiler.l"
+#line 104 "gocompiler.l"
 {BEGIN COMMENT; errorline=line; errorcol=column; COLUMN; printtoken("COMMENT START", yytext);}
 	YY_BREAK
 case 51:
 /* rule 51 can match eol */
 YY_RULE_SETUP
-#line 101 "gocompiler.l"
+#line 105 "gocompiler.l"
 {LINE;}
 	YY_BREAK
 case YY_STATE_EOF(COMMENT):
-#line 102 "gocompiler.l"
+#line 106 "gocompiler.l"
 {printf("Line %d, column %d: unterminated comment\n", errorline, errorcol); return 0;}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 103 "gocompiler.l"
+#line 107 "gocompiler.l"
 {BEGIN 0; COLUMN; printtoken("COMMENT END", yytext);}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 104 "gocompiler.l"
+#line 108 "gocompiler.l"
 {COLUMN; printtoken("COMMENT", yytext);}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 106 "gocompiler.l"
+#line 110 "gocompiler.l"
 {COLUMN;}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 107 "gocompiler.l"
+#line 111 "gocompiler.l"
 {printtoken("SEMICOLON", yytext); COLUMN; BEGIN 0;}
 	YY_BREAK
 case 56:
 /* rule 56 can match eol */
 YY_RULE_SETUP
-#line 108 "gocompiler.l"
+#line 112 "gocompiler.l"
 {printtoken("SEMICOLON", yytext); LINE; BEGIN 0;}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 109 "gocompiler.l"
+#line 113 "gocompiler.l"
 {printtoken("SEMICOLON", yytext); printtoken("COMMENT", yytext); LINE; BEGIN 0;}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 110 "gocompiler.l"
+#line 114 "gocompiler.l"
 {printtoken("COMMENT START", yytext); COLUMN; BEGIN COMMENT;}
 	YY_BREAK
 case YY_STATE_EOF(SEMICOLON):
-#line 111 "gocompiler.l"
+#line 115 "gocompiler.l"
 {printtoken("SEMICOLON", yytext); return 0;}
 	YY_BREAK
 case 59:
@@ -1267,36 +1271,36 @@ case 59:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 112 "gocompiler.l"
+#line 116 "gocompiler.l"
 {COLUMN; BEGIN 0;}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 114 "gocompiler.l"
+#line 118 "gocompiler.l"
 {COLUMN;}
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 115 "gocompiler.l"
+#line 119 "gocompiler.l"
 {COLUMN;}
 	YY_BREAK
 case 62:
 /* rule 62 can match eol */
 YY_RULE_SETUP
-#line 116 "gocompiler.l"
+#line 120 "gocompiler.l"
 {LINE;}
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 117 "gocompiler.l"
+#line 121 "gocompiler.l"
 {printf("Line %d, column %d: illegal character (%s)\n", line, column, yytext); COLUMN;}
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 119 "gocompiler.l"
+#line 123 "gocompiler.l"
 ECHO;
 	YY_BREAK
-#line 1300 "lex.yy.c"
+#line 1304 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2293,7 +2297,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 119 "gocompiler.l"
+#line 123 "gocompiler.l"
 
 
 

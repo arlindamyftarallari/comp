@@ -1,4 +1,8 @@
 %{
+    /* 
+    Hugo Brink 2016227204
+    Madalena Santos 2016226726
+    */
     #define COLUMN column+=yyleng;
     #define LINE line++; column=1;
     int line = 1, column = 1, errorflag = 0, errorline, errorcol;
