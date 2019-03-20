@@ -22,30 +22,99 @@
 %%
 
 Program: PACKAGE ID SEMICOLON 														{;};
-Declarations: (VarDeclaration SEMICOLON)* | (FuncDeclaration SEMICOLON)* 			{;};
-Type: INT | FLOAT32 | BOOL | STRING													{;};
+
+Declarations: VarDeclaration SEMICOLON Declarations 
+	| FuncDeclaration SEMICOLON Declarations										{;}
+	|																				{;};
+
+Type: INT 																			{;}
+	| FLOAT32 																		{;}
+	| BOOL 																			{;}
+	| STRING																		{;};
+
 VarDeclaration: VAR VarSpec															{;};
-VarDeclaration: VAR LPAR VarSpec SEMICOLON RPAR										{;};
-VarSpec: ID (COMMA ID)* Type														{;};
-FuncDeclaration: FUNC ID LPAR Parameters+ RPAR Type+ FuncBody						{;};	
-Parameters: ID Type (COMMA ID Type)*												{;};
-FuncBody: LBRACE VarsAndStatements+ RBRACE											{;};
-VarsAndStatements: VarsAndStatements (VarDeclaration | Statement)+ SEMICOLON		{;}
-		|;																			{;};
-Statement: ID ASSIGN Expr															{;};
-Statement: LBRACE (Statement SEMICOLON)* RBRACE 									{;};
-Statement: IF Expr LBRACE (Statement SEMICOLON)* RBRACE (ELSE LBRACE (Statement SEMICOLON)* RBRACE)+ 	{;};
-Statement: FOR Expr+ LBRACE (Statement SEMICOLON)* RBRACE							{;};
-Statement: RETURN Expr+																{;};
-Statement: FuncInvocation | ParseArgs												{;};
-Statement: PRINT LPAR (Expr | STRLIT) RPAR											{;};
+	| VAR LPAR VarSpec SEMICOLON RPAR												{;};
+
+VarSpec: ID Aux1 Type																{;};
+
+Aux1: COMMA ID Aux1																	{;}
+	|																				{;};
+
+FuncDeclaration: FUNC ID LPAR Parameters RPAR Type FuncBody							{;}
+	| FUNC ID LPAR Parameters RPAR FuncBody											{;}
+	| FUNC ID LPAR RPAR Type FuncBody												{;}
+	| FUNC ID LPAR RPAR FuncBody													{;};
+
+Parameters: ID Type Aux2															{;};
+
+Aux2: COMMA ID Type																	{;}
+	|																				{;};
+
+FuncBody: LBRACE VarsAndStatements RBRACE											{;}
+	| LBRACE RBRACE																	{;};
+
+VarsAndStatements: VarsAndStatements SEMICOLON										{;}
+	| VarsAndStatements VarDeclaration SEMICOLON									{;}
+	| VarsAndStatements Statement SEMICOLON											{;}
+	|																				{;};
+
+Statement: ID ASSIGN Expr															{;}
+	| LBRACE Aux3 RBRACE 															{;}
+	| IF Expr LBRACE Aux3 RBRACE Aux4												{;}
+	| FOR Expr LBRACE Aux3 RBRACE 													{;}
+	| FOR LBRACE Aux3 RBRACE														{;}
+	| RETURN Aux6																	{;}
+	| FuncInvocation 																{;}
+	| ParseArgs																		{;}
+	| PRINT LPAR STRLIT RPAR														{;}
+	| PRINT LPAR Expr RPAR															{;};
+
+Aux6: Expr																			{;}
+	|																				{;};
+
+Aux3: Statement SEMICOLON															{;}
+	|																				{;};
+
+Aux4: ELSE LBRACE Aux3 RBRACE														{;}
+	|																				{;};
+
 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR			{;};
-FuncInvocation: ID LPAR (Expr (COMMA Expr)*)+ RPAR									{;};
-Expr: Expr (OR | AND) Expr															{;};
-    | Expr (LT | GT | EQ | NE | LE | GE) Expr										{;};
-	| Expr (PLUS | MINUS | STAR | DIV | MOD) Expr									{;};
-	| (NOT | MINUS | PLUS) Expr														{;};
-	| INTLIT | REALLIT | ID | FuncInvocationn | LPAR Expr RPAR						{;};
+
+FuncInvocation: ID LPAR Aux40 RPAR													{;};
+Aux40: Expr Aux41																	{;}
+	|																				{;};
+
+Aux41: COMMA Expr Aux41																{;}
+	|																				{;};
+
+Expr: INTLIT 																		{;}
+	| REALLIT 																		{;}
+	| ID 																			{;}
+	| FuncInvocation 																{;}
+	| LPAR Expr RPAR																{;}
+	| NOT Expr																		{;}
+	| MINUS Expr																	{;}
+	| PLUS Expr																		{;}
+	| Expr Aux5 Expr																{;}
+	| Expr Aux42 Expr																{;}
+	| Expr Aux43 Expr																{;};
+
+Aux5: PLUS																			{;}
+	| MINUS																			{;}
+	| STAR 																			{;}
+	| DIV 																			{;}
+	| MOD 																			{;};
+
+Aux42: OR																			{;}
+	| AND																			{;};
+
+Aux43: LT																			{;}
+	| GT																			{;}
+	| EQ																			{;}
+	| NE																			{;}
+	| LE																			{;}
+	| GE																			{;};
+
 %%
 
 int main(int argc, char **argv) {

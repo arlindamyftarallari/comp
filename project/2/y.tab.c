@@ -1624,7 +1624,7 @@ yyreturn:
 }
 
 
-#line 51 "gocompiler.y"
+#line 118 "gocompiler.y"
 
 
 int main(int argc, char **argv) {
