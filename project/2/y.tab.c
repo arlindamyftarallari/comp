@@ -197,7 +197,7 @@ typedef union YYSTYPE
 #line 14 "gocompiler.y"
 {
 	char * string;
-	//definir nó
+	//definir nó da árvore
 }
 /* Line 193 of yacc.c.  */
 #line 204 "y.tab.c"
@@ -499,7 +499,7 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    23,    23
+       0,    24,    24
 };
 #endif
 
@@ -1404,7 +1404,7 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 23 "gocompiler.y"
+#line 24 "gocompiler.y"
     {;}
     break;
 
@@ -1624,7 +1624,7 @@ yyreturn:
 }
 
 
-#line 25 "gocompiler.y"
+#line 51 "gocompiler.y"
 
 
 int main(int argc, char **argv) {

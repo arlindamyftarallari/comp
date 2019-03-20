@@ -137,7 +137,7 @@ typedef union YYSTYPE
 #line 14 "gocompiler.y"
 {
 	char * string;
-	//definir nó
+	//definir nó da árvore
 }
 /* Line 1529 of yacc.c.  */
 #line 144 "y.tab.h"
