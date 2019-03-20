@@ -20,7 +20,16 @@
 %token <string> RESERVED STRLIT INTLIT ID REALLIT
 
 %%
-Program: PACKAGE ID SEMICOLON	{;};
+Program: PACKAGE ID SEMICOLON Declarations											{;};
+Declarations: (VarDeclaration SEMICOLON)* | (FuncDeclaration SEMICOLON)* 			{;};
+Type: INT | FLOAT32 | BOOL | STRING													{;};
+VarDeclaration: VAR VarSpec															{;};
+VarDeclaration: VAR LPAR VarSpec SEMICOLON RPAR										{;};
+VarSpec: ID (COMMA ID)* Type														{;};
+
+
+
+
 
 %%
 
