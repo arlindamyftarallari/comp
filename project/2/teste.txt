@@ -1,0 +1,12 @@
+package oi;
+
+
+var xd , ola int;
+
+
+func ferreiro(){}
+
+
+func brink( boi int, oi bool, dfgh float32 ) int {};
+
+

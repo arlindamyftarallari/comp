@@ -20,16 +20,16 @@
 %token SEMICOLON BLANKID PACKAGE RETURN AND ASSIGN STAR COMMA DIV EQ GE GT LBRACE LE LPAR LSQ LT MINUS MOD NE NOT OR PLUS RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PRINT PARSEINT FUNC CMDARGS
 %token <string> RESERVED STRLIT INTLIT ID REALLIT
 
-%left LPAR RPAR LSQ RSQ
-%right NOT
-%left STAR DIV MOD
-%left PLUS MINUS
-%left GE GT LE LT
-%left EQ NE
-%left AND
-%left OR
 %right ASSIGN
-%left UNARY
+%left OR AND
+%left EQ NE
+%left GE GT LE LT
+%left PLUS MINUS
+%left STAR DIV MOD
+%right NOT 
+%nonassoc UNARY
+%left LPAR RPAR LSQ RSQ
+
 
 %%
 
@@ -72,7 +72,7 @@ TypeOpt: Type
 Parameters: ID Type Aux2															
 ;
 
-Aux2: COMMA ID Type																	
+Aux2: COMMA ID Type Aux2																	
 	|																				
 	;
 
@@ -130,32 +130,31 @@ Aux41: COMMA Expr Aux41
 	|																				
 	;
 
-Expr: INTLIT 																		
-	| REALLIT 																		
-	| ID 																			
-	| FuncInvocation 																
-	| LPAR Expr RPAR
+Expr:  LPAR Expr RPAR
 	| LPAR error RPAR
 	| NOT Expr																		
 	| MINUS Expr %prec UNARY																	
 	| PLUS Expr %prec UNARY														
-	| Expr Aux8 Expr																															
+	| Expr PLUS Expr
+	| Expr MINUS Expr
+	| Expr STAR Expr
+	| Expr DIV Expr
+	| Expr MOD Expr
+	| Expr OR Expr
+	| Expr AND Expr
+	| Expr LT Expr
+	| Expr GT Expr
+	| Expr EQ Expr
+	| Expr NE Expr
+	| Expr LE Expr
+	| Expr GE Expr
+	| INTLIT 																		
+	| REALLIT 																		
+	| ID 	
+	| FuncInvocation 																	 																													
 	;
 
-Aux8: PLUS																			
-	| MINUS																			
-	| STAR 																			
-	| DIV 																			
-	| MOD 
-	| OR																			
-	| AND	
-	| LT																			
-	| GT																			
-	| EQ																			
-	| NE																			
-	| LE																			
-	| GE																			
-	;
+
 
 %%
 
