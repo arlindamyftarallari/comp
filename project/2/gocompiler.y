@@ -28,6 +28,7 @@
 %left AND
 %left OR
 %right ASSIGN
+%left UNARY
 
 %%
 
@@ -35,7 +36,7 @@ Program: PACKAGE ID SEMICOLON Declarations
 ;
 
 Declarations: VarDeclaration SEMICOLON Declarations 
-	| FuncDeclaration SEMICOLON Declarations										
+	| FuncDeclaration SEMICOLON Declarations									
 	|																				
 	;
 
@@ -45,18 +46,8 @@ Type: INT
 	| STRING																		
 	;
 
-VarDeclaration: VAR LPAROpt VarSpec SEMICOLONOpt RPAROpt;
-
-LPAROpt: LPAR
-	|
-	;
-
-SEMICOLONOpt: SEMICOLON
-	|
-	;
-
-RPAROpt: RPAR
-	|
+VarDeclaration: VAR VarSpec
+	| VAR LPAR VarSpec SEMICOLON RPAR
 	;
 
 VarSpec: ID Aux1 Type																
@@ -84,11 +75,7 @@ Aux2: COMMA ID Type
 	|																				
 	;
 
-FuncBody: LBRACE VarsAndStatementsOpt RBRACE																										
-	;
-
-VarsAndStatementsOpt: VarsAndStatements
-	|
+FuncBody: LBRACE VarsAndStatements RBRACE																										
 	;
 
 VarsAndStatements: VarsAndStatements Aux7 SEMICOLON	
@@ -143,29 +130,19 @@ Expr: INTLIT
 	| FuncInvocation 																
 	| LPAR Expr RPAR																
 	| NOT Expr																		
-	| MINUS Expr																	
-	| PLUS Expr																		
+	| MINUS Expr %prec UNARY																	
+	| PLUS Expr %prec UNARY														
 	| Expr Aux8 Expr																															
 	;
 
-Aux8: Aux5
-	| Aux42
-	| Aux43
-	|
-	;
-
-Aux5: PLUS																			
+Aux8: PLUS																			
 	| MINUS																			
 	| STAR 																			
 	| DIV 																			
-	| MOD 																			
-	;
-
-Aux42: OR																			
-	| AND																			
-	;
-
-Aux43: LT																			
+	| MOD 
+	| OR																			
+	| AND	
+	| LT																			
 	| GT																			
 	| EQ																			
 	| NE																			
