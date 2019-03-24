@@ -3,6 +3,7 @@
 	Hugo Brink 2016227204
 	Madalena Santos 2016226726
 	*/
+
 	#include <stdio.h>
 	#include <string.h>
 	int yylex(void);
@@ -95,6 +96,7 @@ Statement: ID ASSIGN Expr
 	| FuncInvocation
 	| ParseArgs
 	| PRINT LPAR Aux6 RPAR
+	| error
 	;
 
 Aux6: STRLIT
@@ -112,12 +114,16 @@ Aux3: Statement SEMICOLON Aux3
 Aux4: ELSE LBRACE Aux3 RBRACE														
 	|																				;
 
-ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR			;
+ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR			
+	| ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR
+	;
 
-FuncInvocation: ID LPAR Aux40 RPAR													;
+FuncInvocation: ID LPAR Aux40 RPAR
+	;
 
 Aux40: Expr Aux41																	
-	|																				
+	| error
+	|
 	;
 
 Aux41: COMMA Expr Aux41																
@@ -128,7 +134,8 @@ Expr: INTLIT
 	| REALLIT 																		
 	| ID 																			
 	| FuncInvocation 																
-	| LPAR Expr RPAR																
+	| LPAR Expr RPAR
+	| LPAR error RPAR
 	| NOT Expr																		
 	| MINUS Expr %prec UNARY																	
 	| PLUS Expr %prec UNARY														
@@ -174,8 +181,4 @@ int main(int argc, char **argv) {
 	}
 	yylex_destroy();
     return 0;
-}
-
-void yyerror(const char * s) {
-	printf("%s\n", s);
 }
