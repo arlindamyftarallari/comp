@@ -19,101 +19,159 @@
 %token SEMICOLON BLANKID PACKAGE RETURN AND ASSIGN STAR COMMA DIV EQ GE GT LBRACE LE LPAR LSQ LT MINUS MOD NE NOT OR PLUS RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PRINT PARSEINT FUNC CMDARGS
 %token <string> RESERVED STRLIT INTLIT ID REALLIT
 
+%left LPAR RPAR LSQ RSQ
+%right NOT
+%left STAR DIV MOD
+%left PLUS MINUS
+%left GE GT LE LT
+%left EQ NE
+%left AND
+%left OR
+%right ASSIGN
+
 %%
 
-Program: PACKAGE ID SEMICOLON 														{;};
+Program: PACKAGE ID SEMICOLON Declarations														
+;
 
 Declarations: VarDeclaration SEMICOLON Declarations 
-	| FuncDeclaration SEMICOLON Declarations										{;}
-	|																				{;};
+	| FuncDeclaration SEMICOLON Declarations										
+	|																				
+	;
 
-Type: INT 																			{;}
-	| FLOAT32 																		{;}
-	| BOOL 																			{;}
-	| STRING																		{;};
+Type: INT 																			
+	| FLOAT32 																		
+	| BOOL 																			
+	| STRING																		
+	;
 
-VarDeclaration: VAR VarSpec															{;};
-	| VAR LPAR VarSpec SEMICOLON RPAR												{;};
+VarDeclaration: VAR LPAROpt VarSpec SEMICOLONOpt RPAROpt;
 
-VarSpec: ID Aux1 Type																{;};
+LPAROpt: LPAR
+	|
+	;
 
-Aux1: COMMA ID Aux1																	{;}
-	|																				{;};
+SEMICOLONOpt: SEMICOLON
+	|
+	;
 
-FuncDeclaration: FUNC ID LPAR Parameters RPAR Type FuncBody							{;}
-	| FUNC ID LPAR Parameters RPAR FuncBody											{;}
-	| FUNC ID LPAR RPAR Type FuncBody												{;}
-	| FUNC ID LPAR RPAR FuncBody													{;};
+RPAROpt: RPAR
+	|
+	;
 
-Parameters: ID Type Aux2															{;};
+VarSpec: ID Aux1 Type																
+;
 
-Aux2: COMMA ID Type																	{;}
-	|																				{;};
+Aux1: COMMA ID Aux1																	
+	|
+	;
 
-FuncBody: LBRACE VarsAndStatements RBRACE											{;}
-	| LBRACE RBRACE																	{;};
+FuncDeclaration: FUNC ID LPAR ParametersOpt RPAR TypeOpt FuncBody
+	;
 
-VarsAndStatements: VarsAndStatements SEMICOLON										{;}
-	| VarsAndStatements VarDeclaration SEMICOLON									{;}
-	| VarsAndStatements Statement SEMICOLON											{;}
-	|																				{;};
+ParametersOpt: Parameters
+	|
+	;
 
-Statement: ID ASSIGN Expr															{;}
-	| LBRACE Aux3 RBRACE 															{;}
-	| IF Expr LBRACE Aux3 RBRACE Aux4												{;}
-	| FOR Expr LBRACE Aux3 RBRACE 													{;}
-	| FOR LBRACE Aux3 RBRACE														{;}
-	| RETURN Aux6																	{;}
-	| FuncInvocation 																{;}
-	| ParseArgs																		{;}
-	| PRINT LPAR STRLIT RPAR														{;}
-	| PRINT LPAR Expr RPAR															{;};
+TypeOpt: Type
+	|
+	;
 
-Aux6: Expr																			{;}
-	|																				{;};
+Parameters: ID Type Aux2															
+;
 
-Aux3: Statement SEMICOLON															{;}
-	|																				{;};
+Aux2: COMMA ID Type																	
+	|																				
+	;
 
-Aux4: ELSE LBRACE Aux3 RBRACE														{;}
-	|																				{;};
+FuncBody: LBRACE VarsAndStatementsOpt RBRACE																										
+	;
 
-ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR			{;};
+VarsAndStatementsOpt: VarsAndStatements
+	|
+	;
 
-FuncInvocation: ID LPAR Aux40 RPAR													{;};
-Aux40: Expr Aux41																	{;}
-	|																				{;};
+VarsAndStatements: VarsAndStatements Aux7 SEMICOLON	
+	|																												
+	;
 
-Aux41: COMMA Expr Aux41																{;}
-	|																				{;};
+Aux7: VarDeclaration
+	| Statement
+	|
+	;
 
-Expr: INTLIT 																		{;}
-	| REALLIT 																		{;}
-	| ID 																			{;}
-	| FuncInvocation 																{;}
-	| LPAR Expr RPAR																{;}
-	| NOT Expr																		{;}
-	| MINUS Expr																	{;}
-	| PLUS Expr																		{;}
-	| Expr Aux5 Expr																{;}
-	| Expr Aux42 Expr																{;}
-	| Expr Aux43 Expr																{;};
+Statement: ID ASSIGN Expr															
+	| LBRACE Aux3 RBRACE
+	| IF Expr LBRACE Aux3 RBRACE Aux4
+	| FOR ExprOpt LBRACE Aux3 RBRACE
+	| RETURN ExprOpt
+	| FuncInvocation
+	| ParseArgs
+	| PRINT LPAR Aux6 RPAR
+	;
 
-Aux5: PLUS																			{;}
-	| MINUS																			{;}
-	| STAR 																			{;}
-	| DIV 																			{;}
-	| MOD 																			{;};
+Aux6: STRLIT
+	| Expr
+	;
 
-Aux42: OR																			{;}
-	| AND																			{;};
+ExprOpt: Expr
+	|
+	;
 
-Aux43: LT																			{;}
-	| GT																			{;}
-	| EQ																			{;}
-	| NE																			{;}
-	| LE																			{;}
-	| GE																			{;};
+Aux3: Statement SEMICOLON Aux3														
+	|																				
+	;
+
+Aux4: ELSE LBRACE Aux3 RBRACE														
+	|																				;
+
+ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR			;
+
+FuncInvocation: ID LPAR Aux40 RPAR													;
+
+Aux40: Expr Aux41																	
+	|																				
+	;
+
+Aux41: COMMA Expr Aux41																
+	|																				
+	;
+
+Expr: INTLIT 																		
+	| REALLIT 																		
+	| ID 																			
+	| FuncInvocation 																
+	| LPAR Expr RPAR																
+	| NOT Expr																		
+	| MINUS Expr																	
+	| PLUS Expr																		
+	| Expr Aux8 Expr																															
+	;
+
+Aux8: Aux5
+	| Aux42
+	| Aux43
+	|
+	;
+
+Aux5: PLUS																			
+	| MINUS																			
+	| STAR 																			
+	| DIV 																			
+	| MOD 																			
+	;
+
+Aux42: OR																			
+	| AND																			
+	;
+
+Aux43: LT																			
+	| GT																			
+	| EQ																			
+	| NE																			
+	| LE																			
+	| GE																			
+	;
 
 %%
 
