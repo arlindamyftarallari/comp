@@ -12,7 +12,7 @@
 	int yylex(void);
 	int yylex_destroy();
 	void yyerror(const char *s);
-	int error = 0, printflag = 0;
+	int errortag = 0, printflag = 0;
 %}
 
 %union {
@@ -29,34 +29,33 @@
 %left GE GT LE LT
 %left PLUS MINUS
 %left STAR DIV MOD
-%right NOT 
+%right NOT UNARY
 %left LPAR RPAR LSQ RSQ
-%nonassoc UNARY
 
 %%
 
-Program: PACKAGE ID SEMICOLON Declarations														
-;
-
-Declarations: VarDeclaration SEMICOLON Declarations 
-	| FuncDeclaration SEMICOLON Declarations									
-	|																				
+Program: PACKAGE ID SEMICOLON Declarations
 	;
 
-Type: INT 																			
-	| FLOAT32 																		
-	| BOOL 																			
-	| STRING																		
+Declarations: VarDeclaration SEMICOLON Declarations 
+	| FuncDeclaration SEMICOLON Declarations
+	|
+	;
+
+Type: INT
+	| FLOAT32
+	| BOOL
+	| STRING
 	;
 
 VarDeclaration: VAR VarSpec
 	| VAR LPAR VarSpec SEMICOLON RPAR
 	;
 
-VarSpec: ID Aux1 Type																
+VarSpec: ID Aux1 Type
 	;
 
-Aux1: COMMA ID Aux1																	
+Aux1: COMMA ID Aux1
 	|
 	;
 
@@ -71,18 +70,18 @@ TypeOpt: Type
 	|
 	;
 
-Parameters: ID Type Aux2															
+Parameters: ID Type Aux2
 	;
 
-Aux2: COMMA ID Type Aux2																	
-	|																				
+Aux2: COMMA ID Type Aux2
+	|
 	;
 
-FuncBody: LBRACE VarsAndStatements RBRACE																										
+FuncBody: LBRACE VarsAndStatements RBRACE
 	;
 
-VarsAndStatements: VarsAndStatements Aux7 SEMICOLON	
-	|																												
+VarsAndStatements: VarsAndStatements Aux7 SEMICOLON
+	|
 	;
 
 Aux7: VarDeclaration
@@ -90,7 +89,7 @@ Aux7: VarDeclaration
 	|
 	;
 
-Statement: ID ASSIGN Expr															
+Statement: ID ASSIGN Expr
 	| LBRACE Aux3 RBRACE
 	| IF Expr LBRACE Aux3 RBRACE Aux4
 	| FOR ExprOpt LBRACE Aux3 RBRACE
@@ -109,34 +108,35 @@ ExprOpt: Expr
 	|
 	;
 
-Aux3: Statement SEMICOLON Aux3														
-	|																				
+Aux3: Statement SEMICOLON Aux3
+	|
 	;
 
-Aux4: ELSE LBRACE Aux3 RBRACE														
-	|																				;
+Aux4: ELSE LBRACE Aux3 RBRACE
+	|
+	;
 
-ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR			
+ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
 	| ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR
 	;
 
 FuncInvocation: ID LPAR Aux40 RPAR
+	| ID LPAR error RPAR
 	;
 
-Aux40: Expr Aux41																	
-	| error
+Aux40: Expr Aux41
 	|
 	;
 
-Aux41: COMMA Expr Aux41																
-	|																				
+Aux41: COMMA Expr Aux41
+	|
 	;
 
 Expr:  LPAR Expr RPAR
 	| LPAR error RPAR
-	| NOT Expr																		
-	| MINUS Expr %prec UNARY																	
-	| PLUS Expr %prec UNARY														
+	| NOT Expr
+	| MINUS Expr %prec UNARY
+	| PLUS Expr %prec UNARY
 	| Expr PLUS Expr
 	| Expr MINUS Expr
 	| Expr STAR Expr
@@ -150,18 +150,18 @@ Expr:  LPAR Expr RPAR
 	| Expr NE Expr
 	| Expr LE Expr
 	| Expr GE Expr
-	| INTLIT 																		
-	| REALLIT 																		
-	| ID 	
-	| FuncInvocation 																	 																													
+	| INTLIT
+	| REALLIT
+	| ID
+	| FuncInvocation
 	;
 
-
+	
 
 %%
 
 int main(int argc, char **argv) {
-	yydebug = 1;
+	yydebug = 0;
 
     if (argc > 1) {
         if (strcmp(argv[1], "-l") == 0) {
@@ -172,9 +172,15 @@ int main(int argc, char **argv) {
 		if (strcmp(argv[1], "-t") == 0) {
 			printflag = 0;
 			yyparse();
-			if (!error) {
+			if (!errortag) {
 				//printtree();
 			}
+		}
+
+		if (strcmp(argv[1], "-debug") == 0) {
+			yydebug = 1;
+			printflag = 0;
+			yyparse();
 		}
     }
 
@@ -185,3 +191,4 @@ int main(int argc, char **argv) {
 	yylex_destroy();
     return 0;
 }
+

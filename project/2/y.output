@@ -74,9 +74,9 @@ Grammar
    46          | ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR
 
    47 FuncInvocation: ID LPAR Aux40 RPAR
+   48               | ID LPAR error RPAR
 
-   48 Aux40: Expr Aux41
-   49      | error
+   49 Aux40: Expr Aux41
    50      | /* empty */
 
    51 Aux41: COMMA Expr Aux41
@@ -109,7 +109,7 @@ Grammar
 Terminals, with rules where they appear
 
 $end (0) 0
-error (256) 36 46 49 54
+error (256) 36 46 48 54
 SEMICOLON (258) 1 2 3 10 23 41
 BLANKID (259) 45 46
 PACKAGE (260) 1
@@ -124,7 +124,7 @@ GE (268) 70
 GT (269) 66
 LBRACE (270) 22 29 30 31 43
 LE (271) 69
-LPAR (272) 10 14 35 45 46 47 53 54
+LPAR (272) 10 14 35 45 46 47 48 53 54
 LSQ (273) 45
 LT (274) 65
 MINUS (275) 56 59
@@ -134,7 +134,7 @@ NOT (278) 55
 OR (279) 63
 PLUS (280) 57 58
 RBRACE (281) 22 29 30 31 43
-RPAR (282) 10 14 35 45 46 47 53 54
+RPAR (282) 10 14 35 45 46 47 48 53 54
 RSQ (283) 45
 ELSE (284) 43
 FOR (285) 31
@@ -151,7 +151,7 @@ CMDARGS (295) 45
 RESERVED (296)
 STRLIT (297) 37
 INTLIT (298) 71
-ID (299) 1 11 12 14 19 20 28 45 46 47 73
+ID (299) 1 11 12 14 19 20 28 45 46 47 48 73
 REALLIT (300) 72
 UNARY (301)
 
@@ -201,14 +201,14 @@ Aux4 (66)
 ParseArgs (67)
     on left: 45 46, on right: 34
 FuncInvocation (68)
-    on left: 47, on right: 33 74
+    on left: 47 48, on right: 33 74
 Aux40 (69)
-    on left: 48 49 50, on right: 47
+    on left: 49 50, on right: 47
 Aux41 (70)
-    on left: 51 52, on right: 48 51
+    on left: 51 52, on right: 49 51
 Expr (71)
     on left: 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70
-    71 72 73 74, on right: 28 30 38 39 45 48 51 53 55 56 57 58 59 60
+    71 72 73 74, on right: 28 30 38 39 45 49 51 53 55 56 57 58 59 60
     61 62 63 64 65 66 67 68 69 70
 
 
@@ -736,6 +736,7 @@ state 54
    45 ParseArgs: ID . COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
    46          | ID . COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR
    47 FuncInvocation: ID . LPAR Aux40 RPAR
+   48               | ID . LPAR error RPAR
 
     ASSIGN  shift, and go to state 75
     COMMA   shift, and go to state 76
@@ -853,6 +854,7 @@ state 64
 state 65
 
    47 FuncInvocation: ID . LPAR Aux40 RPAR
+   48               | ID . LPAR error RPAR
    73 Expr: ID .
 
     LPAR  shift, and go to state 77
@@ -1014,6 +1016,7 @@ state 76
 state 77
 
    47 FuncInvocation: ID LPAR . Aux40 RPAR
+   48               | ID LPAR . error RPAR
 
     error    shift, and go to state 106
     LPAR     shift, and go to state 60
@@ -1505,21 +1508,21 @@ state 105
 
 state 106
 
-   49 Aux40: error .
+   48 FuncInvocation: ID LPAR error . RPAR
 
-    $default  reduce using rule 49 (Aux40)
+    RPAR  shift, and go to state 129
 
 
 state 107
 
    47 FuncInvocation: ID LPAR Aux40 . RPAR
 
-    RPAR  shift, and go to state 129
+    RPAR  shift, and go to state 130
 
 
 state 108
 
-   48 Aux40: Expr . Aux41
+   49 Aux40: Expr . Aux41
    58 Expr: Expr . PLUS Expr
    59     | Expr . MINUS Expr
    60     | Expr . STAR Expr
@@ -1536,7 +1539,7 @@ state 108
 
     AND    shift, and go to state 84
     STAR   shift, and go to state 85
-    COMMA  shift, and go to state 130
+    COMMA  shift, and go to state 131
     DIV    shift, and go to state 86
     EQ     shift, and go to state 87
     GE     shift, and go to state 88
@@ -1551,7 +1554,7 @@ state 108
 
     $default  reduce using rule 52 (Aux41)
 
-    Aux41  go to state 131
+    Aux41  go to state 132
 
 
 state 109
@@ -1915,14 +1918,14 @@ state 125
 
    31 Statement: FOR ExprOpt LBRACE Aux3 . RBRACE
 
-    RBRACE  shift, and go to state 132
+    RBRACE  shift, and go to state 133
 
 
 state 126
 
    30 Statement: IF Expr LBRACE Aux3 . RBRACE Aux4
 
-    RBRACE  shift, and go to state 133
+    RBRACE  shift, and go to state 134
 
 
 state 127
@@ -1937,17 +1940,24 @@ state 128
    45 ParseArgs: ID COMMA BLANKID ASSIGN . PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
    46          | ID COMMA BLANKID ASSIGN . PARSEINT LPAR error RPAR
 
-    PARSEINT  shift, and go to state 134
+    PARSEINT  shift, and go to state 135
 
 
 state 129
+
+   48 FuncInvocation: ID LPAR error RPAR .
+
+    $default  reduce using rule 48 (FuncInvocation)
+
+
+state 130
 
    47 FuncInvocation: ID LPAR Aux40 RPAR .
 
     $default  reduce using rule 47 (FuncInvocation)
 
 
-state 130
+state 131
 
    51 Aux41: COMMA . Expr Aux41
 
@@ -1960,43 +1970,43 @@ state 130
     REALLIT  shift, and go to state 66
 
     FuncInvocation  go to state 68
-    Expr            go to state 135
-
-
-state 131
-
-   48 Aux40: Expr Aux41 .
-
-    $default  reduce using rule 48 (Aux40)
+    Expr            go to state 136
 
 
 state 132
+
+   49 Aux40: Expr Aux41 .
+
+    $default  reduce using rule 49 (Aux40)
+
+
+state 133
 
    31 Statement: FOR ExprOpt LBRACE Aux3 RBRACE .
 
     $default  reduce using rule 31 (Statement)
 
 
-state 133
+state 134
 
    30 Statement: IF Expr LBRACE Aux3 RBRACE . Aux4
 
-    ELSE  shift, and go to state 136
+    ELSE  shift, and go to state 137
 
     $default  reduce using rule 44 (Aux4)
 
-    Aux4  go to state 137
+    Aux4  go to state 138
 
 
-state 134
+state 135
 
    45 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT . LPAR CMDARGS LSQ Expr RSQ RPAR
    46          | ID COMMA BLANKID ASSIGN PARSEINT . LPAR error RPAR
 
-    LPAR  shift, and go to state 138
+    LPAR  shift, and go to state 139
 
 
-state 135
+state 136
 
    51 Aux41: COMMA Expr . Aux41
    58 Expr: Expr . PLUS Expr
@@ -2015,7 +2025,7 @@ state 135
 
     AND    shift, and go to state 84
     STAR   shift, and go to state 85
-    COMMA  shift, and go to state 130
+    COMMA  shift, and go to state 131
     DIV    shift, and go to state 86
     EQ     shift, and go to state 87
     GE     shift, and go to state 88
@@ -2030,40 +2040,40 @@ state 135
 
     $default  reduce using rule 52 (Aux41)
 
-    Aux41  go to state 139
-
-
-state 136
-
-   43 Aux4: ELSE . LBRACE Aux3 RBRACE
-
-    LBRACE  shift, and go to state 140
+    Aux41  go to state 140
 
 
 state 137
+
+   43 Aux4: ELSE . LBRACE Aux3 RBRACE
+
+    LBRACE  shift, and go to state 141
+
+
+state 138
 
    30 Statement: IF Expr LBRACE Aux3 RBRACE Aux4 .
 
     $default  reduce using rule 30 (Statement)
 
 
-state 138
+state 139
 
    45 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR . CMDARGS LSQ Expr RSQ RPAR
    46          | ID COMMA BLANKID ASSIGN PARSEINT LPAR . error RPAR
 
-    error    shift, and go to state 141
-    CMDARGS  shift, and go to state 142
+    error    shift, and go to state 142
+    CMDARGS  shift, and go to state 143
 
 
-state 139
+state 140
 
    51 Aux41: COMMA Expr Aux41 .
 
     $default  reduce using rule 51 (Aux41)
 
 
-state 140
+state 141
 
    43 Aux4: ELSE LBRACE . Aux3 RBRACE
 
@@ -2078,40 +2088,40 @@ state 140
     RBRACE  reduce using rule 42 (Aux3)
 
     Statement       go to state 70
-    Aux3            go to state 143
+    Aux3            go to state 144
     ParseArgs       go to state 58
     FuncInvocation  go to state 59
 
 
-state 141
+state 142
 
    46 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR error . RPAR
 
-    RPAR  shift, and go to state 144
-
-
-state 142
-
-   45 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS . LSQ Expr RSQ RPAR
-
-    LSQ  shift, and go to state 145
+    RPAR  shift, and go to state 145
 
 
 state 143
 
-   43 Aux4: ELSE LBRACE Aux3 . RBRACE
+   45 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS . LSQ Expr RSQ RPAR
 
-    RBRACE  shift, and go to state 146
+    LSQ  shift, and go to state 146
 
 
 state 144
+
+   43 Aux4: ELSE LBRACE Aux3 . RBRACE
+
+    RBRACE  shift, and go to state 147
+
+
+state 145
 
    46 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR .
 
     $default  reduce using rule 46 (ParseArgs)
 
 
-state 145
+state 146
 
    45 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ . Expr RSQ RPAR
 
@@ -2124,17 +2134,17 @@ state 145
     REALLIT  shift, and go to state 66
 
     FuncInvocation  go to state 68
-    Expr            go to state 147
+    Expr            go to state 148
 
 
-state 146
+state 147
 
    43 Aux4: ELSE LBRACE Aux3 RBRACE .
 
     $default  reduce using rule 43 (Aux4)
 
 
-state 147
+state 148
 
    45 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr . RSQ RPAR
    58 Expr: Expr . PLUS Expr
@@ -2164,17 +2174,17 @@ state 147
     NE     shift, and go to state 94
     OR     shift, and go to state 95
     PLUS   shift, and go to state 96
-    RSQ    shift, and go to state 148
-
-
-state 148
-
-   45 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ . RPAR
-
-    RPAR  shift, and go to state 149
+    RSQ    shift, and go to state 149
 
 
 state 149
+
+   45 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ . RPAR
+
+    RPAR  shift, and go to state 150
+
+
+state 150
 
    45 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR .
 

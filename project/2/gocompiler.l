@@ -7,6 +7,7 @@
     #define LINE line++; column=1;
 	#include "y.tab.h"
     int line = 1, column = 1, errorflag = 0, errorline, errorcol;
+	extern int errortag;
     int printflag; // 0 = print errors only, 1 = print tokens
 
     void printtoken(char * type, char * msg);
@@ -113,7 +114,7 @@ os.Args												{printtoken("CMDARGS", yytext); COLUMN; if (!printflag) retur
 <SEMICOLON_STATE>{lineterminator}					{printtoken("SEMICOLON", yytext); LINE; BEGIN 0; if (!printflag) return SEMICOLON;}
 <SEMICOLON_STATE>{singlelinecomment}.*				{printtoken("SEMICOLON", yytext); LINE; BEGIN 0; if (!printflag) return SEMICOLON;}
 <SEMICOLON_STATE>{commentstart}						{COLUMN; BEGIN COMMENT; if (!printflag) return SEMICOLON;}
-<SEMICOLON_STATE><<EOF>>							{printtoken("SEMICOLON", yytext); return 0; if (!printflag) return SEMICOLON;}
+<SEMICOLON_STATE><<EOF>>							{printtoken("SEMICOLON", yytext); if (!printflag) return SEMICOLON; return 0;}
 <SEMICOLON_STATE>""/.								{COLUMN; BEGIN 0;}
 
 {whitespace}										{COLUMN;}
@@ -137,7 +138,8 @@ void printtoken(char * type, char * msg) {
 }
 
 void yyerror(const char * s) {
-	printf("Line %d, column %d: %s: %s\n", line, (int)(column-yyleng) , s, yytext);
+	errortag = 1;
+	printf("Line %d, column %d: %s: %s\n", line, (int)(column-strlen(yytext)) , s, yytext);
 }
 
 

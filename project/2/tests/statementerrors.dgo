@@ -13,10 +13,10 @@ func f(n int) bool {
 	;
 
 	var var1 bool;
-	var (var2 int;) //aqui devia dar erro porque falta terminar a VarDeclaration com um SEMICOLON
+	var (var2 int;) //não dá erro, porque o lex coloca um SEMICOLON depois de um LPAR
 	var x bool;
 };
 
 // FuncDeclaration
 func nothing() {
-};
+}
