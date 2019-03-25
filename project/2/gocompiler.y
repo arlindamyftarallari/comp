@@ -27,9 +27,8 @@
 %left PLUS MINUS
 %left STAR DIV MOD
 %right NOT 
-%nonassoc UNARY
 %left LPAR RPAR LSQ RSQ
-
+%nonassoc UNARY
 
 %%
 
@@ -52,7 +51,7 @@ VarDeclaration: VAR VarSpec
 	;
 
 VarSpec: ID Aux1 Type																
-;
+	;
 
 Aux1: COMMA ID Aux1																	
 	|
@@ -70,7 +69,7 @@ TypeOpt: Type
 	;
 
 Parameters: ID Type Aux2															
-;
+	;
 
 Aux2: COMMA ID Type Aux2																	
 	|																				
