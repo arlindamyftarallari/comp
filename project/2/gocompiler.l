@@ -11,6 +11,8 @@
 
     void printtoken(char * type, char * msg);
     char result[100] = "";
+
+	extern int yydebug;
 %}
 
 %x COMMENT SEMICOLON_STATE STRINGLIT
@@ -135,7 +137,7 @@ void printtoken(char * type, char * msg) {
 }
 
 void yyerror(const char * s) {
-	printf("Line %d, column %d: %s: %s\n", line, column, s, yytext);
+	printf("Line %d, column %d: %s: %s\n", line, (int)(column-yyleng) , s, yytext);
 }
 
 

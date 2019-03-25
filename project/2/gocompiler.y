@@ -6,6 +6,9 @@
 
 	#include <stdio.h>
 	#include <string.h>
+
+	#define YYDEBUG 1
+
 	int yylex(void);
 	int yylex_destroy();
 	void yyerror(const char *s);
@@ -158,6 +161,8 @@ Expr:  LPAR Expr RPAR
 %%
 
 int main(int argc, char **argv) {
+	yydebug = 1;
+
     if (argc > 1) {
         if (strcmp(argv[1], "-l") == 0) {
             printflag = 1;
