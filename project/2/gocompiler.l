@@ -30,7 +30,6 @@ hex_lit				0[xX]{hex_digit}+
 decimals			{decimal_digit}+
 exponent            [eE][+-]?{decimal_digit}+
 escape              \\n|\\f|\\r|\\\\|\\\"|\\t
-invalidescape		\\[^trnf\"\\]
 
 
 id					{letter}({letter}|{decimal_digit})*
@@ -94,10 +93,10 @@ os.Args												{printtoken("CMDARGS", yytext); COLUMN; if (!printflag) retur
 {real_lit}											{printtoken("REALLIT", yytext); COLUMN; BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(yytext); if (!printflag) return REALLIT;}
 
 \"													{BEGIN STRINGLIT; strcpy(result,yytext); errorline=line; errorcol=column; errorflag=0; COLUMN;}
-<STRINGLIT>\"										{strcat(result,"\""); if(errorflag==0){printtoken("STRLIT",result); BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(result); COLUMN; if (!printflag){yytext=result;return STRLIT;}} else BEGIN 0;}
+<STRINGLIT>\"										{strcat(result,"\""); COLUMN;if(errorflag==0){printtoken("STRLIT",result); BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(result); if (!printflag){yytext=result;return STRLIT;}} else BEGIN 0;}
 <STRINGLIT>{stringlit}								{strcat(result,yytext); COLUMN;}
 <STRINGLIT>{lineterminator}                			{printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); LINE; BEGIN 0;}
-<STRINGLIT>{invalidescape}							{printf("Line %d, column %d: invalid escape sequence (%s)\n", line, column, yytext); errorflag=1; COLUMN;}
+<STRINGLIT>\\(.?)									{printf("Line %d, column %d: invalid escape sequence (%s)\n", line, column, yytext); errorflag=1; COLUMN;}
 <STRINGLIT><<EOF>>									{printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); BEGIN 0;}
 
 {singlelinecomment}.*								{;}
@@ -115,8 +114,6 @@ os.Args												{printtoken("CMDARGS", yytext); COLUMN; if (!printflag) retur
 <SEMICOLON_STATE>{commentstart}						{errorline=line; errorcol=column; COLUMN; BEGIN COMMENT; if (!printflag) return SEMICOLON;}
 <SEMICOLON_STATE><<EOF>>							{printtoken("SEMICOLON", yytext); BEGIN 0; if (!printflag) return SEMICOLON;}
 <SEMICOLON_STATE>""/.								{COLUMN; BEGIN 0;}
-
-
 
 <<EOF>>												{return 0;}
 {whitespace}										{COLUMN;}
