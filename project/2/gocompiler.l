@@ -94,7 +94,7 @@ os.Args												{printtoken("CMDARGS", yytext); COLUMN; if (!printflag) retur
 {real_lit}											{printtoken("REALLIT", yytext); COLUMN; BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(yytext); if (!printflag) return REALLIT;}
 
 \"													{BEGIN STRINGLIT; strcpy(result,"\""); errorline=line; errorcol=column; errorflag=0; COLUMN;}
-<STRINGLIT>\"										{strcat(result,"\""); if(errorflag==0){printtoken("STRLIT",result); BEGIN SEMICOLON_STATE;  yylval.string=(char*)strdup(result); if (!printflag) return STRLIT;} else BEGIN 0; COLUMN;}
+<STRINGLIT>\"										{strcat(result,"\""); if(errorflag==0){printtoken("STRLIT",result); BEGIN SEMICOLON_STATE;  yylval.string=(char*)strdup(result); COLUMN; if (!printflag) return STRLIT;} else BEGIN 0;}
 <STRINGLIT>{lineterminator}                			{printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); LINE; BEGIN 0;}
 <STRINGLIT><<EOF>>									{printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); BEGIN 0;}
 <STRINGLIT>{invalidescape}							{printf("Line %d, column %d: invalid escape sequence (%s)\n", line, column, yytext); errorflag=1; COLUMN;}
@@ -112,11 +112,14 @@ os.Args												{printtoken("CMDARGS", yytext); COLUMN; if (!printflag) retur
 <SEMICOLON_STATE>{whitespace}						{COLUMN;}
 <SEMICOLON_STATE>";"								{printtoken("SEMICOLON", yytext); COLUMN; BEGIN 0; if (!printflag) return SEMICOLON;}
 <SEMICOLON_STATE>{lineterminator}					{printtoken("SEMICOLON", yytext); LINE; BEGIN 0; if (!printflag) return SEMICOLON;}
-<SEMICOLON_STATE>{singlelinecomment}.*				{printtoken("SEMICOLON", yytext); LINE; BEGIN 0; if (!printflag) return SEMICOLON;}
-<SEMICOLON_STATE>{commentstart}						{COLUMN; BEGIN COMMENT; if (!printflag) return SEMICOLON;}
-<SEMICOLON_STATE><<EOF>>							{printtoken("SEMICOLON", yytext); if (!printflag) return SEMICOLON; return 0;}
+<SEMICOLON_STATE>{singlelinecomment}.*				{printtoken("SEMICOLON", yytext); BEGIN 0; if (!printflag) return SEMICOLON;}
+<SEMICOLON_STATE>{commentstart}						{errorline=line; errorcol=column; COLUMN; BEGIN COMMENT; if (!printflag) return SEMICOLON;}
+<SEMICOLON_STATE><<EOF>>							{printtoken("SEMICOLON", yytext); BEGIN 0; if (!printflag) return SEMICOLON;}
 <SEMICOLON_STATE>""/.								{COLUMN; BEGIN 0;}
 
+
+
+<<EOF>>												{return 0;}
 {whitespace}										{COLUMN;}
 {carriagereturn}									{COLUMN;}
 {lineterminator}									{LINE;}
@@ -127,7 +130,7 @@ os.Args												{printtoken("CMDARGS", yytext); COLUMN; if (!printflag) retur
 void printtoken(char * type, char * msg) {
 
     if (printflag == 1) { //if user runs program with printflag -l, all tokens will be printed
-        if ((strcmp(type, "ID") == 0) || (strcmp(type, "STRINGLIT") == 0) || (strcmp(type, "INTLIT") == 0) || (strcmp(type, "REALLIT") == 0) || (strcmp(type, "RESERVED") == 0)) {
+        if ((strcmp(type, "ID") == 0) || (strcmp(type, "STRLIT") == 0) || (strcmp(type, "INTLIT") == 0) || (strcmp(type, "REALLIT") == 0) || (strcmp(type, "RESERVED") == 0)) {
             printf("%s(%s)\n", type, msg);
         }
         
@@ -139,9 +142,8 @@ void printtoken(char * type, char * msg) {
 
 void yyerror(const char * s) {
 	errortag = 1;
-	printf("Line %d, column %d: %s: %s\n", line, (int)(column-strlen(yytext)) , s, yytext);
+	printf("Line %d, column %d: %s: %s\n", line, (int)(column-strlen(yytext)), s, yylval.string);
 }
-
 
 int yywrap() {
 	return 1;

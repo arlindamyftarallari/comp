@@ -136,7 +136,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 19 "gocompiler.y"
+#line 18 "gocompiler.y"
 {
 	char * string;
 	//definir nó da árvore

@@ -6,7 +6,7 @@
 
 #Meta 2
 flex gocompiler.l
-yacc -dv gocompiler.y
+yacc -dvy gocompiler.y
 clang -o gocompiler -Wall -Wno-unused-function *.c
 zip -r gocompiler.zip gocompiler.l gocompiler.y
 

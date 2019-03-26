@@ -171,7 +171,6 @@
 
 	#include <stdio.h>
 	#include <string.h>
-	#include "parser.h"
 
 	#define YYDEBUG 1
 
@@ -201,13 +200,13 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 19 "gocompiler.y"
+#line 18 "gocompiler.y"
 {
 	char * string;
 	//definir nó da árvore
 }
 /* Line 193 of yacc.c.  */
-#line 211 "y.tab.c"
+#line 210 "y.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -220,7 +219,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 224 "y.tab.c"
+#line 223 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -538,14 +537,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    38,    38,    41,    42,    43,    46,    47,    48,    49,
-      52,    53,    56,    59,    60,    63,    66,    67,    70,    71,
-      74,    77,    78,    81,    84,    85,    88,    89,    90,    93,
-      94,    95,    96,    97,    98,    99,   100,   101,   104,   105,
-     108,   109,   112,   113,   116,   117,   120,   121,   124,   125,
-     128,   129,   132,   133,   136,   137,   138,   139,   140,   141,
-     142,   143,   144,   145,   146,   147,   148,   149,   150,   151,
-     152,   153,   154,   155,   156,   157
+       0,    37,    37,    40,    41,    42,    45,    46,    47,    48,
+      51,    52,    55,    58,    59,    62,    65,    66,    69,    70,
+      73,    76,    77,    80,    83,    84,    87,    88,    89,    92,
+      93,    94,    95,    96,    97,    98,    99,   100,   103,   104,
+     107,   108,   111,   112,   115,   116,   119,   120,   123,   124,
+     127,   128,   131,   132,   135,   136,   137,   138,   139,   140,
+     141,   142,   143,   144,   145,   146,   147,   148,   149,   150,
+     151,   152,   153,   154,   155,   156
 };
 #endif
 
@@ -1572,7 +1571,7 @@ yyreduce:
     {
       
 /* Line 1267 of yacc.c.  */
-#line 1576 "y.tab.c"
+#line 1575 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1786,7 +1785,7 @@ yyreturn:
 }
 
 
-#line 162 "gocompiler.y"
+#line 159 "gocompiler.y"
 
 
 int main(int argc, char **argv) {

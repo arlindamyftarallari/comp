@@ -18,14 +18,12 @@ func danglingelse(n int) {
 		{{return;};}
 		if 1 {
 			if(1){
-				n=0
+				n=0;
 			} else {
 				n=1
 			}
 
 		} else {
-			n=0
-
 		}
 		
 		function ()
@@ -36,7 +34,8 @@ func danglingelse(n int) {
 	n, _ = strconv.Atoi(os.Args[n])
 
 	fmt.Println(n)
-	fmt.Println("akshdkahsd\n")
-}
+	"aksjd"
+	fmt.Println("\x")
 
+}
 var (i int;)

@@ -1180,7 +1180,7 @@ YY_RULE_SETUP
 case 44:
 YY_RULE_SETUP
 #line 97 "gocompiler.l"
-{strcat(result,"\""); if(errorflag==0){printtoken("STRLIT",result); BEGIN SEMICOLON_STATE;  yylval.string=(char*)strdup(result); if (!printflag) return STRLIT;} else BEGIN 0; COLUMN;}
+{strcat(result,"\""); if(errorflag==0){printtoken("STRLIT",result); BEGIN SEMICOLON_STATE;  yylval.string=(char*)strdup(result); COLUMN; if (!printflag) return STRLIT;} else BEGIN 0;}
 	YY_BREAK
 case 45:
 /* rule 45 can match eol */
@@ -1257,16 +1257,16 @@ YY_RULE_SETUP
 case 57:
 YY_RULE_SETUP
 #line 115 "gocompiler.l"
-{printtoken("SEMICOLON", yytext); LINE; BEGIN 0; if (!printflag) return SEMICOLON;}
+{printtoken("SEMICOLON", yytext); BEGIN 0; if (!printflag) return SEMICOLON;}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
 #line 116 "gocompiler.l"
-{COLUMN; BEGIN COMMENT; if (!printflag) return SEMICOLON;}
+{errorline=line; errorcol=column; COLUMN; BEGIN COMMENT; if (!printflag) return SEMICOLON;}
 	YY_BREAK
 case YY_STATE_EOF(SEMICOLON_STATE):
 #line 117 "gocompiler.l"
-{printtoken("SEMICOLON", yytext); if (!printflag) return SEMICOLON; return 0;}
+{printtoken("SEMICOLON", yytext); BEGIN 0; if (!printflag) return SEMICOLON;}
 	YY_BREAK
 case 59:
 *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
@@ -1276,35 +1276,37 @@ YY_RULE_SETUP
 #line 118 "gocompiler.l"
 {COLUMN; BEGIN 0;}
 	YY_BREAK
+case YY_STATE_EOF(INITIAL):
+#line 122 "gocompiler.l"
+{return 0;}
+	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 120 "gocompiler.l"
+#line 123 "gocompiler.l"
 {COLUMN;}
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 121 "gocompiler.l"
+#line 124 "gocompiler.l"
 {COLUMN;}
 	YY_BREAK
 case 62:
 /* rule 62 can match eol */
 YY_RULE_SETUP
-#line 122 "gocompiler.l"
+#line 125 "gocompiler.l"
 {LINE;}
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 123 "gocompiler.l"
+#line 126 "gocompiler.l"
 {printf("Line %d, column %d: illegal character (%s)\n", line, column, yytext); COLUMN;}
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 125 "gocompiler.l"
+#line 128 "gocompiler.l"
 ECHO;
 	YY_BREAK
-#line 1306 "lex.yy.c"
-case YY_STATE_EOF(INITIAL):
-	yyterminate();
+#line 1310 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2299,14 +2301,14 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 125 "gocompiler.l"
+#line 128 "gocompiler.l"
 
 
 
 void printtoken(char * type, char * msg) {
 
     if (printflag == 1) { //if user runs program with printflag -l, all tokens will be printed
-        if ((strcmp(type, "ID") == 0) || (strcmp(type, "STRINGLIT") == 0) || (strcmp(type, "INTLIT") == 0) || (strcmp(type, "REALLIT") == 0) || (strcmp(type, "RESERVED") == 0)) {
+        if ((strcmp(type, "ID") == 0) || (strcmp(type, "STRLIT") == 0) || (strcmp(type, "INTLIT") == 0) || (strcmp(type, "REALLIT") == 0) || (strcmp(type, "RESERVED") == 0)) {
             printf("%s(%s)\n", type, msg);
         }
         
@@ -2318,9 +2320,9 @@ void printtoken(char * type, char * msg) {
 
 void yyerror(const char * s) {
 	errortag = 1;
-	printf("Line %d, column %d: %s: %s\n", line, (int)(column-strlen(yytext)) , s, yytext);
+	printf("Line %d, column %d: %s: %s\n", line, (int)(column-strlen(yytext)), s, yylval.string);
+	yylval.string = '\0';
 }
-
 
 int yywrap() {
 	return 1;
