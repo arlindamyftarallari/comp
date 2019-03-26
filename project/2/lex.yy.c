@@ -360,8 +360,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 64
-#define YY_END_OF_BUFFER 65
+#define YY_NUM_RULES 63
+#define YY_END_OF_BUFFER 64
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -371,23 +371,23 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[245] =
     {   0,
-        0,    0,    0,    0,    0,    0,   47,   47,   65,   63,
-       60,   62,   61,   22,   43,   20,   63,   16,   26,    8,
-       24,    9,   19,   63,   10,   41,   41,    2,   18,    7,
+        0,    0,    0,    0,    0,    0,   45,   45,   64,   62,
+       59,   61,   60,   22,   43,   20,   62,   16,   26,    8,
+       24,    9,   19,   62,   10,   41,   41,    2,   18,    7,
        13,   40,   17,   27,    3,   40,   40,   40,   40,   40,
        40,   40,   40,   40,   40,   40,   40,   40,   40,   14,
-       63,   25,   53,   51,   53,   53,   59,   54,   56,   59,
-       59,   55,   47,   45,   48,   44,   48,   62,   21,    6,
-        1,   42,   50,   49,   42,   41,   41,    0,    0,   15,
+       62,   25,   52,   50,   52,   52,   58,   53,   55,   58,
+       58,   54,   45,   46,   63,   44,   63,   61,   21,    6,
+        1,   42,   49,   48,   42,   41,   41,    0,    0,   15,
        11,   12,   40,   40,   40,   40,   40,   40,   40,   40,
        40,   40,   40,   40,   40,    1,   30,   40,   40,   40,
 
        40,   40,   40,   40,   40,   40,   40,   40,   40,   23,
-       51,   52,   56,   58,   57,   47,    0,   45,   46,    0,
-       49,   42,    0,    0,   42,   41,   40,   40,   40,   40,
+       50,   51,   55,   57,   56,   45,    0,   46,   47,    0,
+       48,   42,    0,    0,   42,   41,   40,   40,   40,   40,
        40,   40,   40,   40,   40,   40,   29,   40,   40,   40,
        32,    1,    0,   40,   40,   40,   40,   40,   40,   40,
-       40,   31,   57,    0,   42,    0,   42,   34,   40,   40,
+       40,   31,   56,    0,   42,    0,   42,   34,   40,   40,
        40,   40,   40,   28,   40,   40,    0,   40,   38,   40,
        40,    0,   40,   40,   40,   40,   40,   40,   40,   40,
        40,   40,   40,   40,   40,    0,   40,   40,   40,    0,
@@ -1174,52 +1174,47 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 96 "gocompiler.l"
-{BEGIN STRINGLIT; strcpy(result,"\""); errorline=line; errorcol=column; errorflag=0; COLUMN;}
+#line 97 "gocompiler.l"
+{BEGIN STRINGLIT; strcpy(result,yytext); errorline=line; errorcol=column; errorflag=0; COLUMN;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 97 "gocompiler.l"
-{strcat(result,"\""); if(errorflag==0){printtoken("STRLIT",result); BEGIN SEMICOLON_STATE;  yylval.string=(char*)strdup(result); COLUMN; if (!printflag) return STRLIT;} else BEGIN 0;}
+#line 98 "gocompiler.l"
+{strcat(result,"\""); if(errorflag==0){printtoken("STRLIT",result); BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(result); COLUMN; if (!printflag){yytext=result;return STRLIT;}} else BEGIN 0;}
 	YY_BREAK
 case 45:
-/* rule 45 can match eol */
 YY_RULE_SETUP
-#line 98 "gocompiler.l"
-{printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); LINE; BEGIN 0;}
-	YY_BREAK
-case YY_STATE_EOF(STRINGLIT):
 #line 99 "gocompiler.l"
-{printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); BEGIN 0;}
+{strcat(result,yytext); COLUMN;}
 	YY_BREAK
 case 46:
 /* rule 46 can match eol */
 YY_RULE_SETUP
 #line 100 "gocompiler.l"
-{printf("Line %d, column %d: invalid escape sequence (%s)\n", line, column, yytext); errorflag=1; COLUMN;}
+{printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); LINE; BEGIN 0;}
 	YY_BREAK
 case 47:
+/* rule 47 can match eol */
 YY_RULE_SETUP
 #line 101 "gocompiler.l"
-{strcat(result,yytext); COLUMN;}
+{printf("Line %d, column %d: invalid escape sequence (%s)\n", line, column, yytext); errorflag=1; COLUMN;}
+	YY_BREAK
+case YY_STATE_EOF(STRINGLIT):
+#line 102 "gocompiler.l"
+{printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); BEGIN 0;}
 	YY_BREAK
 case 48:
-YY_RULE_SETUP
-#line 102 "gocompiler.l"
-{strcat(result, yytext); COLUMN;}
-	YY_BREAK
-case 49:
 YY_RULE_SETUP
 #line 104 "gocompiler.l"
 {;}
 	YY_BREAK
-case 50:
+case 49:
 YY_RULE_SETUP
 #line 106 "gocompiler.l"
 {BEGIN COMMENT; errorline=line; errorcol=column; COLUMN;}
 	YY_BREAK
-case 51:
-/* rule 51 can match eol */
+case 50:
+/* rule 50 can match eol */
 YY_RULE_SETUP
 #line 107 "gocompiler.l"
 {LINE;}
@@ -1228,38 +1223,38 @@ case YY_STATE_EOF(COMMENT):
 #line 108 "gocompiler.l"
 {printf("Line %d, column %d: unterminated comment\n", errorline, errorcol); return 0;}
 	YY_BREAK
-case 52:
+case 51:
 YY_RULE_SETUP
 #line 109 "gocompiler.l"
 {BEGIN 0; COLUMN;}
 	YY_BREAK
-case 53:
+case 52:
 YY_RULE_SETUP
 #line 110 "gocompiler.l"
 {COLUMN;}
 	YY_BREAK
-case 54:
+case 53:
 YY_RULE_SETUP
 #line 112 "gocompiler.l"
 {COLUMN;}
 	YY_BREAK
-case 55:
+case 54:
 YY_RULE_SETUP
 #line 113 "gocompiler.l"
 {printtoken("SEMICOLON", yytext); COLUMN; BEGIN 0; if (!printflag) return SEMICOLON;}
 	YY_BREAK
-case 56:
-/* rule 56 can match eol */
+case 55:
+/* rule 55 can match eol */
 YY_RULE_SETUP
 #line 114 "gocompiler.l"
 {printtoken("SEMICOLON", yytext); LINE; BEGIN 0; if (!printflag) return SEMICOLON;}
 	YY_BREAK
-case 57:
+case 56:
 YY_RULE_SETUP
 #line 115 "gocompiler.l"
 {printtoken("SEMICOLON", yytext); BEGIN 0; if (!printflag) return SEMICOLON;}
 	YY_BREAK
-case 58:
+case 57:
 YY_RULE_SETUP
 #line 116 "gocompiler.l"
 {errorline=line; errorcol=column; COLUMN; BEGIN COMMENT; if (!printflag) return SEMICOLON;}
@@ -1268,7 +1263,7 @@ case YY_STATE_EOF(SEMICOLON_STATE):
 #line 117 "gocompiler.l"
 {printtoken("SEMICOLON", yytext); BEGIN 0; if (!printflag) return SEMICOLON;}
 	YY_BREAK
-case 59:
+case 58:
 *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
@@ -1280,33 +1275,33 @@ case YY_STATE_EOF(INITIAL):
 #line 122 "gocompiler.l"
 {return 0;}
 	YY_BREAK
-case 60:
+case 59:
 YY_RULE_SETUP
 #line 123 "gocompiler.l"
 {COLUMN;}
 	YY_BREAK
-case 61:
+case 60:
 YY_RULE_SETUP
 #line 124 "gocompiler.l"
 {COLUMN;}
 	YY_BREAK
-case 62:
-/* rule 62 can match eol */
+case 61:
+/* rule 61 can match eol */
 YY_RULE_SETUP
 #line 125 "gocompiler.l"
 {LINE;}
 	YY_BREAK
-case 63:
+case 62:
 YY_RULE_SETUP
 #line 126 "gocompiler.l"
 {printf("Line %d, column %d: illegal character (%s)\n", line, column, yytext); COLUMN;}
 	YY_BREAK
-case 64:
+case 63:
 YY_RULE_SETUP
 #line 128 "gocompiler.l"
 ECHO;
 	YY_BREAK
-#line 1310 "lex.yy.c"
+#line 1305 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2320,8 +2315,7 @@ void printtoken(char * type, char * msg) {
 
 void yyerror(const char * s) {
 	errortag = 1;
-	printf("Line %d, column %d: %s: %s\n", line, (int)(column-strlen(yytext)), s, yylval.string);
-	yylval.string = '\0';
+	printf("Line %d, column %d: %s: %s\n", line, (int)(column-strlen(yytext)), s, yytext);
 }
 
 int yywrap() {

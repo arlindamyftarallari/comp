@@ -93,13 +93,12 @@ os.Args												{printtoken("CMDARGS", yytext); COLUMN; if (!printflag) retur
 {int_lit}											{printtoken("INTLIT", yytext); COLUMN; BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(yytext); if (!printflag) return INTLIT;}
 {real_lit}											{printtoken("REALLIT", yytext); COLUMN; BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(yytext); if (!printflag) return REALLIT;}
 
-\"													{BEGIN STRINGLIT; strcpy(result,"\""); errorline=line; errorcol=column; errorflag=0; COLUMN;}
-<STRINGLIT>\"										{strcat(result,"\""); if(errorflag==0){printtoken("STRLIT",result); BEGIN SEMICOLON_STATE;  yylval.string=(char*)strdup(result); COLUMN; if (!printflag) return STRLIT;} else BEGIN 0;}
-<STRINGLIT>{lineterminator}                			{printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); LINE; BEGIN 0;}
-<STRINGLIT><<EOF>>									{printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); BEGIN 0;}
-<STRINGLIT>{invalidescape}							{printf("Line %d, column %d: invalid escape sequence (%s)\n", line, column, yytext); errorflag=1; COLUMN;}
+\"													{BEGIN STRINGLIT; strcpy(result,yytext); errorline=line; errorcol=column; errorflag=0; COLUMN;}
+<STRINGLIT>\"										{strcat(result,"\""); if(errorflag==0){printtoken("STRLIT",result); BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(result); COLUMN; if (!printflag){yytext=result;return STRLIT;}} else BEGIN 0;}
 <STRINGLIT>{stringlit}								{strcat(result,yytext); COLUMN;}
-<STRINGLIT>.										{strcat(result, yytext); COLUMN;}
+<STRINGLIT>{lineterminator}                			{printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); LINE; BEGIN 0;}
+<STRINGLIT>{invalidescape}							{printf("Line %d, column %d: invalid escape sequence (%s)\n", line, column, yytext); errorflag=1; COLUMN;}
+<STRINGLIT><<EOF>>									{printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); BEGIN 0;}
 
 {singlelinecomment}.*								{;}
 
@@ -142,7 +141,7 @@ void printtoken(char * type, char * msg) {
 
 void yyerror(const char * s) {
 	errortag = 1;
-	printf("Line %d, column %d: %s: %s\n", line, (int)(column-strlen(yytext)), s, yylval.string);
+	printf("Line %d, column %d: %s: %s\n", line, (int)(column-strlen(yytext)), s, yytext);
 }
 
 int yywrap() {
