@@ -35,7 +35,7 @@
 
 %%
 
-Program: PACKAGE ID SEMICOLON Declarations
+Program: PACKAGE ID SEMICOLON Declarations			 {root = create_node("Program", "");}
 	;
 
 Declarations: VarDeclaration SEMICOLON Declarations 

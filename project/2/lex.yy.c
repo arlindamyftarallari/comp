@@ -1271,33 +1271,33 @@ YY_RULE_SETUP
 {COLUMN; BEGIN 0;}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 120 "gocompiler.l"
+#line 118 "gocompiler.l"
 {return 0;}
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 121 "gocompiler.l"
+#line 119 "gocompiler.l"
 {COLUMN;}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 122 "gocompiler.l"
+#line 120 "gocompiler.l"
 {COLUMN;}
 	YY_BREAK
 case 61:
 /* rule 61 can match eol */
 YY_RULE_SETUP
-#line 123 "gocompiler.l"
+#line 121 "gocompiler.l"
 {LINE;}
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 124 "gocompiler.l"
+#line 122 "gocompiler.l"
 {printf("Line %d, column %d: illegal character (%s)\n", line, column, yytext); COLUMN;}
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 126 "gocompiler.l"
+#line 124 "gocompiler.l"
 ECHO;
 	YY_BREAK
 #line 1304 "lex.yy.c"
@@ -2295,7 +2295,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 126 "gocompiler.l"
+#line 124 "gocompiler.l"
 
 
 
