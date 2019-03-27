@@ -136,10 +136,10 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 19 "gocompiler.y"
+#line 20 "gocompiler.y"
 {
 	char * string;
-	//definir nó da árvore
+	struct node * node;
 }
 /* Line 1529 of yacc.c.  */
 #line 146 "y.tab.h"

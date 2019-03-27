@@ -6,12 +6,15 @@
 
 typedef struct node {
 	struct node * children[MAX_CHILDREN]; //list of children of this node
+	int number_children; //to access the next empty child
+	struct node * parent;
 	char * type;
-	char * name;
+	char * value;
 } node;
 
 
-struct node *root = NULL;
  
 struct node* create_node (char* type, char* name);
-struct node* create_child(char* type, char* name, struct node * parent);
+struct node* add_child(struct node *parent, struct node * child);
+int get_number_siblings(struct node* node);
+void print_node(struct node* root, int depth);
