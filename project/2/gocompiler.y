@@ -26,7 +26,7 @@
 %token <string> RESERVED STRLIT INTLIT ID REALLIT
  
 %type <node> Program FuncDeclaration Declarations Parameters Expr VarDeclaration ParametersOpt FuncBody Type INT BOOL STRING VarSpec TypeOpt FuncInvocation CallParams OptCallParams IdOpt varsAndStatementsOpt VarsAndStatements OptParam StatementOpt
-%type <node> Statement ElseOpt ExprOpt
+%type <node> Statement ElseOpt ExprOpt ParseArgs printArgs
 
 %right ASSIGN
 %left OR AND
@@ -161,26 +161,18 @@ OptParam: COMMA ID Type OptParam									{
 
 FuncBody: LBRACE VarsAndStatements RBRACE							{
 																		struct node* funcBody = create_node("FuncBody", "");
-																		if ($2 == NULL) {
-																			$$ = funcBody;
-																		}
-																		else {
-																			$$ = add_child(funcBody, $2);
-																		}
+																		if ($2 != NULL) add_child(funcBody, $2);
+																		$$ = funcBody;
 																	}
 	;
 
-VarsAndStatements: VarsAndStatements varsAndStatementsOpt SEMICOLON		{
-																		if ($1 == NULL && $2 != NULL) {
-																			$$ = $2;
+VarsAndStatements: varsAndStatementsOpt SEMICOLON VarsAndStatements 	{
+																			if ($3 == NULL && $1 == NULL) $$ = NULL;
+																			else if ($1 == NULL) $$ = $3;
+																			else if ($3 == NULL) $$ = $1;
+																			else $$ = add_sibling($1, $3);
+																		
 																		}
-																		else if ($1 != NULL && $2 == NULL) {
-																			$$ = $1;
-																		}
-																		else {
-																			$$ = add_sibling($1, $2);
-																		}
-																	}
 	|																{
 																		$$ = NULL;
 																	}
@@ -190,7 +182,7 @@ varsAndStatementsOpt: VarDeclaration								{
 																		$$ = $1;
 																	}
 	| Statement														{
-																	
+																		$$ = $1;
 																	}
 	|																{$$ = NULL;}
 	;
@@ -236,7 +228,7 @@ Statement: ID ASSIGN Expr											{
 	;
 
 printArgs: STRLIT													{
-																		$$ = $1;
+																		$$ = create_node("StrLit", $1);
 																	}
 	| Expr															{
 																		$$ = $1;
@@ -268,10 +260,13 @@ ElseOpt: ELSE LBRACE StatementOpt RBRACE								{
 	;
 
 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR	{
-
+																				struct node * parseArgs = create_node("ParseArgs", "");
+																				add_child(parseArgs, create_node("Id", $1));
+																				$$ = add_child(parseArgs, $9);
 																			}
 	| ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR				{
-																		
+																		$$ = NULL;
+																		errortag = 1;
 																	}
 	;
 

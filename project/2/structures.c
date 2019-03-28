@@ -72,7 +72,7 @@ void print_node(struct node * root, int depth) {
 
 	if (root == NULL) return;
 
-	printf("node=%s children=%d\n", root->type, root->number_children);
+	//printf("node=%s children=%d\n", root->type, root->number_children);
 
 	//puts the appropriate number of points
 

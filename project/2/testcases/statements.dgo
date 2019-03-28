@@ -31,6 +31,5 @@ func danglingelse(n int) {
 	n, _ = strconv.Atoi(os.Args[n])
 
 	fmt.Println(n)
-	"aksjd"
-	fmt.Println("\x")
+	fmt.Println("\nnnnnn")
 }
