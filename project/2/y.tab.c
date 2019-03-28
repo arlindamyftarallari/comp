@@ -540,13 +540,13 @@ static const yytype_int8 yyrhs[] =
 static const yytype_uint16 yyrline[] =
 {
        0,    42,    42,    49,    56,    62,    65,    68,    71,    74,
-      79,    82,    87,    95,   105,   108,   120,   123,   129,   132,
-     137,   152,   157,   162,   169,   176,   181,   184,   187,   190,
-     195,   198,   204,   209,   214,   217,   220,   224,   230,   233,
-     238,   241,   244,   250,   253,   259,   262,   267,   273,   279,
-     285,   293,   296,   303,   308,   311,   315,   318,   321,   324,
-     329,   334,   339,   344,   349,   354,   359,   364,   369,   374,
-     379,   384,   389,   392,   395,   398
+      79,    82,    87,   135,   147,   150,   162,   165,   171,   174,
+     179,   194,   200,   205,   212,   219,   224,   227,   230,   233,
+     238,   248,   256,   265,   270,   273,   276,   280,   286,   289,
+     294,   297,   300,   304,   307,   313,   316,   321,   327,   333,
+     339,   347,   350,   357,   362,   365,   369,   372,   375,   378,
+     383,   388,   393,   398,   403,   408,   413,   418,   423,   428,
+     433,   438,   443,   446,   449,   452
 };
 #endif
 
@@ -1652,31 +1652,73 @@ yyreduce:
     {
 																		struct node * varDecl = create_node("VarDecl", "");
 																		add_child(varDecl, (yyvsp[(3) - (3)].node));
-																		if ((yyvsp[(2) - (3)].node) != NULL) add_child(varDecl, (yyvsp[(2) - (3)].node));
-																		(yyval.node) = add_child(varDecl, create_node("Id", (yyvsp[(1) - (3)].string)));
+																		add_child(varDecl, create_node("Id", (yyvsp[(1) - (3)].string)));
+																		
+																		struct node * newId = (yyvsp[(2) - (3)].node);
+																		struct node * varDecls[100];
+																		struct node * ids[100];
+																		int i=0;
+																		int k=0;
+
+																		//puts all Ids inside array
+																		while (newId != NULL) {
+																			ids[k] = newId;
+																			newId = newId->bro;
+																			k++;
+																		}
+
+																		newId = (yyvsp[(2) - (3)].node);
+																		struct node * aux;
+
+																		//destroys bro connections between Ids
+																		if (newId->bro != NULL) {
+																			while(newId != NULL) {
+																				aux = newId->bro;
+																				newId->bro = NULL;
+																				newId = aux;
+																			}
+ 																		}
+
+																		//creates a new VarDecl node for each Id received from the IdOpt
+																		for (int n=0; n<k; n++) { //iterates ids array
+																			varDecls[n] = create_node("VarDecl", "");
+																			add_child(varDecls[n], (yyvsp[(3) - (3)].node));
+																			add_child(varDecls[n], ids[n]);
+																			i++;
+																		}
+																		
+																		if (i>=1) add_sibling(varDecl, varDecls[0]);
+
+																		for (int j=0; j+1<i; j++) {
+																			add_sibling(varDecls[j], varDecls[j+1]);
+																		}
+
+																		(yyval.node) = varDecl;	
 																	}
     break;
 
   case 13:
-#line 96 "gocompiler.y"
+#line 136 "gocompiler.y"
     {
 																		struct node * id = create_node("Id", (yyvsp[(2) - (3)].string));
 																		if ((yyvsp[(3) - (3)].node) == NULL) {
 																			(yyval.node) = id;
+																			printf("this is null\n");
 																		}
 																		else {
+																			printf("this is not null\n");
 																			(yyval.node) = add_sibling(id, (yyvsp[(3) - (3)].node));
 																		}
 																	}
     break;
 
   case 14:
-#line 105 "gocompiler.y"
+#line 147 "gocompiler.y"
     {(yyval.node) = NULL;}
     break;
 
   case 15:
-#line 108 "gocompiler.y"
+#line 150 "gocompiler.y"
     {
 																		struct node * funcDecl = create_node("FuncDecl", "");
 																		struct node * funcHeader = create_node("FuncHeader", "");
@@ -1690,14 +1732,14 @@ yyreduce:
     break;
 
   case 16:
-#line 120 "gocompiler.y"
+#line 162 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 17:
-#line 123 "gocompiler.y"
+#line 165 "gocompiler.y"
     {
 																		(yyval.node) = create_node("FuncParams", "");
 																		//this node is not going to have any sons, but it is mandatory
@@ -1705,21 +1747,21 @@ yyreduce:
     break;
 
   case 18:
-#line 129 "gocompiler.y"
+#line 171 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 19:
-#line 132 "gocompiler.y"
+#line 174 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																	}
     break;
 
   case 20:
-#line 137 "gocompiler.y"
+#line 179 "gocompiler.y"
     {
 																		struct node * funcParams = create_node("FuncParams", "");
 																		struct node * paramDecl = create_node("ParamDecl", "");
@@ -1736,23 +1778,24 @@ yyreduce:
     break;
 
   case 21:
-#line 152 "gocompiler.y"
+#line 194 "gocompiler.y"
     {
 																		struct node * paramDecl = create_node("ParamDecl", "");
 																		add_child(paramDecl, (yyvsp[(3) - (4)].node));
 																		(yyval.node) = add_child(paramDecl, create_node("Id", (yyvsp[(2) - (4)].string)));
+																		if ((yyvsp[(4) - (4)].node) != NULL) add_child(paramDecl, (yyvsp[(4) - (4)].node));
 																	}
     break;
 
   case 22:
-#line 157 "gocompiler.y"
+#line 200 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																	}
     break;
 
   case 23:
-#line 162 "gocompiler.y"
+#line 205 "gocompiler.y"
     {
 																		struct node* funcBody = create_node("FuncBody", "");
 																		if ((yyvsp[(2) - (3)].node) != NULL) add_child(funcBody, (yyvsp[(2) - (3)].node));
@@ -1761,7 +1804,7 @@ yyreduce:
     break;
 
   case 24:
-#line 169 "gocompiler.y"
+#line 212 "gocompiler.y"
     {
 																			if ((yyvsp[(3) - (3)].node) == NULL && (yyvsp[(1) - (3)].node) == NULL) (yyval.node) = NULL;
 																			else if ((yyvsp[(1) - (3)].node) == NULL) (yyval.node) = (yyvsp[(3) - (3)].node);
@@ -1772,33 +1815,33 @@ yyreduce:
     break;
 
   case 25:
-#line 176 "gocompiler.y"
+#line 219 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																	}
     break;
 
   case 26:
-#line 181 "gocompiler.y"
+#line 224 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 27:
-#line 184 "gocompiler.y"
+#line 227 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 28:
-#line 187 "gocompiler.y"
+#line 230 "gocompiler.y"
     {(yyval.node) = NULL;}
     break;
 
   case 29:
-#line 190 "gocompiler.y"
+#line 233 "gocompiler.y"
     {
 																		struct node * assign = create_node("Assign", "");
 																		add_child(assign, create_node("Id", (yyvsp[(1) - (3)].string)));
@@ -1807,33 +1850,46 @@ yyreduce:
     break;
 
   case 30:
-#line 195 "gocompiler.y"
+#line 238 "gocompiler.y"
     {
-																		(yyval.node) = (yyvsp[(2) - (3)].node);
+																		if ((yyvsp[(2) - (3)].node) != NULL && (yyvsp[(2) - (3)].node)->bro != NULL) { //creating block for multiple statements
+																			struct node * block = create_node("Block", "");
+																			if ((yyvsp[(2) - (3)].node) != NULL) add_child(block, (yyvsp[(2) - (3)].node));
+																			(yyval.node) = block;
+																		}
+																		else { //there is only 1 statement -> no need for block
+																			(yyval.node) = (yyvsp[(2) - (3)].node);
+																		}
 																	}
     break;
 
   case 31:
-#line 198 "gocompiler.y"
+#line 248 "gocompiler.y"
     {
 																		struct node * iff = create_node("If", "");
 																		add_child(iff, (yyvsp[(2) - (6)].node));
-																		add_child(iff, (yyvsp[(4) - (6)].node));
-																		(yyval.node) = add_child(iff, (yyvsp[(6) - (6)].node));	
+																		struct node * block = create_node("Block", "");
+																		if ((yyvsp[(4) - (6)].node) != NULL) add_child(block, (yyvsp[(4) - (6)].node));	
+																		add_child(iff, block);
+																		(yyval.node) = add_child(iff, (yyvsp[(6) - (6)].node));
 																	}
     break;
 
   case 32:
-#line 204 "gocompiler.y"
+#line 256 "gocompiler.y"
     {
 																		struct node * forr = create_node("For", "");
 																		if ((yyvsp[(2) - (5)].node) != NULL) add_child(forr, (yyvsp[(2) - (5)].node));
-																		(yyval.node) = add_child(forr, (yyvsp[(4) - (5)].node));
+																		struct node * block = create_node("Block", "");
+																		if ((yyvsp[(4) - (5)].node) != NULL) add_child(block, (yyvsp[(4) - (5)].node));
+																		(yyval.node) = add_child(forr, block);
+
+
 																	}
     break;
 
   case 33:
-#line 209 "gocompiler.y"
+#line 265 "gocompiler.y"
     {
 																		struct node * returnn = create_node("Return", "");
 																		if ((yyvsp[(2) - (2)].node) != NULL) add_child(returnn, (yyvsp[(2) - (2)].node));
@@ -1842,21 +1898,21 @@ yyreduce:
     break;
 
   case 34:
-#line 214 "gocompiler.y"
+#line 270 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 35:
-#line 217 "gocompiler.y"
+#line 273 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 36:
-#line 220 "gocompiler.y"
+#line 276 "gocompiler.y"
     {
 																		struct node * print = create_node("Print", "");
 																		(yyval.node) = add_child(print, (yyvsp[(3) - (4)].node));
@@ -1864,7 +1920,7 @@ yyreduce:
     break;
 
   case 37:
-#line 224 "gocompiler.y"
+#line 280 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																		errortag = 1;
@@ -1872,48 +1928,46 @@ yyreduce:
     break;
 
   case 38:
-#line 230 "gocompiler.y"
+#line 286 "gocompiler.y"
     {
 																		(yyval.node) = create_node("StrLit", (yyvsp[(1) - (1)].string));
 																	}
     break;
 
   case 39:
-#line 233 "gocompiler.y"
+#line 289 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 40:
-#line 238 "gocompiler.y"
+#line 294 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 41:
-#line 241 "gocompiler.y"
+#line 297 "gocompiler.y"
     { (yyval.node) = NULL; }
     break;
 
   case 42:
-#line 244 "gocompiler.y"
+#line 300 "gocompiler.y"
     {
-																		struct node * block = create_node("Block", "");
-																		if ((yyvsp[(3) - (3)].node) != NULL) (yyval.node) = add_sibling((yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node));
-																		(yyval.node) = add_child(block, (yyvsp[(1) - (3)].node));
-
+																		if ((yyvsp[(3) - (3)].node) != NULL) add_sibling((yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node));
+																		(yyval.node) = (yyvsp[(1) - (3)].node);
 																	}
     break;
 
   case 43:
-#line 250 "gocompiler.y"
+#line 304 "gocompiler.y"
     { (yyval.node) = NULL; }
     break;
 
   case 44:
-#line 253 "gocompiler.y"
+#line 307 "gocompiler.y"
     {
 																		struct node * block = create_node("Block", "");
 																		if ((yyvsp[(3) - (4)].node) != NULL) add_child(block, (yyvsp[(3) - (4)].node));
@@ -1923,12 +1977,12 @@ yyreduce:
     break;
 
   case 45:
-#line 259 "gocompiler.y"
+#line 313 "gocompiler.y"
     {(yyval.node) = create_node("Block", "");}
     break;
 
   case 46:
-#line 262 "gocompiler.y"
+#line 316 "gocompiler.y"
     {
 																				struct node * parseArgs = create_node("ParseArgs", "");
 																				add_child(parseArgs, create_node("Id", (yyvsp[(1) - (11)].string)));
@@ -1937,7 +1991,7 @@ yyreduce:
     break;
 
   case 47:
-#line 267 "gocompiler.y"
+#line 321 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																		errortag = 1;
@@ -1945,7 +1999,7 @@ yyreduce:
     break;
 
   case 48:
-#line 273 "gocompiler.y"
+#line 327 "gocompiler.y"
     {
 																		struct node * call = create_node("Call", "");
 																		add_child(call, create_node("Id", (yyvsp[(1) - (4)].string)));
@@ -1955,7 +2009,7 @@ yyreduce:
     break;
 
   case 49:
-#line 279 "gocompiler.y"
+#line 333 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																		errortag = 1;
@@ -1963,7 +2017,7 @@ yyreduce:
     break;
 
   case 50:
-#line 285 "gocompiler.y"
+#line 339 "gocompiler.y"
     {	
 																		if ((yyvsp[(2) - (2)].node) == NULL) {
 																			(yyval.node) = (yyvsp[(1) - (2)].node);
@@ -1975,12 +2029,12 @@ yyreduce:
     break;
 
   case 51:
-#line 293 "gocompiler.y"
+#line 347 "gocompiler.y"
     {(yyval.node) = NULL;}
     break;
 
   case 52:
-#line 296 "gocompiler.y"
+#line 350 "gocompiler.y"
     {
 																		if ((yyvsp[(3) - (3)].node) == NULL) {
 																			(yyval.node) = (yyvsp[(2) - (3)].node);
@@ -1991,21 +2045,21 @@ yyreduce:
     break;
 
   case 53:
-#line 303 "gocompiler.y"
+#line 357 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																	}
     break;
 
   case 54:
-#line 308 "gocompiler.y"
+#line 362 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(2) - (3)].node);
 																	}
     break;
 
   case 55:
-#line 311 "gocompiler.y"
+#line 365 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																		errortag = 1;
@@ -2013,28 +2067,28 @@ yyreduce:
     break;
 
   case 56:
-#line 315 "gocompiler.y"
+#line 369 "gocompiler.y"
     {	
 																		(yyval.node) = add_child(create_node("Not", ""), (yyvsp[(2) - (2)].node));
 																	}
     break;
 
   case 57:
-#line 318 "gocompiler.y"
+#line 372 "gocompiler.y"
     {
 																		(yyval.node) = add_child(create_node("Minus", ""), (yyvsp[(2) - (2)].node));
 																	}
     break;
 
   case 58:
-#line 321 "gocompiler.y"
+#line 375 "gocompiler.y"
     {
 																		(yyval.node) = add_child(create_node("Plus", ""), (yyvsp[(2) - (2)].node));
 																	}
     break;
 
   case 59:
-#line 324 "gocompiler.y"
+#line 378 "gocompiler.y"
     {
 																		struct node * add = create_node("Add", "");
 																		add_child(add, (yyvsp[(1) - (3)].node));
@@ -2043,7 +2097,7 @@ yyreduce:
     break;
 
   case 60:
-#line 329 "gocompiler.y"
+#line 383 "gocompiler.y"
     {	
 																		struct node * sub = create_node("Sub", "");
 																		add_child(sub, (yyvsp[(1) - (3)].node));
@@ -2052,7 +2106,7 @@ yyreduce:
     break;
 
   case 61:
-#line 334 "gocompiler.y"
+#line 388 "gocompiler.y"
     {
 																		struct node * mul = create_node("Mul", "");
 																		add_child(mul, (yyvsp[(1) - (3)].node));
@@ -2061,7 +2115,7 @@ yyreduce:
     break;
 
   case 62:
-#line 339 "gocompiler.y"
+#line 393 "gocompiler.y"
     {
 																		struct node * div = create_node("Div", "");
 																		add_child(div, (yyvsp[(1) - (3)].node));
@@ -2070,7 +2124,7 @@ yyreduce:
     break;
 
   case 63:
-#line 344 "gocompiler.y"
+#line 398 "gocompiler.y"
     {
 																			struct node * mod = create_node("Mod", "");
 																		add_child(mod, (yyvsp[(1) - (3)].node));
@@ -2079,7 +2133,7 @@ yyreduce:
     break;
 
   case 64:
-#line 349 "gocompiler.y"
+#line 403 "gocompiler.y"
     {
 																		struct node * or = create_node("Or", "");
 																		add_child(or, (yyvsp[(1) - (3)].node));
@@ -2088,7 +2142,7 @@ yyreduce:
     break;
 
   case 65:
-#line 354 "gocompiler.y"
+#line 408 "gocompiler.y"
     {
 																		struct node * and = create_node("And", "");
 																		add_child(and, (yyvsp[(1) - (3)].node));
@@ -2097,7 +2151,7 @@ yyreduce:
     break;
 
   case 66:
-#line 359 "gocompiler.y"
+#line 413 "gocompiler.y"
     {
 																		struct node * lt = create_node("Lt", "");
 																		add_child(lt, (yyvsp[(1) - (3)].node));
@@ -2106,7 +2160,7 @@ yyreduce:
     break;
 
   case 67:
-#line 364 "gocompiler.y"
+#line 418 "gocompiler.y"
     {
 																		struct node * gt = create_node("Gt", "");
 																		add_child(gt, (yyvsp[(1) - (3)].node));
@@ -2115,7 +2169,7 @@ yyreduce:
     break;
 
   case 68:
-#line 369 "gocompiler.y"
+#line 423 "gocompiler.y"
     {
 																		struct node * eq = create_node("Eq", "");
 																			add_child(eq, (yyvsp[(1) - (3)].node));
@@ -2124,7 +2178,7 @@ yyreduce:
     break;
 
   case 69:
-#line 374 "gocompiler.y"
+#line 428 "gocompiler.y"
     {
 																		struct node * ne = create_node("Ne", "");
 																		add_child(ne, (yyvsp[(1) - (3)].node));
@@ -2133,7 +2187,7 @@ yyreduce:
     break;
 
   case 70:
-#line 379 "gocompiler.y"
+#line 433 "gocompiler.y"
     {
 																		struct node * le = create_node("Le", "");
 																		add_child(le, (yyvsp[(1) - (3)].node));
@@ -2142,7 +2196,7 @@ yyreduce:
     break;
 
   case 71:
-#line 384 "gocompiler.y"
+#line 438 "gocompiler.y"
     {
 																		struct node * ge = create_node("Ge", "");
 																		add_child(ge, (yyvsp[(1) - (3)].node));
@@ -2151,28 +2205,28 @@ yyreduce:
     break;
 
   case 72:
-#line 389 "gocompiler.y"
+#line 443 "gocompiler.y"
     {
 																		(yyval.node) = create_node("IntLit", (yyvsp[(1) - (1)].string));
 																	}
     break;
 
   case 73:
-#line 392 "gocompiler.y"
+#line 446 "gocompiler.y"
     {
 																		(yyval.node) = create_node("RealLit", (yyvsp[(1) - (1)].string));
 																	}
     break;
 
   case 74:
-#line 395 "gocompiler.y"
+#line 449 "gocompiler.y"
     {
 																		(yyval.node) = create_node("Id", (yyvsp[(1) - (1)].string));
 																	}
     break;
 
   case 75:
-#line 398 "gocompiler.y"
+#line 452 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
@@ -2180,7 +2234,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 2184 "y.tab.c"
+#line 2238 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2394,7 +2448,7 @@ yyreturn:
 }
 
 
-#line 403 "gocompiler.y"
+#line 457 "gocompiler.y"
 
 
 int main(int argc, char **argv) {

@@ -1,0 +1,25 @@
+package main
+var a1 bool;
+
+var a4 bool;
+
+var (a1,a2 bool;)
+
+func a3(a4 int,a5 float32,a6 int) bool{
+
+}
+
+func id()float32{
+
+}
+
+func ide(){
+}
+
+
+func a7(a8 int,a9 int) {
+    var id9 string;
+    var (id10,id11 string;)
+
+    id12 = 5 + 4
+}

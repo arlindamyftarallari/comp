@@ -87,8 +87,48 @@ VarDeclaration: VAR VarSpec											{
 VarSpec: ID IdOpt Type												{
 																		struct node * varDecl = create_node("VarDecl", "");
 																		add_child(varDecl, $3);
-																		if ($2 != NULL) add_child(varDecl, $2);
-																		$$ = add_child(varDecl, create_node("Id", $1));
+																		add_child(varDecl, create_node("Id", $1));
+																		
+																		struct node * newId = $2;
+																		struct node * varDecls[100];
+																		struct node * ids[100];
+																		int i=0;
+																		int k=0;
+
+																		//puts all Ids inside array
+																		while (newId != NULL) {
+																			ids[k] = newId;
+																			newId = newId->bro;
+																			k++;
+																		}
+
+																		newId = $2;
+																		struct node * aux;
+
+																		//destroys bro connections between Ids
+																		if (newId->bro != NULL) {
+																			while(newId != NULL) {
+																				aux = newId->bro;
+																				newId->bro = NULL;
+																				newId = aux;
+																			}
+ 																		}
+
+																		//creates a new VarDecl node for each Id received from the IdOpt
+																		for (int n=0; n<k; n++) { //iterates ids array
+																			varDecls[n] = create_node("VarDecl", "");
+																			add_child(varDecls[n], $3);
+																			add_child(varDecls[n], ids[n]);
+																			i++;
+																		}
+																		
+																		if (i>=1) add_sibling(varDecl, varDecls[0]);
+
+																		for (int j=0; j+1<i; j++) {
+																			add_sibling(varDecls[j], varDecls[j+1]);
+																		}
+
+																		$$ = varDecl;	
 																	}
 	;
 
@@ -97,8 +137,10 @@ IdOpt: COMMA ID IdOpt
 																		struct node * id = create_node("Id", $2);
 																		if ($3 == NULL) {
 																			$$ = id;
+																			printf("this is null\n");
 																		}
 																		else {
+																			printf("this is not null\n");
 																			$$ = add_sibling(id, $3);
 																		}
 																	}
@@ -153,6 +195,7 @@ OptParam: COMMA ID Type OptParam									{
 																		struct node * paramDecl = create_node("ParamDecl", "");
 																		add_child(paramDecl, $3);
 																		$$ = add_child(paramDecl, create_node("Id", $2));
+																		if ($4 != NULL) add_child(paramDecl, $4);
 																	}
 	|																{
 																		$$ = NULL;
@@ -192,19 +235,32 @@ Statement: ID ASSIGN Expr											{
 																		add_child(assign, create_node("Id", $1));
 																		$$ = add_child(assign, $3);
 																	}
-	| LBRACE StatementOpt RBRACE											{
-																		$$ = $2;
+	| LBRACE StatementOpt RBRACE									{
+																		if ($2 != NULL && $2->bro != NULL) { //creating block for multiple statements
+																			struct node * block = create_node("Block", "");
+																			if ($2 != NULL) add_child(block, $2);
+																			$$ = block;
+																		}
+																		else { //there is only 1 statement -> no need for block
+																			$$ = $2;
+																		}
 																	}
 	| IF Expr LBRACE StatementOpt RBRACE ElseOpt								{
 																		struct node * iff = create_node("If", "");
 																		add_child(iff, $2);
-																		add_child(iff, $4);
-																		$$ = add_child(iff, $6);	
+																		struct node * block = create_node("Block", "");
+																		if ($4 != NULL) add_child(block, $4);	
+																		add_child(iff, block);
+																		$$ = add_child(iff, $6);
 																	}
-	| FOR ExprOpt LBRACE StatementOpt RBRACE								{
+	| FOR ExprOpt LBRACE StatementOpt RBRACE						{
 																		struct node * forr = create_node("For", "");
 																		if ($2 != NULL) add_child(forr, $2);
-																		$$ = add_child(forr, $4);
+																		struct node * block = create_node("Block", "");
+																		if ($4 != NULL) add_child(block, $4);
+																		$$ = add_child(forr, block);
+
+
 																	}
 	| RETURN ExprOpt												{
 																		struct node * returnn = create_node("Return", "");
@@ -242,10 +298,8 @@ ExprOpt: Expr														{
 	;
 
 StatementOpt: Statement SEMICOLON StatementOpt						{
-																		struct node * block = create_node("Block", "");
-																		if ($3 != NULL) $$ = add_sibling($1, $3);
-																		$$ = add_child(block, $1);
-
+																		if ($3 != NULL) add_sibling($1, $3);
+																		$$ = $1;
 																	}
 	|																{ $$ = NULL; }
 	;
