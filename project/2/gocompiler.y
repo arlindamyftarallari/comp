@@ -25,7 +25,8 @@
 %token error SEMICOLON BLANKID PACKAGE RETURN AND ASSIGN STAR COMMA DIV EQ GE GT LBRACE LE LPAR LSQ LT MINUS MOD NE NOT OR PLUS RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PRINT PARSEINT FUNC CMDARGS
 %token <string> RESERVED STRLIT INTLIT ID REALLIT
  
-%type <node> Program FuncDeclaration Declarations Parameters Expr VarDeclaration ParametersOpt FuncBody Type INT BOOL STRING VarSpec TypeOpt FuncInvocation
+%type <node> Program FuncDeclaration Declarations Parameters Expr VarDeclaration ParametersOpt FuncBody Type INT BOOL STRING VarSpec TypeOpt FuncInvocation CallParams OptCallParams IdOpt varsAndStatementsOpt VarsAndStatements OptParam StatementOpt
+%type <node> Statement ElseOpt ExprOpt
 
 %right ASSIGN
 %left OR AND
@@ -40,31 +41,38 @@
 
 Program: PACKAGE ID SEMICOLON Declarations			 				{
 																		root = create_node("Program", "");
-																		add_child(root, $4);
+																		if ($4 != NULL) add_child(root, $4);
 																		$$ = root;
 																	}
 	;
 
 Declarations: VarDeclaration SEMICOLON Declarations					{
+																		if ($3 != NULL) {
+																			add_sibling($1, $3);
+																		}
 																		$$ = $1;
+
 																	}
 	| FuncDeclaration SEMICOLON Declarations						{
+																		if ($3 != NULL) {
+																			add_sibling($1, $3);
+																		}
 																		$$ = $1;
 																	}
-	|																{}
+	|																{ $$ = NULL; }
 	;
 
 Type: INT															{
-																		$$ = create_node("IntLit", $1->value);
+																		$$ = create_node("Int", "");
 																	}
 	| FLOAT32														{
 																		$$ = create_node("Float32", "");
 																	}
 	| BOOL															{
-																		$$ = create_node("Bool", $1->value);
+																		$$ = create_node("Bool", "");
 																	}
 	| STRING														{
-																		$$ = create_node("StrLit", $1->value);
+																		$$ = create_node("String", "");
 																	}
 	;
 
@@ -76,21 +84,32 @@ VarDeclaration: VAR VarSpec											{
 																	}
 	;
 
-VarSpec: ID Aux1 Type												{
+VarSpec: ID IdOpt Type												{
 																		struct node * varDecl = create_node("VarDecl", "");
-																		add_child(varDecl, create_node("Id", $1));
-																		$$ = add_child(varDecl, $3);
+																		add_child(varDecl, $3);
+																		if ($2 != NULL) add_child(varDecl, $2);
+																		$$ = add_child(varDecl, create_node("Id", $1));
 																	}
 	;
 
-Aux1: COMMA ID Aux1
-	|
+IdOpt: COMMA ID IdOpt
+																	{
+																		struct node * id = create_node("Id", $2);
+																		if ($3 == NULL) {
+																			$$ = id;
+																		}
+																		else {
+																			$$ = add_sibling(id, $3);
+																		}
+																	}
+	|																{$$ = NULL;}
 	;
 
 FuncDeclaration: FUNC ID LPAR ParametersOpt RPAR TypeOpt FuncBody	{
 																		struct node * funcDecl = create_node("FuncDecl", "");
 																		struct node * funcHeader = create_node("FuncHeader", "");
 																		add_child(funcHeader, create_node("Id", $2));
+																		if ($6 != NULL) add_child(funcHeader, $6);
 																		add_child(funcHeader, $4);
 																		add_child(funcDecl, funcHeader);
 																		add_child(funcDecl, $7);
@@ -103,102 +122,149 @@ ParametersOpt: Parameters											{
 																	}
 	|																{
 																		$$ = create_node("FuncParams", "");
+																		//this node is not going to have any sons, but it is mandatory
 																	}
 	;
 
 TypeOpt: Type														{
 																		$$ = $1;
 																	}
-	|																{}
+	|																{
+																		$$ = NULL;
+																	}
 	;
 
-Parameters: ID Type Aux2											{
+Parameters: ID Type OptParam										{
 																		struct node * funcParams = create_node("FuncParams", "");
 																		struct node * paramDecl = create_node("ParamDecl", "");
 																		add_child(paramDecl, $2);
 																		add_child(paramDecl, create_node("Id", $1));
 																		add_child(funcParams, paramDecl);
+
+																		if ($3 != NULL) {
+																			add_child(funcParams, $3);
+																		}
+
 																		$$ = funcParams;
 																	}
 	;
 
-Aux2: COMMA ID Type Aux2
-	|
+OptParam: COMMA ID Type OptParam									{
+																		struct node * paramDecl = create_node("ParamDecl", "");
+																		add_child(paramDecl, $3);
+																		$$ = add_child(paramDecl, create_node("Id", $2));
+																	}
+	|																{
+																		$$ = NULL;
+																	}
 	;
 
 FuncBody: LBRACE VarsAndStatements RBRACE							{
-																		$$ = create_node("FuncBody", "");
+																		struct node* funcBody = create_node("FuncBody", "");
+																		if ($2 == NULL) {
+																			$$ = funcBody;
+																		}
+																		else {
+																			$$ = add_child(funcBody, $2);
+																		}
 																	}
 	;
 
-VarsAndStatements: VarsAndStatements Aux7 SEMICOLON					{
-
+VarsAndStatements: VarsAndStatements varsAndStatementsOpt SEMICOLON		{
+																		if ($1 == NULL && $2 != NULL) {
+																			$$ = $2;
+																		}
+																		else if ($1 != NULL && $2 == NULL) {
+																			$$ = $1;
+																		}
+																		else {
+																			$$ = add_sibling($1, $2);
+																		}
 																	}
-	|																{}
-	;
+	|																{
+																		$$ = NULL;
+																	}
+	;	
 
-Aux7: VarDeclaration												{
-
+varsAndStatementsOpt: VarDeclaration								{
+																		$$ = $1;
 																	}
 	| Statement														{
-																		
+																	
 																	}
-	|																{}
+	|																{$$ = NULL;}
 	;
 
 Statement: ID ASSIGN Expr											{
-																		
+																		struct node * assign = create_node("Assign", "");
+																		add_child(assign, create_node("Id", $1));
+																		$$ = add_child(assign, $3);
 																	}
-	| LBRACE Aux3 RBRACE											{
-																		
+	| LBRACE StatementOpt RBRACE											{
+																		$$ = $2;
 																	}
-	| IF Expr LBRACE Aux3 RBRACE Aux4								{
-																		
+	| IF Expr LBRACE StatementOpt RBRACE ElseOpt								{
+																		struct node * iff = create_node("If", "");
+																		add_child(iff, $2);
+																		add_child(iff, $4);
+																		$$ = add_child(iff, $6);	
 																	}
-	| FOR ExprOpt LBRACE Aux3 RBRACE								{
-																		
+	| FOR ExprOpt LBRACE StatementOpt RBRACE								{
+																		struct node * forr = create_node("For", "");
+																		if ($2 != NULL) add_child(forr, $2);
+																		$$ = add_child(forr, $4);
 																	}
 	| RETURN ExprOpt												{
-																		
+																		struct node * returnn = create_node("Return", "");
+																		if ($2 != NULL) add_child(returnn, $2);
+																		$$ = returnn;
 																	}
 	| FuncInvocation												{
-																		
+																		$$ = $1;
 																	}
 	| ParseArgs														{
-																		
+																		$$ = $1;
 																	}
-	| PRINT LPAR Aux6 RPAR											{
-																		
+	| PRINT LPAR printArgs RPAR											{
+																		struct node * print = create_node("Print", "");
+																		$$ = add_child(print, $3);
 																	}
 	| error															{
-																		
+																		$$ = NULL;
+																		errortag = 1;
 																	}
 	;
 
-Aux6: STRLIT														{
-																		
+printArgs: STRLIT													{
+																		$$ = $1;
 																	}
 	| Expr															{
-																		
+																		$$ = $1;
 																	}
 	;
 
 ExprOpt: Expr														{
-																		
+																		$$ = $1;
 																	}
-	|																{}
+	|																{ $$ = NULL; }
 	;
 
-Aux3: Statement SEMICOLON Aux3										{
-																		
+StatementOpt: Statement SEMICOLON StatementOpt						{
+																		struct node * block = create_node("Block", "");
+																		if ($3 != NULL) $$ = add_sibling($1, $3);
+																		$$ = add_child(block, $1);
+
 																	}
-	|																{}
+	|																{ $$ = NULL; }
 	;
 
-Aux4: ELSE LBRACE Aux3 RBRACE										{
-																		
+ElseOpt: ELSE LBRACE StatementOpt RBRACE								{
+																		struct node * block = create_node("Block", "");
+																		if ($3 != NULL) add_child(block, $3);
+																		$$ = block;
+
 																	}
-	|																{}
+	|																{$$ = create_node("Block", "");}
 	;
 
 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR	{
@@ -209,8 +275,11 @@ ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR	{
 																	}
 	;
 
-FuncInvocation: ID LPAR Aux40 RPAR									{
-
+FuncInvocation: ID LPAR CallParams RPAR									{
+																		struct node * call = create_node("Call", "");
+																		add_child(call, create_node("Id", $1));
+																		if ($3 != NULL) add_child(call, $3);
+																		$$ = call;
 																	}
 	| ID LPAR error RPAR											{
 																		$$ = NULL;
@@ -218,12 +287,27 @@ FuncInvocation: ID LPAR Aux40 RPAR									{
 																	}
 	;
 
-Aux40: Expr Aux41
-	|
+CallParams: Expr OptCallParams										{	
+																		if ($2 == NULL) {
+																			$$ = $1;
+																		}
+																		else {
+																			$$ = add_sibling($1, $2);
+																		}
+																	}
+	|																{$$ = NULL;}
 	;
 
-Aux41: COMMA Expr Aux41											
-	|
+OptCallParams: COMMA Expr OptCallParams								{
+																		if ($3 == NULL) {
+																			$$ = $2;
+																		} else {
+																			$$ = add_sibling($2, $3);
+																		}	
+																	}
+	|																{
+																		$$ = NULL;
+																	}
 	;
 
 Expr: LPAR Expr RPAR												{
@@ -311,7 +395,7 @@ Expr: LPAR Expr RPAR												{
 																		$$ = create_node("IntLit", $1);
 																	}
 	| REALLIT														{
-																		$$ = create_node("Float32", "");
+																		$$ = create_node("RealLit", $1);
 																	}
 	| ID															{
 																		$$ = create_node("Id", $1);

@@ -1,0 +1,10 @@
+package main;
+
+var i2 int;
+var i3 bool;
+
+func main(i int, j string) int {var x bool;}; 
+
+func main() {
+	var j int;
+};
