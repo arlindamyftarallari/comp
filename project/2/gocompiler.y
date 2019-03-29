@@ -89,46 +89,48 @@ VarSpec: ID IdOpt Type												{
 																		add_child(varDecl, $3);
 																		add_child(varDecl, create_node("Id", $1));
 																		
-																		struct node * newId = $2;
-																		struct node * varDecls[100];
-																		struct node * ids[100];
-																		int i=0;
-																		int k=0;
+																		if ($2 != NULL) {
+																			struct node * newId = $2;
+																			struct node * varDecls[100];
+																			struct node * ids[100];
+																			int i=0;
+																			int k=0;
 
-																		//puts all Ids inside array
-																		while (newId != NULL) {
-																			ids[k] = newId;
-																			newId = newId->bro;
-																			k++;
-																		}
-
-																		newId = $2;
-																		struct node * aux;
-
-																		//destroys bro connections between Ids
-																		if (newId->bro != NULL) {
-																			while(newId != NULL) {
-																				aux = newId->bro;
-																				newId->bro = NULL;
-																				newId = aux;
+																			//puts all Ids inside array
+																			while (newId != NULL) {
+																				ids[k] = newId;
+																				newId = newId->bro;
+																				k++;
 																			}
- 																		}
 
-																		struct node * auxType;
+																			newId = $2;
+																			struct node * aux;
 
-																		//creates a new VarDecl node for each Id received from the IdOpt
-																		for (int n=0; n<k; n++) { //iterates ids array
-																			varDecls[n] = create_node("VarDecl", "");
-																			auxType = create_node($3->type, "");
-																			add_child(varDecls[n], auxType);
-																			add_child(varDecls[n], ids[n]);
-																			i++;
-																		}
-																		
-																		if (i>=1) add_sibling(varDecl, varDecls[0]);
+																			//destroys bro connections between Ids
+																			if (newId->bro != NULL) {
+																				while(newId != NULL) {
+																					aux = newId->bro;
+																					newId->bro = NULL;
+																					newId = aux;
+																				}
+																			}
 
-																		for (int j=0; j+1<i; j++) {
-																			add_sibling(varDecls[j], varDecls[j+1]);
+																			struct node * auxType;
+
+																			//creates a new VarDecl node for each Id received from the IdOpt
+																			for (int n=0; n<k; n++) { //iterates ids array
+																				varDecls[n] = create_node("VarDecl", "");
+																				auxType = create_node($3->type, "");
+																				add_child(varDecls[n], auxType);
+																				add_child(varDecls[n], ids[n]);
+																				i++;
+																			}
+																			
+																			if (i>=1) add_sibling(varDecl, varDecls[0]);
+
+																			for (int j=0; j+1<i; j++) {
+																				add_sibling(varDecls[j], varDecls[j+1]);
+																			}
 																		}
 
 																		$$ = varDecl;	
@@ -205,16 +207,29 @@ OptParam: COMMA ID Type OptParam									{
 
 FuncBody: LBRACE VarsAndStatements RBRACE							{
 																		struct node* funcBody = create_node("FuncBody", "");
-																		if ($2 != NULL) add_child(funcBody, $2);
+																		if ($2 != NULL) {
+																			add_child(funcBody, $2);
+																		}
 																		$$ = funcBody;
 																	}
 	;
 
-VarsAndStatements: varsAndStatementsOpt SEMICOLON VarsAndStatements 	{
-																			if ($3 == NULL && $1 == NULL) $$ = NULL;
-																			else if ($1 == NULL) $$ = $3;
-																			else if ($3 == NULL) $$ = $1;
-																			else $$ = add_sibling($1, $3);
+VarsAndStatements: VarsAndStatements varsAndStatementsOpt SEMICOLON  	{
+																			if ($1 != NULL && $2 != NULL) {
+																				if (strcmp($1->type, "Null") == 0) {
+																					$$ = add_sibling($2, $1->bro);
+																				}
+																				else {
+																					add_sibling($1, $2);
+																					$$ = $1;
+																				}
+																			}
+																			else if ($1 == NULL){
+																				$$ = $2;
+																			}
+																			else if ($2 == NULL) {
+																				$$ = add_sibling($1,create_node("Null", ""));
+																			}
 																		
 																		}
 	|																{
@@ -238,8 +253,9 @@ Statement: ID ASSIGN Expr											{
 																	}
 	| LBRACE StatementOpt RBRACE									{
 																		if ($2 != NULL && $2->bro != NULL) { //creating block for multiple statements
+																		//$2 exists and has at least one brother
 																			struct node * block = create_node("Block", "");
-																			if ($2 != NULL) add_child(block, $2);
+																			add_child(block, $2); //this also adds all $2's brothers as block's parent
 																			$$ = block;
 																		}
 																		else { //there is only 1 statement -> no need for block
@@ -265,6 +281,7 @@ Statement: ID ASSIGN Expr											{
 																	}
 	| RETURN ExprOpt												{
 																		struct node * returnn = create_node("Return", "");
+																		
 																		if ($2 != NULL) add_child(returnn, $2);
 																		$$ = returnn;
 																	}
@@ -489,4 +506,3 @@ int main(int argc, char **argv) {
 	yylex_destroy();
     return 0;
 }
-
