@@ -114,10 +114,13 @@ VarSpec: ID IdOpt Type												{
 																			}
  																		}
 
+																		struct node * auxType;
+
 																		//creates a new VarDecl node for each Id received from the IdOpt
 																		for (int n=0; n<k; n++) { //iterates ids array
 																			varDecls[n] = create_node("VarDecl", "");
-																			add_child(varDecls[n], $3);
+																			auxType = create_node($3->type, "");
+																			add_child(varDecls[n], auxType);
 																			add_child(varDecls[n], ids[n]);
 																			i++;
 																		}
@@ -137,10 +140,8 @@ IdOpt: COMMA ID IdOpt
 																		struct node * id = create_node("Id", $2);
 																		if ($3 == NULL) {
 																			$$ = id;
-																			printf("this is null\n");
 																		}
 																		else {
-																			printf("this is not null\n");
 																			$$ = add_sibling(id, $3);
 																		}
 																	}

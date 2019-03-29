@@ -34,10 +34,14 @@ struct node * add_child (struct node *parent, struct node * child) {
 		parent->children[parent->number_children] = aux;
 		parent->number_children++;
 		printf("added child %s(%s) to parent %s(%s)\n\n", aux->type, aux->value, parent->type, parent->value);
+		if(child->number_children>0){
+	}
 		aux = aux->bro;
+
 	}
 
 	printf("added child %s(%s) of parent %s(%s)\n\n", child->type, child->value, parent->type, parent->value);
+	
 
 
 	return parent;
@@ -72,8 +76,8 @@ void print_node(struct node * root, int depth) {
 
 	if (root == NULL) return;
 
-	printf("node=%s children=%d\n", root->type, root->number_children);
-
+	printf("node=%s children=%d value=%s\n", root->type, root->number_children, root->value);
+	
 	//puts the appropriate number of points
 
 	for (i=0; i<depth; i++) {
