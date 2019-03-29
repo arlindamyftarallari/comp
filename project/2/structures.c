@@ -19,6 +19,8 @@ struct node * create_node (char* type, char* value) {
 struct node * add_child (struct node *parent, struct node * child) {
 	struct node * aux;
 
+	if (child == NULL || parent == NULL) return NULL;
+
 	parent->children[parent->number_children] = child;
 	parent->number_children++;
 	child->parent = parent;

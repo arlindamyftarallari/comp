@@ -149,7 +149,9 @@ IdOpt: COMMA ID IdOpt
 																			$$ = add_sibling(id, $3);
 																		}
 																	}
-	|																{$$ = NULL;}
+	|																{
+																		$$ = NULL;
+																	}
 	;
 
 FuncDeclaration: FUNC ID LPAR ParametersOpt RPAR TypeOpt FuncBody	{
@@ -168,8 +170,7 @@ ParametersOpt: Parameters											{
 																		$$ = $1;
 																	}
 	|																{
-																		$$ = create_node("FuncParams", "");
-																		//this node is not going to have any sons, but it is mandatory
+																		$$ = create_node("FuncParams", ""); //this node is not going to have any sons, but it is mandatory
 																	}
 	;
 
@@ -210,7 +211,6 @@ OptParam: COMMA ID Type OptParam									{
 FuncBody: LBRACE VarsAndStatements RBRACE							{
 																		struct node* funcBody = create_node("FuncBody", "");
 																		if ($2 != NULL) add_child(funcBody, $2);
-
 																		$$ = funcBody;
 																	}
 	;
@@ -232,7 +232,9 @@ varsAndStatementsOpt: VarDeclaration								{
 	| Statement														{
 																		$$ = $1;
 																	}
-	|																{$$ = NULL;}
+	|																{
+																		$$ = NULL;
+																	}
 	;
 
 Statement: ID ASSIGN Expr											{
@@ -300,7 +302,9 @@ printArgs: STRLIT													{
 ExprOpt: Expr														{
 																		$$ = $1;
 																	}
-	|																{ $$ = NULL; }
+	|																{
+																		$$ = NULL;
+																	}
 	;
 
 StatementOpt: Statement SEMICOLON StatementOpt						{
@@ -310,16 +314,19 @@ StatementOpt: Statement SEMICOLON StatementOpt						{
 																		else $$ = add_sibling($1, $3);
 
 																	}
-	|																{ $$ = NULL; }
+	|																{
+																		$$ = NULL;
+																	}
 	;
 
-ElseOpt: ELSE LBRACE StatementOpt RBRACE								{
+ElseOpt: ELSE LBRACE StatementOpt RBRACE							{
 																		struct node * block = create_node("Block", "");
 																		if ($3 != NULL) add_child(block, $3);
 																		$$ = block;
-
 																	}
-	|																{$$ = create_node("Block", "");}
+	|																{
+																		$$ = create_node("Block", "");
+																	}
 	;
 
 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR	{
@@ -333,7 +340,7 @@ ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR	{
 																	}
 	;
 
-FuncInvocation: ID LPAR CallParams RPAR									{
+FuncInvocation: ID LPAR CallParams RPAR								{
 																		struct node * call = create_node("Call", "");
 																		add_child(call, create_node("Id", $1));
 																		if ($3 != NULL) add_child(call, $3);
@@ -351,7 +358,9 @@ CallParams: Expr OptCallParams										{
 																		else if($2==NULL) $$ = $1;
 																		else $$ = add_sibling($1, $2);
 																	}
-	|																{$$ = NULL;}
+	|																{
+																		$$ = NULL;
+																	}
 	;
 
 OptCallParams: COMMA Expr OptCallParams								{
@@ -428,7 +437,7 @@ Expr: LPAR Expr RPAR												{
 																	}
 	| Expr EQ Expr													{
 																		struct node * eq = create_node("Eq", "");
-																			add_child(eq, $1);
+																		add_child(eq, $1);
 																		$$ = add_child(eq, $3);
 																	}
 	| Expr NE Expr													{
