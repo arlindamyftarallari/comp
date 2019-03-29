@@ -15,6 +15,7 @@
 	int yylex_destroy();
 	void yyerror(const char *s);
 	int errortag = 0, printflag = 0;
+	int stmtcount = 0;
 %}
 
 %union {
@@ -28,14 +29,15 @@
 %type <node> Program FuncDeclaration Declarations Parameters Expr VarDeclaration ParametersOpt FuncBody Type INT BOOL STRING VarSpec TypeOpt FuncInvocation CallParams OptCallParams IdOpt varsAndStatementsOpt VarsAndStatements OptParam StatementOpt
 %type <node> Statement ElseOpt ExprOpt ParseArgs printArgs
 
+%left COMMA
 %right ASSIGN
-%left OR AND
-%left EQ NE
-%left GE GT LE LT
+%left OR
+%left AND 
+%left GE LE LT GT EQ NE
 %left PLUS MINUS
 %left STAR DIV MOD
-%right NOT UNARY
-%left LPAR RPAR LSQ RSQ
+%right UNARY
+%left LPAR RPAR LSQ RSQ LBRACE RBRACE
 
 %%
 
@@ -198,7 +200,7 @@ OptParam: COMMA ID Type OptParam									{
 																		struct node * paramDecl = create_node("ParamDecl", "");
 																		add_child(paramDecl, $3);
 																		$$ = add_child(paramDecl, create_node("Id", $2));
-																		if ($4 != NULL) add_child(paramDecl, $4);
+																		if ($4 != NULL) add_sibling(paramDecl, $4);
 																	}
 	|																{
 																		$$ = NULL;
@@ -207,19 +209,17 @@ OptParam: COMMA ID Type OptParam									{
 
 FuncBody: LBRACE VarsAndStatements RBRACE							{
 																		struct node* funcBody = create_node("FuncBody", "");
-																		if ($2 != NULL) {
-																			add_child(funcBody, $2);
-																		}
+																		if ($2 != NULL) add_child(funcBody, $2);
+
 																		$$ = funcBody;
 																	}
 	;
 
-VarsAndStatements: varsAndStatementsOpt SEMICOLON VarsAndStatements 	{
-																			if ($3 == NULL && $1 == NULL) $$ = NULL;
-																			else if ($1 == NULL) $$ = $3;
-																			else if ($3 == NULL) $$ = $1;
-																			else $$ = add_sibling($1, $3);
-																		
+VarsAndStatements: VarsAndStatements varsAndStatementsOpt SEMICOLON		{
+																			if ($2 == NULL && $1 == NULL) $$ = NULL;
+																			else if ($1 == NULL) $$ = $2;
+																			else if ($2 == NULL) $$ = $1;
+																			else $$ = add_sibling($1, $2);
 																		}
 	|																{
 																		$$ = NULL;
@@ -238,7 +238,8 @@ varsAndStatementsOpt: VarDeclaration								{
 Statement: ID ASSIGN Expr											{
 																		struct node * assign = create_node("Assign", "");
 																		add_child(assign, create_node("Id", $1));
-																		$$ = add_child(assign, $3);
+																		if($3!=NULL) $$ = add_child(assign, $3);
+																		else $$ = NULL;
 																	}
 	| LBRACE StatementOpt RBRACE									{
 																		if ($2 != NULL && $2->bro != NULL) { //creating block for multiple statements
@@ -252,7 +253,7 @@ Statement: ID ASSIGN Expr											{
 																	}
 	| IF Expr LBRACE StatementOpt RBRACE ElseOpt								{
 																		struct node * iff = create_node("If", "");
-																		add_child(iff, $2);
+																		if ($2!=NULL) add_child(iff, $2);
 																		struct node * block = create_node("Block", "");
 																		if ($4 != NULL) add_child(block, $4);	
 																		add_child(iff, block);
@@ -269,7 +270,6 @@ Statement: ID ASSIGN Expr											{
 																	}
 	| RETURN ExprOpt												{
 																		struct node * returnn = create_node("Return", "");
-																		
 																		if ($2 != NULL) add_child(returnn, $2);
 																		$$ = returnn;
 																	}
@@ -304,8 +304,11 @@ ExprOpt: Expr														{
 	;
 
 StatementOpt: Statement SEMICOLON StatementOpt						{
-																		if ($3 != NULL) add_sibling($1, $3);
-																		$$ = $1;
+																		if ($1 == NULL && $3 == NULL) $$ = NULL;
+																		else if ($1 == NULL) $$ = $3;
+																		else if ($3 == NULL) $$ = $1;
+																		else $$ = add_sibling($1, $3);
+
 																	}
 	|																{ $$ = NULL; }
 	;
@@ -343,22 +346,19 @@ FuncInvocation: ID LPAR CallParams RPAR									{
 	;
 
 CallParams: Expr OptCallParams										{	
-																		if ($2 == NULL) {
-																			$$ = $1;
-																		}
-																		else {
-																			$$ = add_sibling($1, $2);
-																		}
+																		if ($1 == NULL && $2 == NULL) $$ = NULL;
+																		else if($1==NULL) $$ = $2;
+																		else if($2==NULL) $$ = $1;
+																		else $$ = add_sibling($1, $2);
 																	}
 	|																{$$ = NULL;}
 	;
 
 OptCallParams: COMMA Expr OptCallParams								{
-																		if ($3 == NULL) {
-																			$$ = $2;
-																		} else {
-																			$$ = add_sibling($2, $3);
-																		}	
+																		if ($2 == NULL && $3 == NULL) $$ = NULL;
+																		else if($2==NULL) $$ = $3;
+																		else if($3==NULL) $$ = $2;
+																		else $$ = add_sibling($2, $3);	
 																	}
 	|																{
 																		$$ = NULL;
@@ -372,7 +372,7 @@ Expr: LPAR Expr RPAR												{
 																		$$ = NULL;
 																		errortag = 1;
 																	}
-	| NOT Expr														{	
+	| NOT Expr %prec UNARY											{	
 																		$$ = add_child(create_node("Not", ""), $2);
 																	}
 	| MINUS Expr %prec UNARY										{
