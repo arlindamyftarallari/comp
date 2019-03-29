@@ -1,3 +1,9 @@
+ESTOU AQUI
+ESTOU AQUI
+ESTOU AQUI
+ESTOU AQUI
+ESTOU AQUI
+ESTOU AQUI
 Program
 ..FuncDecl
 ....FuncHeader
@@ -7,7 +13,6 @@ Program
 ......Assign
 ........Id(a)
 ........IntLit(1)
-......Null
 ......Block
 ........Assign
 ..........Id(a)
@@ -15,7 +20,6 @@ Program
 ........Assign
 ..........Id(b)
 ..........IntLit(2)
-......Null
 ......Block
 ........Assign
 ..........Id(a)

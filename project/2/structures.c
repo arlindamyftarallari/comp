@@ -12,7 +12,6 @@ struct node * create_node (char* type, char* value) {
 	new->bro = NULL;
 
 	//printf("created new node %s(%s)\n\n", type, value);
-	print_node(new->parent, 0);
 	return new;
 }
 

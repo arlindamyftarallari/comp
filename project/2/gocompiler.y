@@ -214,22 +214,11 @@ FuncBody: LBRACE VarsAndStatements RBRACE							{
 																	}
 	;
 
-VarsAndStatements: VarsAndStatements varsAndStatementsOpt SEMICOLON  	{
-																			if ($1 != NULL && $2 != NULL) {
-																				if (strcmp($1->type, "Null") == 0) {
-																					$$ = add_sibling($2, $1->bro);
-																				}
-																				else {
-																					add_sibling($1, $2);
-																					$$ = $1;
-																				}
-																			}
-																			else if ($1 == NULL){
-																				$$ = $2;
-																			}
-																			else if ($2 == NULL) {
-																				$$ = add_sibling($1,create_node("Null", ""));
-																			}
+VarsAndStatements: varsAndStatementsOpt SEMICOLON VarsAndStatements 	{
+																			if ($3 == NULL && $1 == NULL) $$ = NULL;
+																			else if ($1 == NULL) $$ = $3;
+																			else if ($3 == NULL) $$ = $1;
+																			else $$ = add_sibling($1, $3);
 																		
 																		}
 	|																{
@@ -253,9 +242,8 @@ Statement: ID ASSIGN Expr											{
 																	}
 	| LBRACE StatementOpt RBRACE									{
 																		if ($2 != NULL && $2->bro != NULL) { //creating block for multiple statements
-																		//$2 exists and has at least one brother
 																			struct node * block = create_node("Block", "");
-																			add_child(block, $2); //this also adds all $2's brothers as block's parent
+																			add_child(block, $2);
 																			$$ = block;
 																		}
 																		else { //there is only 1 statement -> no need for block

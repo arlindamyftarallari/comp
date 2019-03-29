@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_CHILDREN 1000
+#define MAX_CHILDREN 500
 
 typedef struct node {
 	struct node * children[MAX_CHILDREN]; //list of children of this node
