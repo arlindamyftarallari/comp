@@ -1232,7 +1232,7 @@ case YY_STATE_EOF(COMMENT):
 case 51:
 YY_RULE_SETUP
 #line 108 "gocompiler.l"
-{parse_error=0; BEGIN 0;}
+{parse_error=0; COLUMN; BEGIN 0;}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
@@ -1243,11 +1243,11 @@ case 53:
 /* rule 53 can match eol */
 YY_RULE_SETUP
 #line 111 "gocompiler.l"
-{parse_error=0; errorline=line; errorcol=column;LINE; if (!printflag) return SEMICOLON;}
+{parse_error=0; errorline=line; errorcol=column;LINE; if (!printflag) return SEMICOLON; BEGIN 0;}
 	YY_BREAK
 case YY_STATE_EOF(COMMENT_SEMICOLON):
 #line 112 "gocompiler.l"
-{parse_error=0; parse_error = 1; if (!printflag) return SEMICOLON;}
+{parse_error=0; parse_error = 1; printf("Line %d, column %d: unterminated comment\n", errorline, errorcol);if (!printflag) return SEMICOLON;}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP

@@ -105,11 +105,11 @@ os.Args												{parse_error=0; printtoken("CMDARGS", yytext); COLUMN; if (!p
 {commentstart}										{parse_error=0; BEGIN COMMENT; errorline=line; errorcol=column; COLUMN;}
 <COMMENT>{lineterminator}							{parse_error=0; LINE;}
 <COMMENT><<EOF>>									{parse_error=0; printf("Line %d, column %d: unterminated comment\n", errorline, errorcol); errorline=line; errorcol=column; parse_error=1; return 0;}
-<COMMENT>{commentend}								{parse_error=0; BEGIN 0;}
+<COMMENT>{commentend}								{parse_error=0; COLUMN; BEGIN 0;}
 <COMMENT>.											{parse_error=0; COLUMN;}
 
-<COMMENT_SEMICOLON>{lineterminator}					{parse_error=0; errorline=line; errorcol=column;LINE; if (!printflag) return SEMICOLON;}
-<COMMENT_SEMICOLON><<EOF>>							{parse_error=0; parse_error = 1; if (!printflag) return SEMICOLON;}
+<COMMENT_SEMICOLON>{lineterminator}					{parse_error=0; errorline=line; errorcol=column;LINE; if (!printflag) return SEMICOLON; BEGIN 0;}
+<COMMENT_SEMICOLON><<EOF>>							{parse_error=0; parse_error = 1; printf("Line %d, column %d: unterminated comment\n", errorline, errorcol);if (!printflag) return SEMICOLON;}
 <COMMENT_SEMICOLON>{commentend}						{parse_error=0; COLUMN; BEGIN SEMICOLON_STATE;}
 <COMMENT_SEMICOLON>.								{parse_error=0; COLUMN;}
 
