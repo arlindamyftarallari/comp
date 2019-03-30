@@ -3,18 +3,9 @@
 #include "symbol_table.h"
 #include "y.tab.h"
 
-table_element *symtab = NULL;
-/*typedef struct _t1{
-	char name[32];
-	basic_type type;
-	struct _t1 *next;
-} table_element;*/
+table_element *symtab=NULL;
 
 extern is_program* myprogram;
-/* typedef struct _s1 {
-    is_vardec_list* vlist;
-    is_statement_list* slist;
-} is_program; */
 %}
 
 ID       [a-z][a-z0-9]*

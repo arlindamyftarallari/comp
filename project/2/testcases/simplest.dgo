@@ -1,0 +1,7 @@
+package main;
+
+var a bool;
+
+func a1() bool{
+	1+1
+}

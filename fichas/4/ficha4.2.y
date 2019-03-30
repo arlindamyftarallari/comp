@@ -11,7 +11,7 @@ void yyerror(char* s);
 is_program* myprogram;
 
 %}
-// %token <tipo de token> TOKEN -> associar o tipo de valor a cada token
+
 %token INTEGER DOUBLE CHARACTER LET IN END WRITE
 %token<id>IDENTIFIER
 %type<ip>program
@@ -20,7 +20,6 @@ is_program* myprogram;
 %type<isl>statementlist
 %type<is>statement
 
-//permite que yylval possa assumir vários tipos de valores (char*, is_program*, is_vardec_list*, is_vardec*, is_statement_list*, is_statement*)
 %union{
     char *id;
     is_program* ip;

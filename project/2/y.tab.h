@@ -81,7 +81,8 @@
      STRLIT = 297,
      INTLIT = 298,
      ID = 299,
-     REALLIT = 300
+     REALLIT = 300,
+     UNARY = 301
    };
 #endif
 /* Tokens.  */
@@ -128,19 +129,20 @@
 #define INTLIT 298
 #define ID 299
 #define REALLIT 300
+#define UNARY 301
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 14 "gocompiler.y"
+#line 21 "gocompiler.y"
 {
 	char * string;
-	//definir nó
+	struct node * node;
 }
 /* Line 1529 of yacc.c.  */
-#line 144 "y.tab.h"
+#line 146 "y.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

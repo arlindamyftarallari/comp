@@ -6,20 +6,20 @@
 
 #Meta 2
 flex gocompiler.l
-yacc -d gocompiler.y
+yacc -dy gocompiler.y
 clang -o gocompiler -Wall -Wno-unused-function *.c
-zip -r gocompiler.zip gocompiler.l gocompiler.y
+zip -r gocompiler.zip gocompiler.l gocompiler.y structures.h structures.c
 
 
 #Meta 3
-#flex uccompiler.l
-#yacc -d uccompiler.y
-#clang-3.8 -o uccompiler -Wall -Wno-unused-function *.c
-#zip -r uccompiler.zip uccompiler.l uccompiler.y headers.h arvore.c simbolos.c semantica.c
+#flex gocompiler.l
+#yacc -d gocompiler.y
+#clang-3.8 -o gocompiler -Wall -Wno-unused-function *.c
+#zip -r gocompiler.zip gocompiler.l gocompiler.y structures.h structures.c x.c y.c
 
 
 #Meta 4
-#flex uccompiler.l
-#yacc -d uccompiler.y
-#clang-3.8 -o uccompiler -Wall -Wno-unused-function *.c
-#zip -r uccompiler.zip uccompiler.l uccompiler.y headers.h arvore.c simbolos.c semantica.c gerar_codigo.c
+#flex gocompiler.l
+#yacc -d gocompiler.y
+#clang-3.8 -o gocompiler -Wall -Wno-unused-function *.c
+#zip -r gocompiler.zip gocompiler.l gocompiler.y structures.h structures.c x.c y.c z.c
