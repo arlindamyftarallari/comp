@@ -9,6 +9,7 @@
     int line = 1, column = 1, errorflag = 0, errorline, errorcol;
 	extern int errortag;
     int printflag; // 0 = print errors only, 1 = print tokens
+	int parse_error = 0;
 
     void printtoken(char * type, char * msg);
     char result[100] = "";
@@ -16,7 +17,7 @@
 	extern int yydebug;
 %}
 
-%x COMMENT SEMICOLON_STATE STRINGLIT
+%x COMMENT SEMICOLON_STATE STRINGLIT COMMENT_SEMICOLON
 
 reserved			break|default|interface|select|case|defer|go|map|struct|chan|goto|switch|const|fallthrough|range|type|continue|import|"++"|"--"
 
@@ -47,79 +48,84 @@ whitespace          " "|"\t"
 
 %%
 
-{reserved}											{printtoken("RESERVED", yytext); COLUMN; if (!printflag) return RESERVED;}
+{reserved}											{parse_error=0; printtoken("RESERVED", yytext); COLUMN; if (!printflag) return RESERVED;}
 
-";"													{printtoken("SEMICOLON", yytext); COLUMN; if (!printflag) return SEMICOLON;}
-"_"													{printtoken("BLANKID", yytext); COLUMN; if (!printflag) return BLANKID;}
-package												{printtoken("PACKAGE", yytext); COLUMN; if (!printflag) return PACKAGE;}
-return												{printtoken("RETURN", yytext); COLUMN; BEGIN SEMICOLON_STATE; if (!printflag) return RETURN;}
-"&&"												{printtoken("AND", yytext); COLUMN; if (!printflag) return AND;}
-"="													{printtoken("ASSIGN", yytext); COLUMN; if (!printflag) return ASSIGN;}
-"*"													{printtoken("STAR", yytext); COLUMN; if (!printflag) return STAR;}
-","													{printtoken("COMMA", yytext); COLUMN; if (!printflag) return COMMA;}
-"/"													{printtoken("DIV", yytext); COLUMN; if (!printflag) return DIV;}
-"=="												{printtoken("EQ", yytext); COLUMN; if (!printflag) return EQ;}
-">="												{printtoken("GE", yytext); COLUMN; if (!printflag) return GE;}
-">"													{printtoken("GT", yytext); COLUMN; if (!printflag) return GT;}
-"{"													{printtoken("LBRACE", yytext); COLUMN; if (!printflag) return LBRACE;}
-"<="												{printtoken("LE", yytext); COLUMN; if (!printflag) return LE;}
-"("													{printtoken("LPAR", yytext); COLUMN; if (!printflag) return LPAR;}
-"["													{printtoken("LSQ", yytext); COLUMN; if (!printflag) return LSQ;}
-"<"													{printtoken("LT", yytext); COLUMN; if (!printflag) return LT;}
-"-"													{printtoken("MINUS", yytext); COLUMN; if (!printflag) return MINUS;}
-"%"													{printtoken("MOD", yytext); COLUMN; if (!printflag) return MOD;}
-"!="												{printtoken("NE", yytext); COLUMN; if (!printflag) return NE;}
-"!"													{printtoken("NOT", yytext); COLUMN; if (!printflag) return NOT;}
-"||"												{printtoken("OR", yytext); COLUMN; if (!printflag) return OR;}
-"+"													{printtoken("PLUS", yytext); COLUMN; if (!printflag) return PLUS;}
-"}"													{printtoken("RBRACE", yytext); COLUMN; BEGIN SEMICOLON_STATE; if (!printflag) return RBRACE;}
-")"													{printtoken("RPAR", yytext); COLUMN; BEGIN SEMICOLON_STATE; if (!printflag) return RPAR;}
-"]"													{printtoken("RSQ", yytext); COLUMN; BEGIN SEMICOLON_STATE; if (!printflag) return RSQ;}
-else												{printtoken("ELSE", yytext); COLUMN; if (!printflag) return ELSE;}
-for													{printtoken("FOR", yytext); COLUMN; if (!printflag) return FOR;}
-if													{printtoken("IF", yytext); COLUMN; if (!printflag) return IF;}
-var													{printtoken("VAR", yytext); COLUMN; if (!printflag) return VAR;}
-int													{printtoken("INT", yytext); COLUMN; if (!printflag) return INT;}
-float32												{printtoken("FLOAT32", yytext); COLUMN; if (!printflag) return FLOAT32;}
-bool												{printtoken("BOOL", yytext); COLUMN; if (!printflag) return BOOL;}
-string												{printtoken("STRING", yytext); COLUMN; if (!printflag) return STRING;}
-fmt.Println											{printtoken("PRINT", yytext); COLUMN; if (!printflag) return PRINT;}
-strconv.Atoi										{printtoken("PARSEINT", yytext); COLUMN; if (!printflag) return PARSEINT;}
-func												{printtoken("FUNC", yytext); COLUMN; if (!printflag) return FUNC;}
-os.Args												{printtoken("CMDARGS", yytext); COLUMN; if (!printflag) return CMDARGS;}
+";"													{parse_error=0; printtoken("SEMICOLON", yytext); COLUMN; if (!printflag) return SEMICOLON;}
+"_"													{parse_error=0; printtoken("BLANKID", yytext); COLUMN; if (!printflag) return BLANKID;}
+package												{parse_error=0; printtoken("PACKAGE", yytext); COLUMN; if (!printflag) return PACKAGE;}
+return												{parse_error=0; printtoken("RETURN", yytext); COLUMN; BEGIN SEMICOLON_STATE; if (!printflag) return RETURN;}
+"&&"												{parse_error=0; printtoken("AND", yytext); COLUMN; if (!printflag) return AND;}
+"="													{parse_error=0; printtoken("ASSIGN", yytext); COLUMN; if (!printflag) return ASSIGN;}
+"*"													{parse_error=0; printtoken("STAR", yytext); COLUMN; if (!printflag) return STAR;}
+","													{parse_error=0; printtoken("COMMA", yytext); COLUMN; if (!printflag) return COMMA;}
+"/"													{parse_error=0; printtoken("DIV", yytext); COLUMN; if (!printflag) return DIV;}
+"=="												{parse_error=0; printtoken("EQ", yytext); COLUMN; if (!printflag) return EQ;}
+">="												{parse_error=0; printtoken("GE", yytext); COLUMN; if (!printflag) return GE;}
+">"													{parse_error=0; printtoken("GT", yytext); COLUMN; if (!printflag) return GT;}
+"{"													{parse_error=0; printtoken("LBRACE", yytext); COLUMN; if (!printflag) return LBRACE;}
+"<="												{parse_error=0; printtoken("LE", yytext); COLUMN; if (!printflag) return LE;}
+"("													{parse_error=0; printtoken("LPAR", yytext); COLUMN; if (!printflag) return LPAR;}
+"["													{parse_error=0; printtoken("LSQ", yytext); COLUMN; if (!printflag) return LSQ;}
+"<"													{parse_error=0; printtoken("LT", yytext); COLUMN; if (!printflag) return LT;}
+"-"													{parse_error=0; printtoken("MINUS", yytext); COLUMN; if (!printflag) return MINUS;}
+"%"													{parse_error=0; printtoken("MOD", yytext); COLUMN; if (!printflag) return MOD;}
+"!="												{parse_error=0; printtoken("NE", yytext); COLUMN; if (!printflag) return NE;}
+"!"													{parse_error=0; printtoken("NOT", yytext); COLUMN; if (!printflag) return NOT;}
+"||"												{parse_error=0; printtoken("OR", yytext); COLUMN; if (!printflag) return OR;}
+"+"													{parse_error=0; printtoken("PLUS", yytext); COLUMN; if (!printflag) return PLUS;}
+"}"													{parse_error=0; printtoken("RBRACE", yytext); COLUMN; BEGIN SEMICOLON_STATE; if (!printflag) return RBRACE;}
+")"													{parse_error=0; printtoken("RPAR", yytext); COLUMN; BEGIN SEMICOLON_STATE; if (!printflag) return RPAR;}
+"]"													{parse_error=0; printtoken("RSQ", yytext); COLUMN; BEGIN SEMICOLON_STATE; if (!printflag) return RSQ;}
+else												{parse_error=0; printtoken("ELSE", yytext); COLUMN; if (!printflag) return ELSE;}
+for													{parse_error=0; printtoken("FOR", yytext); COLUMN; if (!printflag) return FOR;}
+if													{parse_error=0; printtoken("IF", yytext); COLUMN; if (!printflag) return IF;}
+var													{parse_error=0; printtoken("VAR", yytext); COLUMN; if (!printflag) return VAR;}
+int													{parse_error=0; printtoken("INT", yytext); COLUMN; if (!printflag) return INT;}
+float32												{parse_error=0; printtoken("FLOAT32", yytext); COLUMN; if (!printflag) return FLOAT32;}
+bool												{parse_error=0; printtoken("BOOL", yytext); COLUMN; if (!printflag) return BOOL;}
+string												{parse_error=0; printtoken("STRING", yytext); COLUMN; if (!printflag) return STRING;}
+fmt.Println											{parse_error=0; printtoken("PRINT", yytext); COLUMN; if (!printflag) return PRINT;}
+strconv.Atoi										{parse_error=0; printtoken("PARSEINT", yytext); COLUMN; if (!printflag) return PARSEINT;}
+func												{parse_error=0; printtoken("FUNC", yytext); COLUMN; if (!printflag) return FUNC;}
+os.Args												{parse_error=0; printtoken("CMDARGS", yytext); COLUMN; if (!printflag) return CMDARGS;}
 
-{id}												{printtoken("ID", yytext); COLUMN; BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(yytext); if (!printflag) return ID;}
-{int_lit}											{printtoken("INTLIT", yytext); COLUMN; BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(yytext); if (!printflag) return INTLIT;}
-{real_lit}											{printtoken("REALLIT", yytext); COLUMN; BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(yytext); if (!printflag) return REALLIT;}
+{id}												{parse_error=0; printtoken("ID", yytext); COLUMN; BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(yytext); if (!printflag) return ID;}
+{int_lit}											{parse_error=0; printtoken("INTLIT", yytext); COLUMN; BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(yytext); if (!printflag) return INTLIT;}
+{real_lit}											{parse_error=0; printtoken("REALLIT", yytext); COLUMN; BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(yytext); if (!printflag) return REALLIT;}
 
-\"													{BEGIN STRINGLIT; strcpy(result,yytext); errorline=line; errorcol=column; errorflag=0; COLUMN;}
-<STRINGLIT>\"										{strcat(result,"\""); COLUMN;if(errorflag==0){printtoken("STRLIT",result); BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(result); if (!printflag){yytext=result;return STRLIT;}} else BEGIN 0;}
-<STRINGLIT>{stringlit}								{strcat(result,yytext); COLUMN;}
-<STRINGLIT>{lineterminator}                			{printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); LINE; BEGIN 0;}
-<STRINGLIT>\\(.?)									{printf("Line %d, column %d: invalid escape sequence (%s)\n", line, column, yytext); errorflag=1; COLUMN;}
-<STRINGLIT><<EOF>>									{printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); BEGIN 0;}
+\"													{parse_error=0; BEGIN STRINGLIT; strcpy(result,yytext); errorline=line; errorcol=column; errorflag=0; COLUMN;}
+<STRINGLIT>\"										{parse_error=0; strcat(result,"\""); COLUMN;if(errorflag==0){printtoken("STRLIT",result); BEGIN SEMICOLON_STATE; yylval.string=(char*)strdup(result); if (!printflag){yytext=result;return STRLIT;}} else BEGIN 0;}
+<STRINGLIT>{stringlit}								{parse_error=0; strcat(result,yytext); COLUMN;}
+<STRINGLIT>{lineterminator}                			{parse_error=0; printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); LINE; BEGIN 0;}
+<STRINGLIT>\\(.?)									{parse_error=0; printf("Line %d, column %d: invalid escape sequence (%s)\n", line, column, yytext); errorflag=1; COLUMN;}
+<STRINGLIT><<EOF>>									{parse_error=0; printf("Line %d, column %d: unterminated string literal\n", errorline, errorcol); BEGIN 0;}
 
-{singlelinecomment}.*								{;}
+{singlelinecomment}.*								{parse_error=0; errorcol=column; errorline=line;}
 
-{commentstart}										{BEGIN COMMENT; errorline=line; errorcol=column; COLUMN;}
-<COMMENT>{lineterminator}							{LINE;}
-<COMMENT><<EOF>>									{printf("Line %d, column %d: unterminated comment\n", errorline, errorcol); return 0;}
-<COMMENT>{commentend}								{BEGIN 0; COLUMN;}
-<COMMENT>.											{COLUMN;}
+{commentstart}										{parse_error=0; BEGIN COMMENT; errorline=line; errorcol=column; COLUMN;}
+<COMMENT>{lineterminator}							{parse_error=0; LINE;}
+<COMMENT><<EOF>>									{parse_error=0; printf("Line %d, column %d: unterminated comment\n", errorline, errorcol); errorline=line; errorcol=column; parse_error=1; return 0;}
+<COMMENT>{commentend}								{parse_error=0; BEGIN 0;}
+<COMMENT>.											{parse_error=0; COLUMN;}
 
-<SEMICOLON_STATE>{whitespace}						{COLUMN;}
-<SEMICOLON_STATE>";"								{printtoken("SEMICOLON", yytext); COLUMN; BEGIN 0; if (!printflag) return SEMICOLON;}
-<SEMICOLON_STATE>{lineterminator}					{printtoken("SEMICOLON", yytext); LINE; BEGIN 0; if (!printflag) return SEMICOLON;}
-<SEMICOLON_STATE>{singlelinecomment}.*				{printtoken("SEMICOLON", yytext); BEGIN 0; if (!printflag) return SEMICOLON;}
-<SEMICOLON_STATE>{commentstart}						{errorline=line; errorcol=column; COLUMN; BEGIN COMMENT; if (!printflag) return SEMICOLON;}
-<SEMICOLON_STATE><<EOF>>							{printtoken("SEMICOLON", yytext); BEGIN 0; if (!printflag) return SEMICOLON;}
-<SEMICOLON_STATE>""/.								{COLUMN; BEGIN 0;}
+<COMMENT_SEMICOLON>{lineterminator}					{parse_error=0; errorline=line; errorcol=column;LINE; if (!printflag) return SEMICOLON;}
+<COMMENT_SEMICOLON><<EOF>>							{parse_error=0; parse_error = 1; if (!printflag) return SEMICOLON;}
+<COMMENT_SEMICOLON>{commentend}						{parse_error=0; COLUMN; BEGIN SEMICOLON_STATE;}
+<COMMENT_SEMICOLON>.								{parse_error=0; COLUMN;}
 
-<<EOF>>												{return 0;}
+<SEMICOLON_STATE>{whitespace}						{parse_error=0; COLUMN;}
+<SEMICOLON_STATE>";"								{parse_error=0; printtoken("SEMICOLON", yytext); COLUMN; BEGIN 0; if (!printflag) return SEMICOLON;}
+<SEMICOLON_STATE>{lineterminator}					{parse_error=0; printtoken("SEMICOLON", yytext); errorline=line; errorcol=column; parse_error=1; LINE; BEGIN 0; if (!printflag) return SEMICOLON;}
+<SEMICOLON_STATE>{singlelinecomment}.*				{parse_error=0; printtoken("SEMICOLON", yytext); BEGIN 0; if (!printflag) return SEMICOLON;}
+<SEMICOLON_STATE>{commentstart}						{parse_error=0; errorline=line; errorcol=column; COLUMN; BEGIN COMMENT_SEMICOLON;}
+<SEMICOLON_STATE><<EOF>>							{parse_error=0; printtoken("SEMICOLON", yytext); BEGIN 0; errorcol=column; errorline=line; parse_error=1;if (!printflag) return SEMICOLON;}
+<SEMICOLON_STATE>""/.								{parse_error=0; COLUMN; BEGIN 0;}
+
 {whitespace}										{COLUMN;}
 {carriagereturn}									{COLUMN;}
-{lineterminator}									{LINE;}
-.													{printf("Line %d, column %d: illegal character (%s)\n", line, column, yytext); COLUMN;}
+{lineterminator}									{errorcol=column; errorline=line; LINE;}
+<<EOF>>												{parse_error=1; return 0;}
+.													{parse_error=0; printf("Line %d, column %d: illegal character (%s)\n", line, column, yytext); COLUMN;}
 
 %%
 
@@ -138,7 +144,8 @@ void printtoken(char * type, char * msg) {
 
 void yyerror(const char * s) {
 	errortag = 1;
-	printf("Line %d, column %d: %s: %s\n", line, (int)(column-strlen(yytext)), s, yytext);
+	if (parse_error) printf("Line %d, column %d: %s: %s\n", errorline, errorcol, s, "");
+ 	else printf("Line %d, column %d: %s: %s\n", line, (int)(column-strlen(yytext)), s, yytext);
 }
 
 int yywrap() {

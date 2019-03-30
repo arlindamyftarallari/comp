@@ -8,7 +8,7 @@ func d(){
 	kkk=a+b-c*d/e;
 	ttt=q*w*e*r*t;
 	git=100&&!-(-!+a+(b));
-	aeq= a==b&&gh||d||s;
+	aeq= a/*ola*/==b&&gh||d||s;
 	r=3%2;
 }
 
