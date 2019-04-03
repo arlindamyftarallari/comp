@@ -10,4 +10,3 @@ int check_double_dec(is_double_dec* idd);
 int check_statement_list(is_statement_list* isl);
 int check_statement(is_statement* is);
 int check_write_statement(is_write_statement* iws);
-

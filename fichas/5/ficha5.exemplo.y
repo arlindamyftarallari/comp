@@ -20,6 +20,8 @@ is_program* myprogram;
 %type<isl>statementlist
 %type<is>statement
 
+%locations 
+
 %union{
     char *id;
     is_program* ip;
@@ -34,19 +36,19 @@ program: LET vardeclist IN statementlist END
     ;
 
 vardeclist: /*empty*/                   {$$=NULL;}
-    | vardeclist vardec             {$$=insert_vardec_list($1,$2);}
+    | vardeclist vardec             	{$$=insert_vardec_list($1,$2);}
     ;
 
-vardec: INTEGER IDENTIFIER              {$$=insert_integer_dec($2);}
-    | CHARACTER IDENTIFIER              {$$=insert_character_dec($2);} 
-    | DOUBLE IDENTIFIER                 {$$=insert_double_dec($2);} 
+vardec: INTEGER IDENTIFIER              {$$=insert_integer_dec($2, @2.first_line, @2.first_column);}
+    | CHARACTER IDENTIFIER              {$$=insert_character_dec($2, @2.first_line, @2.first_column);} 
+    | DOUBLE IDENTIFIER                 {$$=insert_double_dec($2, @2.first_line, @2.first_column);} 
     ;
 
 statementlist: /*empty*/                {$$=NULL;}    
     | statementlist statement           {$$=insert_statement_list($1, $2);}
     ;
 
-statement: WRITE IDENTIFIER             {$$=insert_write_statement($2);}
+statement: WRITE IDENTIFIER             {$$=insert_write_statement($2, @2.first_line, @2.first_column);}
     ;
 
 %%

@@ -36,7 +36,7 @@ int check_integer_dec(is_integer_dec* iid) {
     table_element* newel=insert_el(iid->id, integer);
 
     if(newel==NULL) {
-        printf("Symbol %s already defined!\n", iid->id);
+        printf("Line %d, column %d: Symbol %s already defined!\n", iid->line, iid->column, iid->id);
         return 1;
     }
     return 0;
@@ -46,7 +46,7 @@ int check_character_dec(is_character_dec* icd) {
         table_element* newel=insert_el(icd->id, character);
 
         if(newel==NULL) {
-            printf("Symbol %s already defined!\n", icd->id);
+            printf("Line %d, column %d: Symbol %s already defined!\n", icd->line, icd->column, icd->id);
             return 1;
         }
         return 0;
@@ -56,7 +56,7 @@ int check_double_dec(is_double_dec* idd) {
     table_element* newel=insert_el(idd->id, doub);
 
     if(newel==NULL) {
-        printf("Symbol %s already defined!\n", idd->id);
+        printf("Line %d, column %d: Symbol %s already defined!\n", idd->line, idd->column, idd->id);
         return 1;
     }
     return 0;
@@ -82,7 +82,7 @@ int check_write_statement(is_write_statement* iws) {
     table_element* aux=search_el(iws->id);
 
     if(aux==NULL) {
-        printf("Symbol %s not declared!\n", iws->id);
+        printf("Line %d, column %d: Symbol %s not declared!\n", iws->line, iws->column, iws->id);
         return 1;
     }
     return 0;

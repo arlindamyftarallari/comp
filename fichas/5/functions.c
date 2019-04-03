@@ -31,12 +31,14 @@ is_vardec_list* insert_vardec_list(is_vardec_list* head, is_vardec* iv)
         return head;
 }
 
-is_vardec* insert_integer_dec(char* id)
+is_vardec* insert_integer_dec(char* id, int line, int column)
 {
 	is_vardec* iv=(is_vardec*)malloc(sizeof(is_vardec));
 	is_integer_dec* iid=(is_integer_dec*)malloc(sizeof(is_integer_dec));
 	
 	iid->id=(char*)strdup(id);  /* Por precaucao. Seria apenas necessario copiar o ponteiro, pois o strdup ja foi feito atras*/
+	iid->line = line;
+	iid->column = column;
 	iv->disc_d=d_integer;
 	iv->data_vardec.u_integer_dec=iid;
 	
@@ -45,12 +47,14 @@ is_vardec* insert_integer_dec(char* id)
 	return iv;
 }
 
-is_vardec* insert_character_dec(char* id)
+is_vardec* insert_character_dec(char* id, int line, int column)
 {
         is_vardec* iv=(is_vardec*)malloc(sizeof(is_vardec));
         is_character_dec* icd=(is_character_dec*)malloc(sizeof(is_character_dec));
 
         icd->id=(char*)strdup(id);  /* Por precaucao. Seria apenas necessario copiar o ponteiro, pois o strdup ja foi feito atras*/
+		icd->line = line;
+		icd->column = column;
         iv->disc_d=d_character;
         iv->data_vardec.u_character_dec=icd;
 
@@ -59,12 +63,14 @@ is_vardec* insert_character_dec(char* id)
         return iv;
 }
 
-is_vardec* insert_double_dec(char* id)
+is_vardec* insert_double_dec(char* id, int line, int column)
 {
         is_vardec* iv=(is_vardec*)malloc(sizeof(is_vardec));
         is_double_dec* idd=(is_double_dec*)malloc(sizeof(is_double_dec));
 
         idd->id=(char*)strdup(id);  /* Por precaucao. Seria apenas necessario copiar o ponteiro, pois o strdup ja foi feito atras*/
+		idd->line = line;
+		idd->column = column;
         iv->disc_d=d_double;
         iv->data_vardec.u_double_dec=idd;
 
@@ -91,12 +97,14 @@ is_statement_list* insert_statement_list(is_statement_list* head, is_statement* 
 	return head;
 }
 
-is_statement* insert_write_statement(char* id)
+is_statement* insert_write_statement(char* id, int line, int column)
 {
 	is_statement* is=(is_statement*)malloc(sizeof(is_statement));
 	is_write_statement* iws=(is_write_statement*)malloc(sizeof(is_write_statement));
 
 	iws->id=(char*)strdup(id);
+	iws->line = line;
+	iws->column = column;
 	is->disc_d=d_write;
 	is->data_statement.u_write_statement=iws;
 

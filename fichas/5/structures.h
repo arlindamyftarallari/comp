@@ -3,6 +3,8 @@
 
 typedef struct _s9 {
         char* id;
+		int line;
+		int column;
 }is_write_statement;
 
 /*NOTA! Podia simplificar-se, mas mantemos as convencoes para demonstrar o conceito*/
@@ -22,14 +24,20 @@ typedef struct _s7 {
 
 typedef struct _s4 {
         char* id;
+		int line;
+		int column;
 } is_integer_dec;
 
 typedef struct _s5 {
         char* id;
+		int line;
+		int column;
 } is_character_dec;
 
 typedef struct _s6 {
         char* id;
+		int line;
+		int column;
 } is_double_dec;
 
 typedef enum {d_integer, d_character, d_double} disc_vardec;
