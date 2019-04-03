@@ -56,7 +56,7 @@
 #define YYPURE 0
 
 /* Using locations.  */
-#define YYLSP_NEEDED 0
+#define YYLSP_NEEDED 1
 
 
 
@@ -216,13 +216,25 @@ typedef union YYSTYPE
 # define YYSTYPE_IS_TRIVIAL 1
 #endif
 
+#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
+typedef struct YYLTYPE
+{
+  int first_line;
+  int first_column;
+  int last_line;
+  int last_column;
+} YYLTYPE;
+# define yyltype YYLTYPE /* obsolescent; will be withdrawn */
+# define YYLTYPE_IS_DECLARED 1
+# define YYLTYPE_IS_TRIVIAL 1
+#endif
 
 
 /* Copy the second part of user declarations.  */
 
 
 /* Line 216 of yacc.c.  */
-#line 226 "y.tab.c"
+#line 238 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -380,14 +392,16 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 
 #if (! defined yyoverflow \
      && (! defined __cplusplus \
-	 || (defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
+	 || (defined YYLTYPE_IS_TRIVIAL && YYLTYPE_IS_TRIVIAL \
+	     && defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
 
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
 {
   yytype_int16 yyss;
   YYSTYPE yyvs;
-  };
+    YYLTYPE yyls;
+};
 
 /* The size of the maximum gap between one aligned stack and the next.  */
 # define YYSTACK_GAP_MAXIMUM (sizeof (union yyalloc) - 1)
@@ -395,8 +409,8 @@ union yyalloc
 /* The size of an array large to enough to hold all stacks, each with
    N elements.  */
 # define YYSTACK_BYTES(N) \
-     ((N) * (sizeof (yytype_int16) + sizeof (YYSTYPE)) \
-      + YYSTACK_GAP_MAXIMUM)
+     ((N) * (sizeof (yytype_int16) + sizeof (YYSTYPE) + sizeof (YYLTYPE)) \
+      + 2 * YYSTACK_GAP_MAXIMUM)
 
 /* Copy COUNT objects from FROM to TO.  The source and destination do
    not overlap.  */
@@ -540,14 +554,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    44,    44,    51,    58,    64,    67,    70,    73,    76,
-      81,    84,    89,   142,   152,   157,   169,   172,   177,   180,
-     185,   200,   206,   211,   218,   224,   229,   232,   235,   240,
-     246,   256,   264,   273,   278,   281,   284,   288,   294,   297,
-     302,   305,   310,   317,   322,   327,   332,   337,   343,   349,
-     355,   361,   366,   372,   377,   380,   384,   387,   390,   393,
-     398,   403,   408,   413,   418,   423,   428,   433,   438,   443,
-     448,   453,   458,   461,   464,   467
+       0,    46,    46,    53,    60,    66,    69,    72,    75,    78,
+      83,    86,    91,   144,   154,   159,   171,   174,   179,   182,
+     187,   202,   208,   213,   220,   226,   231,   234,   237,   242,
+     248,   258,   266,   275,   280,   283,   286,   290,   296,   299,
+     304,   307,   312,   319,   324,   329,   334,   339,   345,   351,
+     357,   363,   368,   374,   379,   382,   386,   389,   392,   395,
+     400,   405,   410,   415,   420,   425,   430,   435,   440,   445,
+     450,   455,   460,   463,   466,   469
 };
 #endif
 
@@ -872,7 +886,7 @@ do {									  \
     {									  \
       YYFPRINTF (stderr, "%s ", Title);					  \
       yy_symbol_print (stderr,						  \
-		  Type, Value); \
+		  Type, Value, Location); \
       YYFPRINTF (stderr, "\n");						  \
     }									  \
 } while (YYID (0))
@@ -886,17 +900,19 @@ do {									  \
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp)
 #else
 static void
-yy_symbol_value_print (yyoutput, yytype, yyvaluep)
+yy_symbol_value_print (yyoutput, yytype, yyvaluep, yylocationp)
     FILE *yyoutput;
     int yytype;
     YYSTYPE const * const yyvaluep;
+    YYLTYPE const * const yylocationp;
 #endif
 {
   if (!yyvaluep)
     return;
+  YYUSE (yylocationp);
 # ifdef YYPRINT
   if (yytype < YYNTOKENS)
     YYPRINT (yyoutput, yytoknum[yytype], *yyvaluep);
@@ -918,13 +934,14 @@ yy_symbol_value_print (yyoutput, yytype, yyvaluep)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp)
 #else
 static void
-yy_symbol_print (yyoutput, yytype, yyvaluep)
+yy_symbol_print (yyoutput, yytype, yyvaluep, yylocationp)
     FILE *yyoutput;
     int yytype;
     YYSTYPE const * const yyvaluep;
+    YYLTYPE const * const yylocationp;
 #endif
 {
   if (yytype < YYNTOKENS)
@@ -932,7 +949,9 @@ yy_symbol_print (yyoutput, yytype, yyvaluep)
   else
     YYFPRINTF (yyoutput, "nterm %s (", yytname[yytype]);
 
-  yy_symbol_value_print (yyoutput, yytype, yyvaluep);
+  YY_LOCATION_PRINT (yyoutput, *yylocationp);
+  YYFPRINTF (yyoutput, ": ");
+  yy_symbol_value_print (yyoutput, yytype, yyvaluep, yylocationp);
   YYFPRINTF (yyoutput, ")");
 }
 
@@ -972,11 +991,12 @@ do {								\
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_reduce_print (YYSTYPE *yyvsp, int yyrule)
+yy_reduce_print (YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule)
 #else
 static void
-yy_reduce_print (yyvsp, yyrule)
+yy_reduce_print (yyvsp, yylsp, yyrule)
     YYSTYPE *yyvsp;
+    YYLTYPE *yylsp;
     int yyrule;
 #endif
 {
@@ -991,7 +1011,7 @@ yy_reduce_print (yyvsp, yyrule)
       fprintf (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr, yyrhs[yyprhs[yyrule] + yyi],
 		       &(yyvsp[(yyi + 1) - (yynrhs)])
-		       		       );
+		       , &(yylsp[(yyi + 1) - (yynrhs)])		       );
       fprintf (stderr, "\n");
     }
 }
@@ -999,7 +1019,7 @@ yy_reduce_print (yyvsp, yyrule)
 # define YY_REDUCE_PRINT(Rule)		\
 do {					\
   if (yydebug)				\
-    yy_reduce_print (yyvsp, Rule); \
+    yy_reduce_print (yyvsp, yylsp, Rule); \
 } while (YYID (0))
 
 /* Nonzero means print parse trace.  It is left uninitialized so that
@@ -1250,16 +1270,18 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, YYLTYPE *yylocationp)
 #else
 static void
-yydestruct (yymsg, yytype, yyvaluep)
+yydestruct (yymsg, yytype, yyvaluep, yylocationp)
     const char *yymsg;
     int yytype;
     YYSTYPE *yyvaluep;
+    YYLTYPE *yylocationp;
 #endif
 {
   YYUSE (yyvaluep);
+  YYUSE (yylocationp);
 
   if (!yymsg)
     yymsg = "Deleting";
@@ -1300,6 +1322,8 @@ YYSTYPE yylval;
 
 /* Number of syntax errors so far.  */
 int yynerrs;
+/* Location data for the look-ahead symbol.  */
+YYLTYPE yylloc;
 
 
 
@@ -1362,16 +1386,21 @@ yyparse ()
   YYSTYPE *yyvs = yyvsa;
   YYSTYPE *yyvsp;
 
+  /* The location stack.  */
+  YYLTYPE yylsa[YYINITDEPTH];
+  YYLTYPE *yyls = yylsa;
+  YYLTYPE *yylsp;
+  /* The locations where the error started and ended.  */
+  YYLTYPE yyerror_range[2];
 
-
-#define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N))
+#define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N), yylsp -= (N))
 
   YYSIZE_T yystacksize = YYINITDEPTH;
 
   /* The variables used to return semantic value and location from the
      action routines.  */
   YYSTYPE yyval;
-
+  YYLTYPE yyloc;
 
   /* The number of symbols on the RHS of the reduced rule.
      Keep to zero when no symbol should be popped.  */
@@ -1391,6 +1420,12 @@ yyparse ()
 
   yyssp = yyss;
   yyvsp = yyvs;
+  yylsp = yyls;
+#if defined YYLTYPE_IS_TRIVIAL && YYLTYPE_IS_TRIVIAL
+  /* Initialize the default location before parsing starts.  */
+  yylloc.first_line   = yylloc.last_line   = 1;
+  yylloc.first_column = yylloc.last_column = 0;
+#endif
 
   goto yysetstate;
 
@@ -1417,7 +1452,7 @@ yyparse ()
 	   memory.  */
 	YYSTYPE *yyvs1 = yyvs;
 	yytype_int16 *yyss1 = yyss;
-
+	YYLTYPE *yyls1 = yyls;
 
 	/* Each stack pointer address is followed by the size of the
 	   data in use in that stack, in bytes.  This used to be a
@@ -1426,9 +1461,9 @@ yyparse ()
 	yyoverflow (YY_("memory exhausted"),
 		    &yyss1, yysize * sizeof (*yyssp),
 		    &yyvs1, yysize * sizeof (*yyvsp),
-
+		    &yyls1, yysize * sizeof (*yylsp),
 		    &yystacksize);
-
+	yyls = yyls1;
 	yyss = yyss1;
 	yyvs = yyvs1;
       }
@@ -1451,7 +1486,7 @@ yyparse ()
 	  goto yyexhaustedlab;
 	YYSTACK_RELOCATE (yyss);
 	YYSTACK_RELOCATE (yyvs);
-
+	YYSTACK_RELOCATE (yyls);
 #  undef YYSTACK_RELOCATE
 	if (yyss1 != yyssa)
 	  YYSTACK_FREE (yyss1);
@@ -1461,7 +1496,7 @@ yyparse ()
 
       yyssp = yyss + yysize - 1;
       yyvsp = yyvs + yysize - 1;
-
+      yylsp = yyls + yysize - 1;
 
       YYDPRINTF ((stderr, "Stack size increased to %lu\n",
 		  (unsigned long int) yystacksize));
@@ -1538,7 +1573,7 @@ yybackup:
 
   yystate = yyn;
   *++yyvsp = yylval;
-
+  *++yylsp = yylloc;
   goto yynewstate;
 
 
@@ -1569,12 +1604,13 @@ yyreduce:
      GCC warning that YYVAL may be used uninitialized.  */
   yyval = yyvsp[1-yylen];
 
-
+  /* Default location.  */
+  YYLLOC_DEFAULT (yyloc, (yylsp - yylen), yylen);
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
         case 2:
-#line 44 "gocompiler.y"
+#line 46 "gocompiler.y"
     {
 																		root = create_node("Program", "");
 																		if ((yyvsp[(4) - (4)].node) != NULL) add_child(root, (yyvsp[(4) - (4)].node));
@@ -1583,7 +1619,7 @@ yyreduce:
     break;
 
   case 3:
-#line 51 "gocompiler.y"
+#line 53 "gocompiler.y"
     {
 																		if ((yyvsp[(3) - (3)].node) != NULL) {
 																			add_sibling((yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node));
@@ -1594,7 +1630,7 @@ yyreduce:
     break;
 
   case 4:
-#line 58 "gocompiler.y"
+#line 60 "gocompiler.y"
     {
 																		if ((yyvsp[(3) - (3)].node) != NULL) {
 																			add_sibling((yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node));
@@ -1604,54 +1640,54 @@ yyreduce:
     break;
 
   case 5:
-#line 64 "gocompiler.y"
+#line 66 "gocompiler.y"
     { (yyval.node) = NULL; }
     break;
 
   case 6:
-#line 67 "gocompiler.y"
+#line 69 "gocompiler.y"
     {
 																		(yyval.node) = create_node("Int", "");
 																	}
     break;
 
   case 7:
-#line 70 "gocompiler.y"
+#line 72 "gocompiler.y"
     {
 																		(yyval.node) = create_node("Float32", "");
 																	}
     break;
 
   case 8:
-#line 73 "gocompiler.y"
+#line 75 "gocompiler.y"
     {
 																		(yyval.node) = create_node("Bool", "");
 																	}
     break;
 
   case 9:
-#line 76 "gocompiler.y"
+#line 78 "gocompiler.y"
     {
 																		(yyval.node) = create_node("String", "");
 																	}
     break;
 
   case 10:
-#line 81 "gocompiler.y"
+#line 83 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(2) - (2)].node);
 																	}
     break;
 
   case 11:
-#line 84 "gocompiler.y"
+#line 86 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(3) - (5)].node);
 																	}
     break;
 
   case 12:
-#line 89 "gocompiler.y"
+#line 91 "gocompiler.y"
     {
 																		struct node * varDecl = create_node("VarDecl", "");
 																		add_child(varDecl, (yyvsp[(3) - (3)].node));
@@ -1706,7 +1742,7 @@ yyreduce:
     break;
 
   case 13:
-#line 143 "gocompiler.y"
+#line 145 "gocompiler.y"
     {
 																		struct node * id = create_node("Id", (yyvsp[(2) - (3)].string));
 																		if ((yyvsp[(3) - (3)].node) == NULL) {
@@ -1719,14 +1755,14 @@ yyreduce:
     break;
 
   case 14:
-#line 152 "gocompiler.y"
+#line 154 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																	}
     break;
 
   case 15:
-#line 157 "gocompiler.y"
+#line 159 "gocompiler.y"
     {
 																		struct node * funcDecl = create_node("FuncDecl", "");
 																		struct node * funcHeader = create_node("FuncHeader", "");
@@ -1740,35 +1776,35 @@ yyreduce:
     break;
 
   case 16:
-#line 169 "gocompiler.y"
+#line 171 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 17:
-#line 172 "gocompiler.y"
+#line 174 "gocompiler.y"
     {
 																		(yyval.node) = create_node("FuncParams", ""); //this node is not going to have any sons, but it is mandatory
 																	}
     break;
 
   case 18:
-#line 177 "gocompiler.y"
+#line 179 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 19:
-#line 180 "gocompiler.y"
+#line 182 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																	}
     break;
 
   case 20:
-#line 185 "gocompiler.y"
+#line 187 "gocompiler.y"
     {
 																		struct node * funcParams = create_node("FuncParams", "");
 																		struct node * paramDecl = create_node("ParamDecl", "");
@@ -1785,7 +1821,7 @@ yyreduce:
     break;
 
   case 21:
-#line 200 "gocompiler.y"
+#line 202 "gocompiler.y"
     {
 																		struct node * paramDecl = create_node("ParamDecl", "");
 																		add_child(paramDecl, (yyvsp[(3) - (4)].node));
@@ -1795,14 +1831,14 @@ yyreduce:
     break;
 
   case 22:
-#line 206 "gocompiler.y"
+#line 208 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																	}
     break;
 
   case 23:
-#line 211 "gocompiler.y"
+#line 213 "gocompiler.y"
     {
 																		struct node* funcBody = create_node("FuncBody", "");
 																		if ((yyvsp[(2) - (3)].node) != NULL) add_child(funcBody, (yyvsp[(2) - (3)].node));
@@ -1811,7 +1847,7 @@ yyreduce:
     break;
 
   case 24:
-#line 218 "gocompiler.y"
+#line 220 "gocompiler.y"
     {
 																			if ((yyvsp[(2) - (3)].node) == NULL && (yyvsp[(1) - (3)].node) == NULL) (yyval.node) = NULL;
 																			else if ((yyvsp[(1) - (3)].node) == NULL) (yyval.node) = (yyvsp[(2) - (3)].node);
@@ -1821,35 +1857,35 @@ yyreduce:
     break;
 
   case 25:
-#line 224 "gocompiler.y"
+#line 226 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																	}
     break;
 
   case 26:
-#line 229 "gocompiler.y"
+#line 231 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 27:
-#line 232 "gocompiler.y"
+#line 234 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 28:
-#line 235 "gocompiler.y"
+#line 237 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																	}
     break;
 
   case 29:
-#line 240 "gocompiler.y"
+#line 242 "gocompiler.y"
     {
 																		struct node * assign = create_node("Assign", "");
 																		add_child(assign, create_node("Id", (yyvsp[(1) - (3)].string)));
@@ -1859,7 +1895,7 @@ yyreduce:
     break;
 
   case 30:
-#line 246 "gocompiler.y"
+#line 248 "gocompiler.y"
     {
 																		if ((yyvsp[(2) - (3)].node) != NULL && (yyvsp[(2) - (3)].node)->bro != NULL) { //creating block for multiple statements
 																			struct node * block = create_node("Block", "");
@@ -1873,7 +1909,7 @@ yyreduce:
     break;
 
   case 31:
-#line 256 "gocompiler.y"
+#line 258 "gocompiler.y"
     {
 																		struct node * iff = create_node("If", "");
 																		if ((yyvsp[(2) - (6)].node)!=NULL) add_child(iff, (yyvsp[(2) - (6)].node));
@@ -1885,7 +1921,7 @@ yyreduce:
     break;
 
   case 32:
-#line 264 "gocompiler.y"
+#line 266 "gocompiler.y"
     {
 																		struct node * forr = create_node("For", "");
 																		if ((yyvsp[(2) - (5)].node) != NULL) add_child(forr, (yyvsp[(2) - (5)].node));
@@ -1898,7 +1934,7 @@ yyreduce:
     break;
 
   case 33:
-#line 273 "gocompiler.y"
+#line 275 "gocompiler.y"
     {
 																		struct node * returnn = create_node("Return", "");
 																		if ((yyvsp[(2) - (2)].node) != NULL) add_child(returnn, (yyvsp[(2) - (2)].node));
@@ -1907,21 +1943,21 @@ yyreduce:
     break;
 
   case 34:
-#line 278 "gocompiler.y"
+#line 280 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 35:
-#line 281 "gocompiler.y"
+#line 283 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 36:
-#line 284 "gocompiler.y"
+#line 286 "gocompiler.y"
     {
 																		struct node * print = create_node("Print", "");
 																		(yyval.node) = add_child(print, (yyvsp[(3) - (4)].node));
@@ -1929,7 +1965,7 @@ yyreduce:
     break;
 
   case 37:
-#line 288 "gocompiler.y"
+#line 290 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																		errortag = 1;
@@ -1937,35 +1973,35 @@ yyreduce:
     break;
 
   case 38:
-#line 294 "gocompiler.y"
+#line 296 "gocompiler.y"
     {
 																		(yyval.node) = create_node("StrLit", (yyvsp[(1) - (1)].string));
 																	}
     break;
 
   case 39:
-#line 297 "gocompiler.y"
+#line 299 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 40:
-#line 302 "gocompiler.y"
+#line 304 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
     break;
 
   case 41:
-#line 305 "gocompiler.y"
+#line 307 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																	}
     break;
 
   case 42:
-#line 310 "gocompiler.y"
+#line 312 "gocompiler.y"
     {
 																		if ((yyvsp[(1) - (3)].node) == NULL && (yyvsp[(3) - (3)].node) == NULL) (yyval.node) = NULL;
 																		else if ((yyvsp[(1) - (3)].node) == NULL) (yyval.node) = (yyvsp[(3) - (3)].node);
@@ -1976,14 +2012,14 @@ yyreduce:
     break;
 
   case 43:
-#line 317 "gocompiler.y"
+#line 319 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																	}
     break;
 
   case 44:
-#line 322 "gocompiler.y"
+#line 324 "gocompiler.y"
     {
 																		struct node * block = create_node("Block", "");
 																		if ((yyvsp[(3) - (4)].node) != NULL) add_child(block, (yyvsp[(3) - (4)].node));
@@ -1992,14 +2028,14 @@ yyreduce:
     break;
 
   case 45:
-#line 327 "gocompiler.y"
+#line 329 "gocompiler.y"
     {
 																		(yyval.node) = create_node("Block", "");
 																	}
     break;
 
   case 46:
-#line 332 "gocompiler.y"
+#line 334 "gocompiler.y"
     {
 																				struct node * parseArgs = create_node("ParseArgs", "");
 																				add_child(parseArgs, create_node("Id", (yyvsp[(1) - (11)].string)));
@@ -2008,7 +2044,7 @@ yyreduce:
     break;
 
   case 47:
-#line 337 "gocompiler.y"
+#line 339 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																		errortag = 1;
@@ -2016,7 +2052,7 @@ yyreduce:
     break;
 
   case 48:
-#line 343 "gocompiler.y"
+#line 345 "gocompiler.y"
     {
 																		struct node * call = create_node("Call", "");
 																		add_child(call, create_node("Id", (yyvsp[(1) - (4)].string)));
@@ -2026,7 +2062,7 @@ yyreduce:
     break;
 
   case 49:
-#line 349 "gocompiler.y"
+#line 351 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																		errortag = 1;
@@ -2034,7 +2070,7 @@ yyreduce:
     break;
 
   case 50:
-#line 355 "gocompiler.y"
+#line 357 "gocompiler.y"
     {	
 																		if ((yyvsp[(1) - (2)].node) == NULL && (yyvsp[(2) - (2)].node) == NULL) (yyval.node) = NULL;
 																		else if((yyvsp[(1) - (2)].node)==NULL) (yyval.node) = (yyvsp[(2) - (2)].node);
@@ -2044,14 +2080,14 @@ yyreduce:
     break;
 
   case 51:
-#line 361 "gocompiler.y"
+#line 363 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																	}
     break;
 
   case 52:
-#line 366 "gocompiler.y"
+#line 368 "gocompiler.y"
     {
 																		if ((yyvsp[(2) - (3)].node) == NULL && (yyvsp[(3) - (3)].node) == NULL) (yyval.node) = NULL;
 																		else if((yyvsp[(2) - (3)].node)==NULL) (yyval.node) = (yyvsp[(3) - (3)].node);
@@ -2061,21 +2097,21 @@ yyreduce:
     break;
 
   case 53:
-#line 372 "gocompiler.y"
+#line 374 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																	}
     break;
 
   case 54:
-#line 377 "gocompiler.y"
+#line 379 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(2) - (3)].node);
 																	}
     break;
 
   case 55:
-#line 380 "gocompiler.y"
+#line 382 "gocompiler.y"
     {
 																		(yyval.node) = NULL;
 																		errortag = 1;
@@ -2083,28 +2119,28 @@ yyreduce:
     break;
 
   case 56:
-#line 384 "gocompiler.y"
+#line 386 "gocompiler.y"
     {	
 																		(yyval.node) = add_child(create_node("Not", ""), (yyvsp[(2) - (2)].node));
 																	}
     break;
 
   case 57:
-#line 387 "gocompiler.y"
+#line 389 "gocompiler.y"
     {
 																		(yyval.node) = add_child(create_node("Minus", ""), (yyvsp[(2) - (2)].node));
 																	}
     break;
 
   case 58:
-#line 390 "gocompiler.y"
+#line 392 "gocompiler.y"
     {
 																		(yyval.node) = add_child(create_node("Plus", ""), (yyvsp[(2) - (2)].node));
 																	}
     break;
 
   case 59:
-#line 393 "gocompiler.y"
+#line 395 "gocompiler.y"
     {
 																		struct node * add = create_node("Add", "");
 																		add_child(add, (yyvsp[(1) - (3)].node));
@@ -2113,7 +2149,7 @@ yyreduce:
     break;
 
   case 60:
-#line 398 "gocompiler.y"
+#line 400 "gocompiler.y"
     {	
 																		struct node * sub = create_node("Sub", "");
 																		add_child(sub, (yyvsp[(1) - (3)].node));
@@ -2122,7 +2158,7 @@ yyreduce:
     break;
 
   case 61:
-#line 403 "gocompiler.y"
+#line 405 "gocompiler.y"
     {
 																		struct node * mul = create_node("Mul", "");
 																		add_child(mul, (yyvsp[(1) - (3)].node));
@@ -2131,7 +2167,7 @@ yyreduce:
     break;
 
   case 62:
-#line 408 "gocompiler.y"
+#line 410 "gocompiler.y"
     {
 																		struct node * div = create_node("Div", "");
 																		add_child(div, (yyvsp[(1) - (3)].node));
@@ -2140,7 +2176,7 @@ yyreduce:
     break;
 
   case 63:
-#line 413 "gocompiler.y"
+#line 415 "gocompiler.y"
     {
 																			struct node * mod = create_node("Mod", "");
 																		add_child(mod, (yyvsp[(1) - (3)].node));
@@ -2149,7 +2185,7 @@ yyreduce:
     break;
 
   case 64:
-#line 418 "gocompiler.y"
+#line 420 "gocompiler.y"
     {
 																		struct node * or = create_node("Or", "");
 																		add_child(or, (yyvsp[(1) - (3)].node));
@@ -2158,7 +2194,7 @@ yyreduce:
     break;
 
   case 65:
-#line 423 "gocompiler.y"
+#line 425 "gocompiler.y"
     {
 																		struct node * and = create_node("And", "");
 																		add_child(and, (yyvsp[(1) - (3)].node));
@@ -2167,7 +2203,7 @@ yyreduce:
     break;
 
   case 66:
-#line 428 "gocompiler.y"
+#line 430 "gocompiler.y"
     {
 																		struct node * lt = create_node("Lt", "");
 																		add_child(lt, (yyvsp[(1) - (3)].node));
@@ -2176,7 +2212,7 @@ yyreduce:
     break;
 
   case 67:
-#line 433 "gocompiler.y"
+#line 435 "gocompiler.y"
     {
 																		struct node * gt = create_node("Gt", "");
 																		add_child(gt, (yyvsp[(1) - (3)].node));
@@ -2185,7 +2221,7 @@ yyreduce:
     break;
 
   case 68:
-#line 438 "gocompiler.y"
+#line 440 "gocompiler.y"
     {
 																		struct node * eq = create_node("Eq", "");
 																		add_child(eq, (yyvsp[(1) - (3)].node));
@@ -2194,7 +2230,7 @@ yyreduce:
     break;
 
   case 69:
-#line 443 "gocompiler.y"
+#line 445 "gocompiler.y"
     {
 																		struct node * ne = create_node("Ne", "");
 																		add_child(ne, (yyvsp[(1) - (3)].node));
@@ -2203,7 +2239,7 @@ yyreduce:
     break;
 
   case 70:
-#line 448 "gocompiler.y"
+#line 450 "gocompiler.y"
     {
 																		struct node * le = create_node("Le", "");
 																		add_child(le, (yyvsp[(1) - (3)].node));
@@ -2212,7 +2248,7 @@ yyreduce:
     break;
 
   case 71:
-#line 453 "gocompiler.y"
+#line 455 "gocompiler.y"
     {
 																		struct node * ge = create_node("Ge", "");
 																		add_child(ge, (yyvsp[(1) - (3)].node));
@@ -2221,28 +2257,28 @@ yyreduce:
     break;
 
   case 72:
-#line 458 "gocompiler.y"
+#line 460 "gocompiler.y"
     {
 																		(yyval.node) = create_node("IntLit", (yyvsp[(1) - (1)].string));
 																	}
     break;
 
   case 73:
-#line 461 "gocompiler.y"
+#line 463 "gocompiler.y"
     {
 																		(yyval.node) = create_node("RealLit", (yyvsp[(1) - (1)].string));
 																	}
     break;
 
   case 74:
-#line 464 "gocompiler.y"
+#line 466 "gocompiler.y"
     {
 																		(yyval.node) = create_node("Id", (yyvsp[(1) - (1)].string));
 																	}
     break;
 
   case 75:
-#line 467 "gocompiler.y"
+#line 469 "gocompiler.y"
     {
 																		(yyval.node) = (yyvsp[(1) - (1)].node);
 																	}
@@ -2250,7 +2286,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 2254 "y.tab.c"
+#line 2290 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2260,7 +2296,7 @@ yyreduce:
   YY_STACK_PRINT (yyss, yyssp);
 
   *++yyvsp = yyval;
-
+  *++yylsp = yyloc;
 
   /* Now `shift' the result of the reduction.  Determine what state
      that goes to, based on the state we popped back to and the rule
@@ -2322,7 +2358,7 @@ yyerrlab:
 #endif
     }
 
-
+  yyerror_range[0] = yylloc;
 
   if (yyerrstatus == 3)
     {
@@ -2338,7 +2374,7 @@ yyerrlab:
       else
 	{
 	  yydestruct ("Error: discarding",
-		      yytoken, &yylval);
+		      yytoken, &yylval, &yylloc);
 	  yychar = YYEMPTY;
 	}
     }
@@ -2359,6 +2395,7 @@ yyerrorlab:
   if (/*CONSTCOND*/ 0)
      goto yyerrorlab;
 
+  yyerror_range[0] = yylsp[1-yylen];
   /* Do not reclaim the symbols of the rule which action triggered
      this YYERROR.  */
   YYPOPSTACK (yylen);
@@ -2392,9 +2429,9 @@ yyerrlab1:
       if (yyssp == yyss)
 	YYABORT;
 
-
+      yyerror_range[0] = *yylsp;
       yydestruct ("Error: popping",
-		  yystos[yystate], yyvsp);
+		  yystos[yystate], yyvsp, yylsp);
       YYPOPSTACK (1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
@@ -2405,6 +2442,11 @@ yyerrlab1:
 
   *++yyvsp = yylval;
 
+  yyerror_range[1] = yylloc;
+  /* Using YYLLOC is tempting, but would change the location of
+     the look-ahead.  YYLOC is available though.  */
+  YYLLOC_DEFAULT (yyloc, (yyerror_range - 1), 2);
+  *++yylsp = yyloc;
 
   /* Shift the error token.  */
   YY_SYMBOL_PRINT ("Shifting", yystos[yyn], yyvsp, yylsp);
@@ -2440,7 +2482,7 @@ yyexhaustedlab:
 yyreturn:
   if (yychar != YYEOF && yychar != YYEMPTY)
      yydestruct ("Cleanup: discarding lookahead",
-		 yytoken, &yylval);
+		 yytoken, &yylval, &yylloc);
   /* Do not reclaim the symbols of the rule which action triggered
      this YYABORT or YYACCEPT.  */
   YYPOPSTACK (yylen);
@@ -2448,7 +2490,7 @@ yyreturn:
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-		  yystos[*yyssp], yyvsp);
+		  yystos[*yyssp], yyvsp, yylsp);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow
@@ -2464,7 +2506,7 @@ yyreturn:
 }
 
 
-#line 472 "gocompiler.y"
+#line 474 "gocompiler.y"
 
 
 int main(int argc, char **argv) {
