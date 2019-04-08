@@ -1,5 +1,9 @@
 #ifndef STRUCTURES_H
 #define STRUCTURES_H
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include "symbol_table.h"
 
 typedef struct _s9 {
         char* id;
@@ -57,9 +61,11 @@ typedef struct _s2 {
         struct _s2* next;
 } is_vardec_list;
 
-typedef struct _s1 {
+typedef struct _s1 { //node of a linked list of all programs
     is_vardec_list* vlist;
     is_statement_list* slist;
+	table_element * symtab;
+	struct _s1 * next;
 } is_program;
 
 #endif

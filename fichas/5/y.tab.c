@@ -100,8 +100,7 @@
 
 int yylex (void);
 void yyerror(char* s);
-
-is_program* myprogram;
+is_program * my_program_list;
 
 
 
@@ -125,7 +124,7 @@ is_program* myprogram;
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 25 "ficha5.exemplo.y"
+#line 24 "ficha5.exemplo.y"
 {
     char *id;
     is_program* ip;
@@ -135,7 +134,7 @@ typedef union YYSTYPE
     is_statement* is;
 }
 /* Line 193 of yacc.c.  */
-#line 139 "y.tab.c"
+#line 138 "y.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -160,7 +159,7 @@ typedef struct YYLTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 164 "y.tab.c"
+#line 163 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -377,16 +376,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  4
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   14
+#define YYLAST   27
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  11
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  6
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  10
+#define YYNRULES  11
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  18
+#define YYNSTATES  23
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
@@ -432,23 +431,24 @@ static const yytype_uint8 yytranslate[] =
    YYRHS.  */
 static const yytype_uint8 yyprhs[] =
 {
-       0,     0,     3,     9,    10,    13,    16,    19,    22,    23,
-      26
+       0,     0,     3,    10,    16,    17,    20,    23,    26,    29,
+      30,    33
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-      12,     0,    -1,     6,    13,     7,    15,     8,    -1,    -1,
-      13,    14,    -1,     3,    10,    -1,     5,    10,    -1,     4,
-      10,    -1,    -1,    15,    16,    -1,     9,    10,    -1
+      12,     0,    -1,    12,     6,    13,     7,    15,     8,    -1,
+       6,    13,     7,    15,     8,    -1,    -1,    13,    14,    -1,
+       3,    10,    -1,     5,    10,    -1,     4,    10,    -1,    -1,
+      15,    16,    -1,     9,    10,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    34,    34,    38,    39,    42,    43,    44,    47,    48,
-      51
+       0,    34,    34,    35,    38,    39,    42,    43,    44,    47,
+      48,    51
 };
 #endif
 
@@ -476,15 +476,15 @@ static const yytype_uint16 yytoknum[] =
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    11,    12,    13,    13,    14,    14,    14,    15,    15,
-      16
+       0,    11,    12,    12,    13,    13,    14,    14,    14,    15,
+      15,    16
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     5,     0,     2,     2,     2,     2,     0,     2,
-       2
+       0,     2,     6,     5,     0,     2,     2,     2,     2,     0,
+       2,     2
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -492,29 +492,31 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     3,     0,     0,     1,     0,     0,     0,     8,     4,
-       5,     7,     6,     0,     2,     0,     9,    10
+       0,     4,     0,     0,     1,     4,     0,     0,     0,     9,
+       5,     0,     6,     8,     7,     0,     9,     3,     0,    10,
+       0,    11,     2
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     3,     9,    13,    16
+      -1,     2,     3,    10,    15,    19
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -4
+#define YYPACT_NINF -7
 static const yytype_int8 yypact[] =
 {
-      -1,    -4,     3,    -3,    -4,     0,     1,     2,    -4,    -4,
-      -4,    -4,    -4,    -2,    -4,     4,    -4,    -4
+       6,    -7,     0,    -2,    -7,    -7,    -6,     8,     9,    -7,
+      -7,     4,    -7,    -7,    -7,     5,    -7,    -7,    10,    -7,
+       7,    -7,    -7
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -4,    -4,    -4,    -4,    -4,    -4
+      -7,    -7,    12,    -7,    11,    -7
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -524,22 +526,25 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-       5,     6,     7,     4,     8,     1,    14,    15,     0,     0,
-      10,    11,    12,     0,    17
+       4,     6,     7,     8,    12,     9,     5,     6,     7,     8,
+       0,    16,     1,    17,    18,    22,    18,    11,    13,    14,
+      21,     0,     0,     0,     0,     0,     0,    20
 };
 
 static const yytype_int8 yycheck[] =
 {
-       3,     4,     5,     0,     7,     6,     8,     9,    -1,    -1,
-      10,    10,    10,    -1,    10
+       0,     3,     4,     5,    10,     7,     6,     3,     4,     5,
+      -1,     7,     6,     8,     9,     8,     9,     5,    10,    10,
+      10,    -1,    -1,    -1,    -1,    -1,    -1,    16
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     6,    12,    13,     0,     3,     4,     5,     7,    14,
-      10,    10,    10,    15,     8,     9,    16,    10
+       0,     6,    12,    13,     0,     6,     3,     4,     5,     7,
+      14,    13,    10,    10,    10,    15,     7,     8,     9,    16,
+      15,    10,     8
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1376,53 +1381,58 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 35 "ficha5.exemplo.y"
-    {(yyval.ip)=myprogram=insert_program((yyvsp[(2) - (5)].ivl), (yyvsp[(4) - (5)].isl));}
+#line 34 "ficha5.exemplo.y"
+    {(yyval.ip) = my_program_list = insert_program((yyvsp[(3) - (6)].ivl), (yyvsp[(5) - (6)].isl), my_program_list);}
     break;
 
   case 3:
+#line 35 "ficha5.exemplo.y"
+    {(yyval.ip) = my_program_list = insert_program((yyvsp[(2) - (5)].ivl), (yyvsp[(4) - (5)].isl), my_program_list);}
+    break;
+
+  case 4:
 #line 38 "ficha5.exemplo.y"
     {(yyval.ivl)=NULL;}
     break;
 
-  case 4:
+  case 5:
 #line 39 "ficha5.exemplo.y"
     {(yyval.ivl)=insert_vardec_list((yyvsp[(1) - (2)].ivl),(yyvsp[(2) - (2)].iv));}
     break;
 
-  case 5:
+  case 6:
 #line 42 "ficha5.exemplo.y"
     {(yyval.iv)=insert_integer_dec((yyvsp[(2) - (2)].id), (yylsp[(2) - (2)]).first_line, (yylsp[(2) - (2)]).first_column);}
     break;
 
-  case 6:
+  case 7:
 #line 43 "ficha5.exemplo.y"
     {(yyval.iv)=insert_character_dec((yyvsp[(2) - (2)].id), (yylsp[(2) - (2)]).first_line, (yylsp[(2) - (2)]).first_column);}
     break;
 
-  case 7:
+  case 8:
 #line 44 "ficha5.exemplo.y"
     {(yyval.iv)=insert_double_dec((yyvsp[(2) - (2)].id), (yylsp[(2) - (2)]).first_line, (yylsp[(2) - (2)]).first_column);}
     break;
 
-  case 8:
+  case 9:
 #line 47 "ficha5.exemplo.y"
     {(yyval.isl)=NULL;}
     break;
 
-  case 9:
+  case 10:
 #line 48 "ficha5.exemplo.y"
     {(yyval.isl)=insert_statement_list((yyvsp[(1) - (2)].isl), (yyvsp[(2) - (2)].is));}
     break;
 
-  case 10:
+  case 11:
 #line 51 "ficha5.exemplo.y"
     {(yyval.is)=insert_write_statement((yyvsp[(2) - (2)].id), (yylsp[(2) - (2)]).first_line, (yylsp[(2) - (2)]).first_column);}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1426 "y.tab.c"
+#line 1436 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);

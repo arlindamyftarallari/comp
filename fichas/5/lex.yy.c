@@ -483,7 +483,7 @@ int yycolumn = 1;
 
 table_element *symtab=NULL;
 
-extern is_program* myprogram;
+extern is_program* my_program_list;
 #line 488 "lex.yy.c"
 
 #define INITIAL 0
@@ -1815,12 +1815,28 @@ void yyfree (void * ptr )
 
 int main(int argc, char **argv) {
     int errors;
+	int i=0;
 
     yyparse();
-    errors=check_program(myprogram);
-    if(errors>0)
-        printf("The program has %d errors!\n", errors);
-    show_table();
+
+	is_program * aux = my_program_list;
+
+	if (aux != NULL) { //there is at least one program
+		
+		errors = check_program(aux);
+		if (errors>0) printf("Program %d has %d errors\n", i, errors);
+		show_table(aux->symtab);
+
+		while (aux->next != NULL) { //there is more than one program
+			i++;
+			errors = check_program(aux->next);
+			if (errors > 0) printf("Program %d has %d errors\n", i, errors);
+			show_table(aux->next->symtab);
+			aux = aux->next;
+		}
+
+	}
+	
     yylex_destroy();
     return 0;
 }

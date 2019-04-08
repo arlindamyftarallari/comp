@@ -64,7 +64,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 25 "ficha5.exemplo.y"
+#line 24 "ficha5.exemplo.y"
 {
     char *id;
     is_program* ip;

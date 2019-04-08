@@ -4,14 +4,28 @@
 #include <string.h>
 #include <stdio.h>
 
-is_program* insert_program(is_vardec_list* ivl, is_statement_list* isl)
+is_program* insert_program(is_vardec_list* ivl, is_statement_list* isl, is_program* my_program_list)
 {
-	is_program* ip=(is_program*)malloc(sizeof(is_program));
+	is_program* ip = (is_program*)malloc(sizeof(is_program));
 
-	ip->vlist=ivl;
-	ip->slist=isl;
+	ip->vlist = ivl;
+	ip->slist = isl;
+	ip->next = NULL;
+	ip->symtab = NULL;
 
-	return ip;
+	if (my_program_list == NULL) { //my_program_list is empty -> put the new program in the head of the list
+		my_program_list = ip;
+	}
+
+	else { //it is not empty... put it at the end of the list
+		is_program * aux = my_program_list;
+
+		while (aux->next != NULL) aux = aux->next;
+
+		aux->next = ip;
+	}
+
+	return my_program_list;
 }
 
 is_vardec_list* insert_vardec_list(is_vardec_list* head, is_vardec* iv)

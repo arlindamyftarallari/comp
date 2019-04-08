@@ -7,8 +7,7 @@
 
 int yylex (void);
 void yyerror(char* s);
-
-is_program* myprogram;
+is_program * my_program_list;
 
 %}
 
@@ -31,9 +30,10 @@ is_program* myprogram;
     is_statement* is;
 }
 %%
-program: LET vardeclist IN statementlist END
-                                        {$$=myprogram=insert_program($2, $4);} 
-    ;
+
+program: program LET vardeclist IN statementlist END	{$$ = my_program_list = insert_program($3, $5, my_program_list);}
+	| LET vardeclist IN statementlist END				{$$ = my_program_list = insert_program($2, $4, my_program_list);}
+	;
 
 vardeclist: /*empty*/                   {$$=NULL;}
     | vardeclist vardec             	{$$=insert_vardec_list($1,$2);}
