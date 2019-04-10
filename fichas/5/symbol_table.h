@@ -9,8 +9,8 @@ typedef struct _t1{
 	struct _t1 *next;
 } table_element;
 
-table_element *insert_el(char *str, basic_type t, table_element * symtab);
-void show_table(table_element * symtab);
-table_element *search_el(char *str, table_element * symtab);
+table_element *insert_el(char *str, basic_type t, int symtab_index);
+void show_table(int symtab_index);
+table_element *search_el(char *str, int symtab_index);
 
 #endif

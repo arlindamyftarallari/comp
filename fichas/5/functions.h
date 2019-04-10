@@ -1,6 +1,6 @@
 #include "structures.h"
 
-is_program* insert_program(is_vardec_list* ivl, is_statement_list* isl, is_program* my_program_list);
+is_program* insert_program(is_vardec_list* ivl, is_statement_list* isl);
 is_vardec_list* insert_vardec_list(is_vardec_list* head, is_vardec* iv);
 is_vardec* insert_integer_dec(char* id, int line, int column);
 is_vardec* insert_character_dec(char* id, int line, int column);

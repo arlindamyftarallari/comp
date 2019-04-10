@@ -4,7 +4,10 @@
 #include <string.h>
 #include <stdio.h>
 
-is_program* insert_program(is_vardec_list* ivl, is_statement_list* isl, is_program* my_program_list)
+extern is_program * my_program_list;
+extern table_element * symtab_list[10];
+
+is_program* insert_program(is_vardec_list* ivl, is_statement_list* isl)
 {
 	is_program* ip = (is_program*)malloc(sizeof(is_program));
 
@@ -30,19 +33,22 @@ is_program* insert_program(is_vardec_list* ivl, is_statement_list* isl, is_progr
 
 is_vardec_list* insert_vardec_list(is_vardec_list* head, is_vardec* iv)
 {
-        is_vardec_list* ivl=(is_vardec_list*)malloc(sizeof(is_vardec_list));
-        is_vardec_list* tmp;
 
-        ivl->val=iv;
-        ivl->next=NULL;
+	//creates a new node of the vardec list and fills it with the vardec
+	is_vardec_list* ivl=(is_vardec_list*)malloc(sizeof(is_vardec_list));
+	is_vardec_list* tmp;
 
-        if(head==NULL)
-                return ivl;
+	ivl->val=iv;
+	ivl->next=NULL;
 
-        for(tmp=head; tmp->next; tmp=tmp->next);
-        tmp->next=ivl;
+	if(head==NULL)
+		return ivl;
 
-        return head;
+	for(tmp=head; tmp->next; tmp=tmp->next);
+	tmp->next=ivl; //adds the new node at the end of the vardec list
+	
+
+	return head;
 }
 
 is_vardec* insert_integer_dec(char* id, int line, int column)
@@ -50,7 +56,7 @@ is_vardec* insert_integer_dec(char* id, int line, int column)
 	is_vardec* iv=(is_vardec*)malloc(sizeof(is_vardec));
 	is_integer_dec* iid=(is_integer_dec*)malloc(sizeof(is_integer_dec));
 	
-	iid->id=(char*)strdup(id);  /* Por precaucao. Seria apenas necessario copiar o ponteiro, pois o strdup ja foi feito atras*/
+	iid->id=(char*)strdup(id);
 	iid->line = line;
 	iid->column = column;
 	iv->disc_d=d_integer;
@@ -63,34 +69,34 @@ is_vardec* insert_integer_dec(char* id, int line, int column)
 
 is_vardec* insert_character_dec(char* id, int line, int column)
 {
-        is_vardec* iv=(is_vardec*)malloc(sizeof(is_vardec));
-        is_character_dec* icd=(is_character_dec*)malloc(sizeof(is_character_dec));
+	is_vardec* iv=(is_vardec*)malloc(sizeof(is_vardec));
+	is_character_dec* icd=(is_character_dec*)malloc(sizeof(is_character_dec));
 
-        icd->id=(char*)strdup(id);  /* Por precaucao. Seria apenas necessario copiar o ponteiro, pois o strdup ja foi feito atras*/
-		icd->line = line;
-		icd->column = column;
-        iv->disc_d=d_character;
-        iv->data_vardec.u_character_dec=icd;
+	icd->id=(char*)strdup(id);
+	icd->line = line;
+	icd->column = column;
+	iv->disc_d=d_character;
+	iv->data_vardec.u_character_dec=icd;
 
 	//printf("Inserted a new char var: %s\n", iv->data_vardec.u_character_dec->id);
 
-        return iv;
+	return iv;
 }
 
 is_vardec* insert_double_dec(char* id, int line, int column)
 {
-        is_vardec* iv=(is_vardec*)malloc(sizeof(is_vardec));
-        is_double_dec* idd=(is_double_dec*)malloc(sizeof(is_double_dec));
+	is_vardec* iv=(is_vardec*)malloc(sizeof(is_vardec));
+	is_double_dec* idd=(is_double_dec*)malloc(sizeof(is_double_dec));
 
-        idd->id=(char*)strdup(id);  /* Por precaucao. Seria apenas necessario copiar o ponteiro, pois o strdup ja foi feito atras*/
-		idd->line = line;
-		idd->column = column;
-        iv->disc_d=d_double;
-        iv->data_vardec.u_double_dec=idd;
+	idd->id=(char*)strdup(id);
+	idd->line = line;
+	idd->column = column;
+	iv->disc_d=d_double;
+	iv->data_vardec.u_double_dec=idd;
 
 	//printf("Inserted a new double var: %s\n", iv->data_vardec.u_double_dec->id);
 
-        return iv;
+	return iv;
 }
 
 

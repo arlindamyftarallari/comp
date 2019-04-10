@@ -481,10 +481,9 @@ char *yytext;
 
 int yycolumn = 1;
 
-table_element *symtab=NULL;
-
 extern is_program* my_program_list;
-#line 488 "lex.yy.c"
+table_element * symtab_list[10];
+#line 487 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -666,9 +665,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 21 "ficha5.exemplo.l"
+#line 20 "ficha5.exemplo.l"
 
-#line 672 "lex.yy.c"
+#line 671 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -753,66 +752,66 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 22 "ficha5.exemplo.l"
+#line 21 "ficha5.exemplo.l"
 {LOCATION; return INTEGER;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 23 "ficha5.exemplo.l"
+#line 22 "ficha5.exemplo.l"
 {LOCATION; return DOUBLE;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 24 "ficha5.exemplo.l"
+#line 23 "ficha5.exemplo.l"
 {LOCATION; return CHARACTER;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 25 "ficha5.exemplo.l"
+#line 24 "ficha5.exemplo.l"
 {LOCATION; return LET;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 26 "ficha5.exemplo.l"
+#line 25 "ficha5.exemplo.l"
 {LOCATION; return IN;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 27 "ficha5.exemplo.l"
+#line 26 "ficha5.exemplo.l"
 {LOCATION; return END;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 28 "ficha5.exemplo.l"
+#line 27 "ficha5.exemplo.l"
 {LOCATION; return WRITE;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 29 "ficha5.exemplo.l"
+#line 28 "ficha5.exemplo.l"
 {LOCATION; yylval.id = strdup(yytext); return IDENTIFIER;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 30 "ficha5.exemplo.l"
+#line 29 "ficha5.exemplo.l"
 {yycolumn+=yyleng;}
 	YY_BREAK
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 31 "ficha5.exemplo.l"
+#line 30 "ficha5.exemplo.l"
 {yylineno++; yycolumn=1;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 32 "ficha5.exemplo.l"
+#line 31 "ficha5.exemplo.l"
 {yycolumn+=yyleng; return yytext[0];}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 33 "ficha5.exemplo.l"
+#line 32 "ficha5.exemplo.l"
 ECHO;
 	YY_BREAK
-#line 816 "lex.yy.c"
+#line 815 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1809,32 +1808,24 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 33 "ficha5.exemplo.l"
+#line 32 "ficha5.exemplo.l"
 
 
 
 int main(int argc, char **argv) {
     int errors;
 	int i=0;
+	int symtab_index = 0;
 
     yyparse();
 
 	is_program * aux = my_program_list;
 
-	if (aux != NULL) { //there is at least one program
-		
-		errors = check_program(aux);
-		if (errors>0) printf("Program %d has %d errors\n", i, errors);
-		show_table(aux->symtab);
-
-		while (aux->next != NULL) { //there is more than one program
-			i++;
-			errors = check_program(aux->next);
-			if (errors > 0) printf("Program %d has %d errors\n", i, errors);
-			show_table(aux->next->symtab);
-			aux = aux->next;
-		}
-
+	while (aux != NULL) {
+		errors = check_program(aux, symtab_index);
+		if (errors > 0) printf("Program %d has %d errors\n", i, errors);
+		show_table(symtab_index);
+		i++; aux = aux->next; symtab_index++;
 	}
 	
     yylex_destroy();

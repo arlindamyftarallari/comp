@@ -1382,12 +1382,12 @@ yyreduce:
     {
         case 2:
 #line 34 "ficha5.exemplo.y"
-    {(yyval.ip) = my_program_list = insert_program((yyvsp[(3) - (6)].ivl), (yyvsp[(5) - (6)].isl), my_program_list);}
+    {(yyval.ip) = my_program_list = insert_program((yyvsp[(3) - (6)].ivl), (yyvsp[(5) - (6)].isl));}
     break;
 
   case 3:
 #line 35 "ficha5.exemplo.y"
-    {(yyval.ip) = my_program_list = insert_program((yyvsp[(2) - (5)].ivl), (yyvsp[(4) - (5)].isl), my_program_list);}
+    {(yyval.ip) = my_program_list = insert_program((yyvsp[(2) - (5)].ivl), (yyvsp[(4) - (5)].isl));}
     break;
 
   case 4:

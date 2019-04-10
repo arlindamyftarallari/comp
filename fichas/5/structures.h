@@ -11,7 +11,6 @@ typedef struct _s9 {
 		int column;
 }is_write_statement;
 
-/*NOTA! Podia simplificar-se, mas mantemos as convencoes para demonstrar o conceito*/
 typedef enum {d_write} disc_write;
 
 typedef struct _s8 {
@@ -47,14 +46,16 @@ typedef struct _s6 {
 typedef enum {d_integer, d_character, d_double} disc_vardec;
 
 typedef struct _s3 {
-        disc_vardec disc_d;
-        union{                  /* NOTA! Esta parte pode simplificar para ficar apenas um campo a char*. Mantemos assim para mostrar os metodo "comum"*/
-                is_integer_dec* u_integer_dec;
+        disc_vardec disc_d; //disc_d can be d_integer, d_character or d_double
+        union {
+			
+			/* data vardec can */
+
+                is_integer_dec* u_integer_dec; 
                 is_character_dec* u_character_dec;
                 is_double_dec* u_double_dec;
-        }data_vardec;
+        } data_vardec;
 } is_vardec;
-
 
 typedef struct _s2 {
         is_vardec* val;

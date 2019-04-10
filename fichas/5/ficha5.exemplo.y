@@ -31,8 +31,8 @@ is_program * my_program_list;
 }
 %%
 
-program: program LET vardeclist IN statementlist END	{$$ = my_program_list = insert_program($3, $5, my_program_list);}
-	| LET vardeclist IN statementlist END				{$$ = my_program_list = insert_program($2, $4, my_program_list);}
+program: program LET vardeclist IN statementlist END	{$$ = my_program_list = insert_program($3, $5);}
+	| LET vardeclist IN statementlist END				{$$ = my_program_list = insert_program($2, $4);}
 	;
 
 vardeclist: /*empty*/                   {$$=NULL;}

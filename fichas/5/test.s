@@ -1,5 +1,5 @@
 let 
-	integer 	n
+	integer n
 	double 	x
 	char 	z
 in
@@ -10,7 +10,7 @@ end
 let 
 	integer a
 	double n
-	char n
+	char x
 
 in 
 	write a
