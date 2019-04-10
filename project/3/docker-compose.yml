@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  worker:
+    build: .
+    volumes:
+      - ".:/comp"
+    command: ls
