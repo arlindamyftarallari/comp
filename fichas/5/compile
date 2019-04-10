@@ -1,9 +1,11 @@
 lex ficha5.exemplo.l &&
 yacc -d ficha5.exemplo.y &&
-clang -g -o f5 lex.yy.c y.tab.c semantics.c functions.c symbol_table.c 
+clang-3.8 -g -o f5 lex.yy.c y.tab.c semantics.c functions.c symbol_table.c 
 echo
 echo Compilacao de test.s 
 ./f5 < test.s
 echo
 echo Compilacao de test2.s
 ./f5 < test2.s
+
+valgrind --leak-check=full --show-leak-kinds=all ./f5 < test.s
