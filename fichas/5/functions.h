@@ -8,3 +8,4 @@ is_vardec* insert_double_dec(char* id, int line, int column);
 is_statement_list* insert_statement_list(is_statement_list* head, is_statement* is);
 is_statement* insert_write_statement(char* id, int line, int column);
 
+

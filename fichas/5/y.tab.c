@@ -1392,42 +1392,42 @@ yyreduce:
 
   case 4:
 #line 38 "ficha5.exemplo.y"
-    {(yyval.ivl)=NULL;}
+    {(yyval.ivl) = NULL;}
     break;
 
   case 5:
 #line 39 "ficha5.exemplo.y"
-    {(yyval.ivl)=insert_vardec_list((yyvsp[(1) - (2)].ivl),(yyvsp[(2) - (2)].iv));}
+    {(yyval.ivl) = insert_vardec_list((yyvsp[(1) - (2)].ivl),(yyvsp[(2) - (2)].iv));}
     break;
 
   case 6:
 #line 42 "ficha5.exemplo.y"
-    {(yyval.iv)=insert_integer_dec((yyvsp[(2) - (2)].id), (yylsp[(2) - (2)]).first_line, (yylsp[(2) - (2)]).first_column);}
+    {(yyval.iv) = insert_integer_dec((yyvsp[(2) - (2)].id), (yylsp[(2) - (2)]).first_line, (yylsp[(2) - (2)]).first_column);}
     break;
 
   case 7:
 #line 43 "ficha5.exemplo.y"
-    {(yyval.iv)=insert_character_dec((yyvsp[(2) - (2)].id), (yylsp[(2) - (2)]).first_line, (yylsp[(2) - (2)]).first_column);}
+    {(yyval.iv) = insert_character_dec((yyvsp[(2) - (2)].id), (yylsp[(2) - (2)]).first_line, (yylsp[(2) - (2)]).first_column);}
     break;
 
   case 8:
 #line 44 "ficha5.exemplo.y"
-    {(yyval.iv)=insert_double_dec((yyvsp[(2) - (2)].id), (yylsp[(2) - (2)]).first_line, (yylsp[(2) - (2)]).first_column);}
+    {(yyval.iv) = insert_double_dec((yyvsp[(2) - (2)].id), (yylsp[(2) - (2)]).first_line, (yylsp[(2) - (2)]).first_column);}
     break;
 
   case 9:
 #line 47 "ficha5.exemplo.y"
-    {(yyval.isl)=NULL;}
+    {(yyval.isl) = NULL;}
     break;
 
   case 10:
 #line 48 "ficha5.exemplo.y"
-    {(yyval.isl)=insert_statement_list((yyvsp[(1) - (2)].isl), (yyvsp[(2) - (2)].is));}
+    {(yyval.isl) = insert_statement_list((yyvsp[(1) - (2)].isl), (yyvsp[(2) - (2)].is));}
     break;
 
   case 11:
 #line 51 "ficha5.exemplo.y"
-    {(yyval.is)=insert_write_statement((yyvsp[(2) - (2)].id), (yylsp[(2) - (2)]).first_line, (yylsp[(2) - (2)]).first_column);}
+    {(yyval.is) = insert_write_statement((yyvsp[(2) - (2)].id), (yylsp[(2) - (2)]).first_line, (yylsp[(2) - (2)]).first_column);}
     break;
 
 
@@ -1652,7 +1652,7 @@ yyreturn:
 }
 
 
-#line 54 "ficha5.exemplo.y"
+#line 53 "ficha5.exemplo.y"
 
 
 void yyerror(char *msg) {

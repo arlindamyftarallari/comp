@@ -9,9 +9,11 @@ extern table_element * symtab_list[];
 //Insere um novo identificador na cauda de uma lista ligada de simbolo
 table_element *insert_el(char *str, basic_type t, int symtab_index)
 {
-	table_element * newSymbol=(table_element*) malloc(sizeof(table_element));
+	table_element * newSymbol = (table_element*) malloc(sizeof(table_element));
 	table_element * aux;
 	table_element * previous;
+
+	newSymbol->name = (char*)malloc(strlen(str)*sizeof(char));
 
 	strcpy(newSymbol->name, str);
 	newSymbol->type=t;

@@ -1816,6 +1816,7 @@ int main(int argc, char **argv) {
     int errors;
 	int i=0;
 	int symtab_index = 0;
+	table_element * toclean, *nexttoclean;
 
     yyparse();
 
@@ -1828,6 +1829,17 @@ int main(int argc, char **argv) {
 		i++; aux = aux->next; symtab_index++;
 	}
 	
+	//free memory alocated
+	for (int i=0; i<10; i++) {
+		nexttoclean = symtab_list[i];
+		while (nexttoclean != NULL) {
+			free(nexttoclean->name);
+			toclean = nexttoclean;
+			nexttoclean = nexttoclean->next;
+			free(toclean);
+		}
+	}
+
     yylex_destroy();
     return 0;
 }
@@ -1835,6 +1847,3 @@ int main(int argc, char **argv) {
 int yywrap(void){
     return 1;
 }
-/**************************
-*****************************/
-

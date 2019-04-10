@@ -5,6 +5,10 @@
 #include <stdio.h>
 #include "symbol_table.h"
 
+typedef struct _s10 {
+
+} is_assign_statement;
+
 typedef struct _s9 {
         char* id;
 		int line;
@@ -48,9 +52,6 @@ typedef enum {d_integer, d_character, d_double} disc_vardec;
 typedef struct _s3 {
         disc_vardec disc_d; //disc_d can be d_integer, d_character or d_double
         union {
-			
-			/* data vardec can */
-
                 is_integer_dec* u_integer_dec; 
                 is_character_dec* u_character_dec;
                 is_double_dec* u_double_dec;

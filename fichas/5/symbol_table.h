@@ -4,7 +4,7 @@
 typedef enum {integer, character, doub} basic_type;
 
 typedef struct _t1{
-	char name[32];
+	char *name;
 	basic_type type;
 	struct _t1 *next;
 } table_element;
