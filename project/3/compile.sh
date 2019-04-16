@@ -7,7 +7,7 @@
 #Meta 2
 flex gocompiler.l
 yacc -dy gocompiler.y
-clang-3.8 -o gocompiler -Wall -Wno-unused-function *.c
+clang -o gocompiler -Wall -Wno-unused-function *.c
 zip -r gocompiler.zip gocompiler.l gocompiler.y structures.h structures.c
 
 #Meta 3

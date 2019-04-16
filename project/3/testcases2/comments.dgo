@@ -1,0 +1,6 @@
+package main
+
+func main() {
+	a = a * 5
+	/*hello*/ b /*hello*/ = /**/b /*oi*/ * /**/5
+}

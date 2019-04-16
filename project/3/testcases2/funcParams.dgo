@@ -1,0 +1,3 @@
+package main; 
+func main(a int, b string, c int, d float32, e string, f bool, g string, h bool){
+};
