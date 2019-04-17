@@ -342,7 +342,6 @@ os.Args					{
 
 {singlelinecomment}.*	{
 							parse_error=0;
-							LOCATION;
 						}
 
 {commentstart}			{
@@ -372,10 +371,9 @@ os.Args					{
 
 <COMMENT_SEMICOLON>{lineterminator}	{
 										parse_error=0;
-										LOCATION;
 										LINE;
 										if (!handle_token("SEMICOLON", "")) return SEMICOLON;
-										BEGIN 0;
+										BEGIN COMMENT;
 									}
 
 <COMMENT_SEMICOLON><<EOF>>	{
@@ -415,6 +413,12 @@ os.Args					{
 <SEMICOLON_STATE>{singlelinecomment}.*	{
 											parse_error=0;
 											BEGIN 0;
+
+											//setting the location of the SEMICOLON
+											yylloc.first_line = yylloc.last_line = yylineno;
+											yylloc.first_column = yycolumn;
+											yylloc.last_column = yylloc.first_column + 1;
+
 											if (!handle_token("SEMICOLON", "")) return SEMICOLON;
 										}
 <SEMICOLON_STATE>{commentstart}	{
