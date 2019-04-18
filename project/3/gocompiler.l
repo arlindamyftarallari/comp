@@ -22,6 +22,7 @@
 	int handle_token(char * type, char * value);
 	int return_token(int token);
     char result[100] = "";
+	char * errortoken;
 
 	extern int yydebug;
 	int aux;
@@ -357,6 +358,7 @@ os.Args					{
 							parse_error=0;
 							printf("Line %d, column %d: unterminated comment\n", yylloc.first_line, yylloc.first_column);
 							parse_error=1;
+							errortoken = "";
 							return 0;
 						}
 <COMMENT>{commentend}	{
@@ -406,6 +408,7 @@ os.Args					{
 										parse_error=0;
 										LOCATION;
 										parse_error=1;
+										errortoken = "\n";
 										LINE;
 										BEGIN 0;
 										if (!handle_token("SEMICOLON", "")) return SEMICOLON;
@@ -418,7 +421,6 @@ os.Args					{
 											yylloc.first_line = yylloc.last_line = yylineno;
 											yylloc.first_column = yycolumn;
 											yylloc.last_column = yylloc.first_column + 1;
-
 											if (!handle_token("SEMICOLON", "")) return SEMICOLON;
 										}
 <SEMICOLON_STATE>{commentstart}	{
@@ -431,6 +433,7 @@ os.Args					{
 								BEGIN 0;
 								LOCATION;
 								parse_error=1;
+								errortoken = "";
 								if (!handle_token("SEMICOLON", "")) return SEMICOLON;
 							}
 <SEMICOLON_STATE>""/.	{
@@ -448,9 +451,12 @@ os.Args					{
 {lineterminator}		{
 							LOCATION;
 							LINE;
+							parse_error=1;
+							errortoken = "\n";
 						}
 <<EOF>>					{
 							parse_error=1;
+							errortoken = "";
 							return 0;
 						}
 .						{
@@ -477,7 +483,7 @@ int return_token(int token) {
 
 void yyerror(const char * s) {
 	errortag = 1;
-	if (parse_error) printf("Line %d, column %d: %s: %s\n", yylloc.first_line, yylloc.first_column, s, "");
+	if (parse_error) printf("Line %d, column %d: %s: %s\n", yylloc.first_line, yylloc.first_column, s, errortoken);
  	else printf("Line %d, column %d: %s: %s\n", yylineno, (int)(yycolumn-strlen(yytext)), s, yytext);
 }
 
