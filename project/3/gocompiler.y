@@ -7,6 +7,7 @@
 	#include <stdio.h>
 	#include <string.h>
 	#include "structures.h"
+	#include "symbol_table.h"
 
 	#define YYDEBUG 1
 
@@ -563,6 +564,10 @@ int main(int argc, char **argv) {
 			if (!errortag) {
 				print_node(root, 0);
 			}
+		}
+
+		if (strcmp(argv[1], "-s") == 0) {
+			//code for semantic analysing
 		}
 
 		if (strcmp(argv[1], "-debug") == 0) {
