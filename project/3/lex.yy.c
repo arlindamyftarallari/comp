@@ -987,7 +987,7 @@ YY_RULE_SETUP
 							parse_error=0; 
 							LOCATION; 
 							yylval.string = yytext;
-							if (!handle_token("RESERVED", "")) return RESERVED;
+							if (!handle_token("RESERVED", yytext)) return RESERVED;
 						}
 	YY_BREAK
 case 2:

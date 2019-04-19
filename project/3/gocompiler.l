@@ -63,7 +63,7 @@ whitespace          " "|"\t"
 							parse_error=0; 
 							LOCATION; 
 							yylval.string = yytext;
-							if (!handle_token("RESERVED", "")) return RESERVED;
+							if (!handle_token("RESERVED", yytext)) return RESERVED;
 						}
 
 ";"						{
