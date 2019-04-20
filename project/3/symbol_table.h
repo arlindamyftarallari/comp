@@ -26,7 +26,7 @@ typedef struct table_element {
 	struct table_element * next;
 } table_element;
 
-table_element * insert_vardecl(char * identifier, char * type, table_element * symtab);
+table_element * insert_vardecl(char * identifier, char * type, table_element ** symtab);
 table_element * insert_funcdecl(char * identifier, char * return_type);
 table_element * insert_element(table_element * new_symbol, table_element ** symtab);
 

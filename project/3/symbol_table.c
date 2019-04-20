@@ -2,13 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+//#define DEBUG
 
 table_element * global_symtab = NULL;
 table_element * to_print = NULL;
 
 //inserts new variable declaration in the given table
 //variable declarations are part of function declarations too
-table_element * insert_vardecl(char * identifier, char * type, table_element * symtab) {
+table_element * insert_vardecl(char * identifier, char * type, table_element ** symtab) {
+
+	#ifdef DEBUG
+	printf("insert_vardecl\n");
+	#endif
 	
 	table_element * new_symbol = (table_element*)malloc(sizeof(table_element));
 
@@ -22,7 +27,7 @@ table_element * insert_vardecl(char * identifier, char * type, table_element * s
 	new_symbol->decl.var.type = (char*)malloc(strlen(type)*sizeof(char));
 	strcpy(new_symbol->decl.var.type, type);
 
-	return insert_element(new_symbol, &symtab);
+	return insert_element(new_symbol, symtab);
 }
 
 table_element * insert_funcdecl(char * identifier, char * return_type) {
@@ -46,6 +51,10 @@ table_element * insert_funcdecl(char * identifier, char * return_type) {
 }
 
 table_element * insert_element(table_element * new_symbol, table_element ** symtab) {
+
+	#ifdef DEBUG
+	printf("insert_element\n");
+	#endif
 
 	table_element * aux = *symtab;
 	table_element * previous;
@@ -98,7 +107,7 @@ void print_table() {
 
 		//variable declarations
 		if (aux->decl_type == var) {
-			printf("%s\t%s\n", aux->identifier, aux->decl.var.type);
+			printf("%s\t\t%s\n", aux->identifier, aux->decl.var.type);
 		}
 
 		//function declarations
@@ -151,14 +160,14 @@ void print_table() {
 
 		printf(") Symbol Table =====\n");
 
-		printf("return\t%s", aux->decl.func.return_type);
+		printf("return\t\t%s", aux->decl.func.return_type);
 
 		//prints the parameters
 
 		params = aux->decl.func.params;
 
 		while (params != NULL) {
-			printf("\n%s\t%s\tparam", params->identifier, params->decl.var.type);
+			printf("\n%s\t\t%s\tparam", params->identifier, params->decl.var.type);
 			params = params->next;
 		}
 
@@ -167,7 +176,7 @@ void print_table() {
 		params = aux->decl.func.function_vars;
 
 		while (params != NULL) {
-			printf("\n%s\t%s", params->identifier, params->decl.var.type);
+			printf("\n%s\t\t%s", params->identifier, params->decl.var.type);
 			params = params->next;
 		}
 

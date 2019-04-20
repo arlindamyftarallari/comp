@@ -14,7 +14,7 @@
 flex gocompiler.l
 yacc -d gocompiler.y
 clang -o gocompiler -Wall -Wno-unused-function *.c
-zip -r gocompiler.zip gocompiler.l gocompiler.y structures.h structures.c symbol_table.h
+zip -r gocompiler.zip gocompiler.l gocompiler.y abstract_syntax_tree.h abstract_syntax_tree.c symbol_table.h symbol_table.c semantics.h semantics.c
 
 
 #Meta 4
