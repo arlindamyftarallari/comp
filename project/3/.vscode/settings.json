@@ -2,6 +2,8 @@
 	"files.associations": {
 		"*.dgo": "go",
 		"stdlib.h": "c",
-		"symbol_table.h": "c"
+		"symbol_table.h": "c",
+		"stdio.h": "c",
+		"semantics.h": "c"
 	}
 }

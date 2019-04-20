@@ -3,6 +3,9 @@
 #include <string.h>
 #include <stdio.h>
 
+table_element * global_symtab = NULL;
+table_element * to_print = NULL;
+
 //inserts new variable declaration in the given table
 //variable declarations are part of function declarations too
 table_element * insert_vardecl(char * identifier, char * type, table_element * symtab) {
@@ -19,10 +22,10 @@ table_element * insert_vardecl(char * identifier, char * type, table_element * s
 	new_symbol->decl.var.type = (char*)malloc(strlen(type)*sizeof(char));
 	strcpy(new_symbol->decl.var.type, type);
 
-	return insert_element(new_symbol, symtab);
+	return insert_element(new_symbol, &symtab);
 }
 
-table_element * insert_funcdecl(char * identifier, char * return_type, table_element * params, table_element * functionvars) {
+table_element * insert_funcdecl(char * identifier, char * return_type) {
 
 	table_element * new_symbol = (table_element*)malloc(sizeof(table_element));
 
@@ -35,15 +38,16 @@ table_element * insert_funcdecl(char * identifier, char * return_type, table_ele
 
 	new_symbol->decl.func.return_type = (char*)malloc(strlen(return_type)*sizeof(char));
 	strcpy(new_symbol->decl.func.return_type, return_type);
-	new_symbol->decl.func.params = params;
-	new_symbol->decl.func.function_vars = functionvars;
 
-	return insert_element(new_symbol, global_symtab);
+	new_symbol->decl.func.function_vars = NULL;
+	new_symbol->decl.func.params = NULL;
+
+	return insert_element(new_symbol, &global_symtab);
 }
 
-table_element * insert_element(table_element * new_symbol, table_element * symtab) {
+table_element * insert_element(table_element * new_symbol, table_element ** symtab) {
 
-	table_element * aux = symtab;
+	table_element * aux = *symtab;
 	table_element * previous;
 
 	if (aux != NULL) {
@@ -64,8 +68,9 @@ table_element * insert_element(table_element * new_symbol, table_element * symta
 	}
 
 	else {
-		symtab = new_symbol;
+		*symtab = new_symbol;
 	}
+
 	return new_symbol;
 }
 
@@ -116,11 +121,12 @@ void print_table() {
 
 			//function return type
 
-			printf("%s", aux->decl.func.return_type);
+			printf("%s\n", aux->decl.func.return_type);
 
 			//adds this node to be printed after the global symbol table
-			insert_element(aux, to_print);
+			insert_element(aux, &to_print);
 		}
+		aux = aux->next;
 
 	}
 
@@ -169,6 +175,31 @@ void print_table() {
 
 		aux = aux->next;
 	}
+}
 
+void free_table(table_element * symtab) {
+	table_element * to_clean, *next_to_clean;
 
+	next_to_clean = symtab;
+
+	while (next_to_clean != NULL) {
+
+		to_clean = next_to_clean;
+		next_to_clean = next_to_clean->next;
+
+		/* ----- cleaning table element of type VAR ----- */
+		if (to_clean->decl_type == var) {
+			free(to_clean->identifier);
+			free(to_clean->decl.var.type);
+			free(to_clean);
+		}
+		/* ----- cleaning table element of type FUNCTION ----- */
+		else {
+			free(to_clean->identifier);
+			free(to_clean->decl.func.return_type);
+			free_table(to_clean->decl.func.function_vars);
+			free_table(to_clean->decl.func.params);
+			free(to_clean);
+		}
+	}
 }

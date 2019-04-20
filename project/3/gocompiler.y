@@ -6,12 +6,10 @@
 
 	#include <stdio.h>
 	#include <string.h>
-	#include "structures.h"
-	#include "symbol_table.h"
+	#include "semantics.h"
 
 	#define YYDEBUG 1
 
-	struct node * root = NULL;
 	int yylex(void);
 	int yylex_destroy();
 	void yyerror(const char *s);
@@ -31,7 +29,7 @@
 %token <string> RESERVED STRLIT INTLIT ID REALLIT
  
 %type <node> Program FuncDeclaration Declarations Parameters Expr VarDeclaration ParametersOpt FuncBody Type 
-%type <node >INT BOOL STRING VarSpec TypeOpt FuncInvocation CallParams OptCallParams IdOpt varsAndStatementsOpt 
+%type <node> INT BOOL STRING VarSpec TypeOpt FuncInvocation CallParams OptCallParams IdOpt varsAndStatementsOpt 
 %type <node> Statement ElseOpt ExprOpt ParseArgs printArgs VarsAndStatements OptParam StatementOpt
 
 %left COMMA
@@ -107,6 +105,9 @@ VarSpec: ID IdOpt Type
 			struct node * varDecl = create_node("VarDecl", "");
 			add_child(varDecl, $3);
 			add_child(varDecl, create_node("Id", $1));
+
+			//when there are several variable declarations inside one VarSpec
+			//we need to make new nodes VarDecl for each one and make them siblings
 			
 			if ($2 != NULL) {
 				struct node * newId = $2;
@@ -191,7 +192,8 @@ ParametersOpt: Parameters
 		}
 	|
 		{
-			$$ = create_node("FuncParams", ""); //this node is not going to have any sons, but it is mandatory
+			$$ = create_node("FuncParams", ""); 
+			//this node is not going to have any sons, but it is mandatory
 		}
 	;
 
@@ -568,6 +570,12 @@ int main(int argc, char **argv) {
 
 		if (strcmp(argv[1], "-s") == 0) {
 			//code for semantic analysing
+			yyparse();
+			check_root(root);
+			print_table();
+
+			//cleaning up
+			free_table(global_symtab);
 		}
 
 		if (strcmp(argv[1], "-debug") == 0) {

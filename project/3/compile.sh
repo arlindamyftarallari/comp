@@ -13,7 +13,7 @@
 #Meta 3
 flex gocompiler.l
 yacc -d gocompiler.y
-clang-3.8 -o gocompiler -Wall -Wno-unused-function *.c
+clang -o gocompiler -Wall -Wno-unused-function *.c
 zip -r gocompiler.zip gocompiler.l gocompiler.y structures.h structures.c symbol_table.h
 
 

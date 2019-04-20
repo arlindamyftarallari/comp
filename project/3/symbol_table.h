@@ -26,14 +26,14 @@ typedef struct table_element {
 	struct table_element * next;
 } table_element;
 
-table_element * global_symtab = NULL;
-
-table_element * to_print = NULL; //this list keeps all the function symbol tables to print after the global symbol table
-
 table_element * insert_vardecl(char * identifier, char * type, table_element * symtab);
-table_element * insert_funcdecl(char * identifier, char * return_type, table_element * params, table_element * functionvars);
-table_element * insert_element(table_element * new_symbol, table_element * symtab);
+table_element * insert_funcdecl(char * identifier, char * return_type);
+table_element * insert_element(table_element * new_symbol, table_element ** symtab);
 
 table_element * search_element(char * identifier, table_element * symtab);
 
 void print_table();
+void free_table(table_element * symtab);
+
+extern table_element * global_symtab;
+extern table_element * to_print;
