@@ -1,0 +1,11 @@
+package main;
+
+int a = 5 /* teste o que devia dar */ 1+1
+
+// nao pode dar nada
+
+var ze, manel ,logo float32
+
+qualquer coisa { } //comentario  
+
+int float32 { } /* 

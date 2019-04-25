@@ -155,46 +155,155 @@ void annotate_tree(struct node * node) {
 	}
 	else if (strcmp(node->type, "Not") == 0) {
 		annotate_tree(node->children[0]);
+		annotate_node(node->children[0]->annotation)
 
 	}
 	else if (strcmp(node->type, "Minus") == 0) {
 		annotate_tree(node->children[0]);
+		annotate_node(node->children[0]->annotation)
 	}
 	else if (strcmp(node->type, "Plus") == 0) {
 		annotate_tree(node->children[0]);
+		annotate_node(node->children[0]->annotation)
 	}
 	else if(strcmp(node->type, "Or") == 0) {
 		annotate_tree(node->children[0]);
 		annotate_tree(node->children[1]);
+		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+			/* ERROR */
+			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
+													node->line,
+													node->column,
+													node->type,
+													node->children[0]->annotation,
+													node->children[1]->annotation);
+			annotate_node(node, "undef");
+		}
+		else { //same type
+			annotate_node(node, "bool");
+		}
+
+
 	}
 	else if(strcmp(node->type, "And") == 0) {
 		annotate_tree(node->children[0]);
 		annotate_tree(node->children[1]);
+		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+			/* ERROR */
+			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
+													node->line,
+													node->column,
+													node->type,
+													node->children[0]->annotation,
+													node->children[1]->annotation);
+			annotate_node(node, "undef");
+		}
+		else { //same type
+			annotate_node(node, "bool");
+		}
 	}
 	else if(strcmp(node->type, "Lt") == 0) {
 		annotate_tree(node->children[0]);
 		annotate_tree(node->children[1]);
+		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+			/* ERROR */
+			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
+													node->line,
+													node->column,
+													node->type,
+													node->children[0]->annotation,
+													node->children[1]->annotation);
+			annotate_node(node, "undef");
+		}
+		else { //same type
+			annotate_node(node, "bool");
+		}
 	}
 	else if(strcmp(node->type, "Gt") == 0) {
 		annotate_tree(node->children[0]);
 		annotate_tree(node->children[1]);
+		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+			/* ERROR */
+			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
+													node->line,
+													node->column,
+													node->type,
+													node->children[0]->annotation,
+													node->children[1]->annotation);
+			annotate_node(node, "undef");
+		}
+		else { //same type
+			annotate_node(node, "bool");
+		}
 	}
 	else if(strcmp(node->type, "Eq") == 0) {
 		annotate_tree(node->children[0]);
 		annotate_tree(node->children[1]);
+		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+			/* ERROR */
+			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
+													node->line,
+													node->column,
+													node->type,
+													node->children[0]->annotation,
+													node->children[1]->annotation);
+			annotate_node(node, "undef");
+		}
+		else { //same type
+			annotate_node(node, "bool");
+		}
 
 	}
 	else if(strcmp(node->type, "Ne") == 0) {
 		annotate_tree(node->children[0]);
 		annotate_tree(node->children[1]);
+		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+			/* ERROR */
+			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
+													node->line,
+													node->column,
+													node->type,
+													node->children[0]->annotation,
+													node->children[1]->annotation);
+			annotate_node(node, "undef");
+		}
+		else { //same type
+			annotate_node(node, "bool");
+		}
 	}
 	else if(strcmp(node->type, "Le") == 0) {
 		annotate_tree(node->children[0]);
 		annotate_tree(node->children[1]);
+		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+			/* ERROR */
+			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
+													node->line,
+													node->column,
+													node->type,
+													node->children[0]->annotation,
+													node->children[1]->annotation);
+			annotate_node(node, "undef");
+		}
+		else { //same type
+			annotate_node(node, "bool");
+		}
 	}
 	else if(strcmp(node->type, "Ge") == 0) {
 		annotate_tree(node->children[0]);
 		annotate_tree(node->children[1]);
+		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+			/* ERROR */
+			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
+													node->line,
+													node->column,
+													node->type,
+													node->children[0]->annotation,
+													node->children[1]->annotation);
+			annotate_node(node, "undef");
+		}
+		else { //same type
+			annotate_node(node, "bool");
+		}
 	}
 	else if(strcmp(node->type, "Add") == 0) {
 		annotate_tree(node->children[0]);
@@ -271,6 +380,7 @@ void annotate_tree(struct node * node) {
 	else if(strcmp(node->type, "Mod") == 0) {
 		annotate_tree(node->children[0]);
 		annotate_tree(node->children[1]);
+		annotate_node(node, "int")
 	}
 
 	else {
