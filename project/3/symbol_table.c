@@ -122,7 +122,7 @@ void print_table() {
 
 				while (params->next != NULL) {
 					params = params->next;
-					printf(", %s", params->decl.var.type);
+					printf(",%s", params->decl.var.type);
 				}
 			}
 
@@ -154,7 +154,7 @@ void print_table() {
 
 			while (params->next != NULL) {
 					params = params->next;
-					printf(", %s", params->decl.var.type);
+					printf(",%s", params->decl.var.type);
 				}
 		}
 

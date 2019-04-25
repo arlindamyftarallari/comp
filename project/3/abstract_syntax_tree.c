@@ -1,7 +1,8 @@
 #include "abstract_syntax_tree.h"
+#include "symbol_table.h"
 #include <unistd.h>
 //function to create a new node of type "type" and value "value"
-struct node * create_node (char* type, char* value) {
+struct node * create_node (char* type, char* value, int line, int column) {
 	
 	struct node *new = (struct node *)malloc(sizeof(struct node));
 
@@ -10,6 +11,8 @@ struct node * create_node (char* type, char* value) {
 	new->number_children = 0;
 	new->parent = NULL;
 	new->bro = NULL;
+	new->line = line;
+	new->column = column;
 
 	//printf("created new node %s(%s)\n\n", type, value);
 	return new;
@@ -91,6 +94,62 @@ void print_node(struct node * root, int depth) {
 
 	free(root);
 
+}
+
+void print_annotated_node(struct node * root, int depth) {
+	char * points = "";
+	int i;
+
+	if (root == NULL) return;
+
+	for (i=0; i<depth; i++) {
+		printf("..");
+	}
+
+	if (strcmp(root->value, "") == 0) {
+		printf("%s%s", points, root->type);
+	}
+	else {
+		printf("%s%s(%s)", points, root->type, root->value);
+	}
+
+	if (strcmp(root->annotation, "") != 0) {
+		printf(" - %s\n", root->annotation);
+	}
+	else printf("\n");
+}
+
+void annotate_node(struct node * node, char * annotation) {
+	node->annotation = (char*)malloc(strlen(annotation)*sizeof(char));
+	strcpy(node->annotation, annotation);
+}
+
+void annotate_tree(struct node * node) {
+
+	if (strcmp(node->type, "Intlit") == 0) {
+		annotate_node(node, "int");
+	} 
+	else if (strcmp(node->type, "Reallit") == 0) {
+		annotate_node(node, "float32");
+	}
+	else if (strcmp(node->type, "Id") == 0) {
+		//search for the symbol in the symbol table
+		struct table_element * symbol = search_element(node->value, global_symtab);
+
+		if (symbol == NULL) {
+			printf("Line %d, column %d: Cannot find symbol %s\n", node->line, node->column, node->value);
+			annotate_node(node, "undef");
+		}
+		else {
+			//annotate the node with the type of the symbol in the symbol table
+			if (symbol->decl_type == var) {
+				annotate_node(node, symbol->decl.var.type);
+			}
+			else {
+				annotate_node(node, symbol->decl.func.return_type);
+			}
+		}
+	}
 }
 
 struct node *root = NULL;

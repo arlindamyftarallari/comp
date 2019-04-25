@@ -11,13 +11,16 @@ typedef struct node {
 	struct node * parent;
 	char * type;
 	char * value;
+	char * annotation;
+	int line;
+	int column;
 } node;
  
-struct node* create_node (char* type, char* name);
-struct node* create_node_2 (char* type);
+struct node * create_node (char * type, char * name, int line, int column);
+struct node * create_node_2 (char * type);
 struct node * add_sibling (struct node * s1, struct node * s2);
-struct node* add_child(struct node *parent, struct node * child);
-int get_number_siblings(struct node* node);
-void print_node(struct node* root, int depth);
+struct node * add_child(struct node * parent, struct node * child);
+int get_number_siblings(struct node * node);
+void print_node(struct node * root, int depth);
 
 extern struct node * root;

@@ -46,7 +46,7 @@
 
 Program: PACKAGE ID SEMICOLON Declarations			 				
 	{
-		root = create_node("Program", "");
+		root = create_node("Program", "", 0, 0);
 		if ($4 != NULL) add_child(root, $4);
 		$$ = root;
 	}
@@ -74,19 +74,19 @@ Declarations: VarDeclaration SEMICOLON Declarations
 
 Type: INT															
 		{
-			$$ = create_node("Int", "");
+			$$ = create_node("Int", "", @1.first_line, @1.first_column);
 		}
 	| FLOAT32														
 		{
-			$$ = create_node("Float32", "");
+			$$ = create_node("Float32", "", @1.first_line, @1.first_column);
 		}
 	| BOOL															
 		{
-			$$ = create_node("Bool", "");
+			$$ = create_node("Bool", "", @1.first_line, @1.first_column);
 		}
 	| STRING														
 		{
-			$$ = create_node("String", "");
+			$$ = create_node("String", "", @1.first_line, @1.first_column);
 		}
 	;
 
@@ -102,9 +102,9 @@ VarDeclaration: VAR VarSpec
 
 VarSpec: ID IdOpt Type
 		{
-			struct node * varDecl = create_node("VarDecl", "");
+			struct node * varDecl = create_node("VarDecl", "", 0, 0);
 			add_child(varDecl, $3);
-			add_child(varDecl, create_node("Id", $1));
+			add_child(varDecl, create_node("Id", $1, @1.first_line, @1.first_column));
 
 			//when there are several variable declarations inside one VarSpec
 			//we need to make new nodes VarDecl for each one and make them siblings
@@ -139,8 +139,8 @@ VarSpec: ID IdOpt Type
 
 				//creates a new VarDecl node for each Id received from the IdOpt
 				for (int n=0; n<k; n++) { //iterates ids array
-					varDecls[n] = create_node("VarDecl", "");
-					auxType = create_node($3->type, "");
+					varDecls[n] = create_node("VarDecl", "", 0, 0);
+					auxType = create_node($3->type, "", @3.first_line, @3.first_column);
 					add_child(varDecls[n], auxType);
 					add_child(varDecls[n], ids[n]);
 					i++;
@@ -159,7 +159,7 @@ VarSpec: ID IdOpt Type
 
 IdOpt: COMMA ID IdOpt
 		{
-			struct node * id = create_node("Id", $2);
+			struct node * id = create_node("Id", $2, @2.first_line, @2.first_column);
 			if ($3 == NULL) {
 				$$ = id;
 			}
@@ -175,9 +175,9 @@ IdOpt: COMMA ID IdOpt
 
 FuncDeclaration: FUNC ID LPAR ParametersOpt RPAR TypeOpt FuncBody
 		{
-			struct node * funcDecl = create_node("FuncDecl", "");
-			struct node * funcHeader = create_node("FuncHeader", "");
-			add_child(funcHeader, create_node("Id", $2));
+			struct node * funcDecl = create_node("FuncDecl", "", 0, 0);
+			struct node * funcHeader = create_node("FuncHeader", "", 0, 0);
+			add_child(funcHeader, create_node("Id", $2, @2.first_line, @2.first_column));
 			if ($6 != NULL) add_child(funcHeader, $6);
 			add_child(funcHeader, $4);
 			add_child(funcDecl, funcHeader);
@@ -192,7 +192,7 @@ ParametersOpt: Parameters
 		}
 	|
 		{
-			$$ = create_node("FuncParams", ""); 
+			$$ = create_node("FuncParams", "", 0, 0); 
 			//this node is not going to have any sons, but it is mandatory
 		}
 	;
@@ -209,10 +209,10 @@ TypeOpt: Type
 
 Parameters: ID Type OptParam
 		{
-			struct node * funcParams = create_node("FuncParams", "");
-			struct node * paramDecl = create_node("ParamDecl", "");
+			struct node * funcParams = create_node("FuncParams", "", 0, 0);
+			struct node * paramDecl = create_node("ParamDecl", "", 0, 0);
 			add_child(paramDecl, $2);
-			add_child(paramDecl, create_node("Id", $1));
+			add_child(paramDecl, create_node("Id", $1, @1.first_line, @1.first_column));
 			add_child(funcParams, paramDecl);
 
 			if ($3 != NULL) {
@@ -225,9 +225,9 @@ Parameters: ID Type OptParam
 
 OptParam: COMMA ID Type OptParam
 		{
-			struct node * paramDecl = create_node("ParamDecl", "");
+			struct node * paramDecl = create_node("ParamDecl", "", 0, 0);
 			add_child(paramDecl, $3);
-			$$ = add_child(paramDecl, create_node("Id", $2));
+			$$ = add_child(paramDecl, create_node("Id", $2, @2.first_line, @2.first_column));
 			if ($4 != NULL) add_sibling(paramDecl, $4);
 		}
 	|
@@ -238,7 +238,7 @@ OptParam: COMMA ID Type OptParam
 
 FuncBody: LBRACE VarsAndStatements RBRACE
 		{
-			struct node* funcBody = create_node("FuncBody", "");
+			struct node* funcBody = create_node("FuncBody", "", 0, 0);
 			if ($2 != NULL) add_child(funcBody, $2);
 			$$ = funcBody;
 		}
@@ -273,15 +273,15 @@ varsAndStatementsOpt: VarDeclaration
 
 Statement: ID ASSIGN Expr
 		{
-			struct node * assign = create_node("Assign", "");
-			add_child(assign, create_node("Id", $1));
+			struct node * assign = create_node("Assign", "", 0, 0);
+			add_child(assign, create_node("Id", $1, @1.first_line, @1.first_column));
 			if($3!=NULL) $$ = add_child(assign, $3);
 			else $$ = NULL;
 		}
 	| LBRACE StatementOpt RBRACE
 			{
 				if ($2 != NULL && $2->bro != NULL) { //creating block for multiple statements
-					struct node * block = create_node("Block", "");
+					struct node * block = create_node("Block", "", 0, 0);
 					add_child(block, $2);
 					$$ = block;
 				}
@@ -291,24 +291,24 @@ Statement: ID ASSIGN Expr
 			}
 	| IF Expr LBRACE StatementOpt RBRACE ElseOpt
 		{
-			struct node * iff = create_node("If", "");
+			struct node * iff = create_node("If", "", 0, 0);
 			if ($2!=NULL) add_child(iff, $2);
-			struct node * block = create_node("Block", "");
+			struct node * block = create_node("Block", "", 0, 0);
 			if ($4 != NULL) add_child(block, $4);	
 			add_child(iff, block);
 			$$ = add_child(iff, $6);
 		}
 	| FOR ExprOpt LBRACE StatementOpt RBRACE
 		{
-			struct node * forr = create_node("For", "");
+			struct node * forr = create_node("For", "", 0, 0);
 			if ($2 != NULL) add_child(forr, $2);
-			struct node * block = create_node("Block", "");
+			struct node * block = create_node("Block", "", 0, 0);
 			if ($4 != NULL) add_child(block, $4);
 			$$ = add_child(forr, block);
 		}
 	| RETURN ExprOpt
 		{
-			struct node * returnn = create_node("Return", "");
+			struct node * returnn = create_node("Return", "", 0, 0);
 			if ($2 != NULL) add_child(returnn, $2);
 			$$ = returnn;
 		}
@@ -322,7 +322,7 @@ Statement: ID ASSIGN Expr
 		}
 	| PRINT LPAR printArgs RPAR
 		{
-			struct node * print = create_node("Print", "");
+			struct node * print = create_node("Print", "", 0, 0);
 			$$ = add_child(print, $3);
 		}
 	| error
@@ -334,7 +334,7 @@ Statement: ID ASSIGN Expr
 
 printArgs: STRLIT
 		{
-			$$ = create_node("StrLit", $1);
+			$$ = create_node("StrLit", $1, @1.first_line, @1.first_column);
 		}
 	| Expr
 		{
@@ -368,20 +368,20 @@ StatementOpt: Statement SEMICOLON StatementOpt
 
 ElseOpt: ELSE LBRACE StatementOpt RBRACE
 		{
-			struct node * block = create_node("Block", "");
+			struct node * block = create_node("Block", "", 0, 0);
 			if ($3 != NULL) add_child(block, $3);
 			$$ = block;
 		}
 	|
 		{
-			$$ = create_node("Block", "");
+			$$ = create_node("Block", "", 0, 0);
 		}
 	;
 
 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
 		{
-			struct node * parseArgs = create_node("ParseArgs", "");
-			add_child(parseArgs, create_node("Id", $1));
+			struct node * parseArgs = create_node("ParseArgs", "", 0, 0);
+			add_child(parseArgs, create_node("Id", $1, @1.first_line, @1.first_column));
 			$$ = add_child(parseArgs, $9);
 		}
 	| ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR
@@ -393,8 +393,8 @@ ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
 
 FuncInvocation: ID LPAR CallParams RPAR
 		{
-			struct node * call = create_node("Call", "");
-			add_child(call, create_node("Id", $1));
+			struct node * call = create_node("Call", "", 0, 0);
+			add_child(call, create_node("Id", $1, @1.first_line, @1.first_column));
 			if ($3 != NULL) add_child(call, $3);
 			$$ = call;
 		}
@@ -442,105 +442,105 @@ Expr: LPAR Expr RPAR
 		}
 	| NOT Expr %prec UNARY
 		{
-			$$ = add_child(create_node("Not", ""), $2);
+			$$ = add_child(create_node("Not", "", @1.first_line, @1.first_column), $2);
 		}
 	| MINUS Expr %prec UNARY
 		{
-			$$ = add_child(create_node("Minus", ""), $2);
+			$$ = add_child(create_node("Minus", "", @1.first_line, @1.first_column), $2);
 		}
 	| PLUS Expr %prec UNARY
 		{
-			$$ = add_child(create_node("Plus", ""), $2);
+			$$ = add_child(create_node("Plus", "", @1.first_line, @1.first_column), $2);
 		}
 	| Expr PLUS Expr
 		{
-			struct node * add = create_node("Add", "");
+			struct node * add = create_node("Add", "", @2.first_line, @2.first_column);
 			add_child(add, $1);
 			$$ = add_child(add, $3);
 		}
 	| Expr MINUS Expr
 		{
-			struct node * sub = create_node("Sub", "");
+			struct node * sub = create_node("Sub", "", @2.first_line, @2.first_column);
 			add_child(sub, $1);
 			$$ = add_child(sub, $3);
 		}
 	| Expr STAR Expr
 		{
-			struct node * mul = create_node("Mul", "");
+			struct node * mul = create_node("Mul", "", @2.first_line, @2.first_column);
 			add_child(mul, $1);
 			$$ = add_child(mul, $3);
 		}
 	| Expr DIV Expr
 		{
-			struct node * div = create_node("Div", "");
+			struct node * div = create_node("Div", "", @2.first_line, @2.first_column);
 			add_child(div, $1);
 			$$ = add_child(div, $3);
 		}
 	| Expr MOD Expr
 		{
-			struct node * mod = create_node("Mod", "");
+			struct node * mod = create_node("Mod", "", @2.first_line, @2.first_column);
 			add_child(mod, $1);
 			$$ = add_child(mod, $3);
 		}
 	| Expr OR Expr
 		{
-			struct node * or = create_node("Or", "");
+			struct node * or = create_node("Or", "", @2.first_line, @2.first_column);
 			add_child(or, $1);
 			$$ = add_child(or, $3);
 		}
 	| Expr AND Expr
 		{
-			struct node * and = create_node("And", "");
+			struct node * and = create_node("And", "", @2.first_line, @2.first_column);
 			add_child(and, $1);
 			$$ = add_child(and, $3);
 		}
 	| Expr LT Expr
 		{
-			struct node * lt = create_node("Lt", "");
+			struct node * lt = create_node("Lt", "", @2.first_line, @2.first_column);
 			add_child(lt, $1);
 			$$ = add_child(lt, $3);
 		}
 	| Expr GT Expr
 		{
-			struct node * gt = create_node("Gt", "");
+			struct node * gt = create_node("Gt", "", @2.first_line, @2.first_column);
 			add_child(gt, $1);
 			$$ = add_child(gt, $3);
 		}
 	| Expr EQ Expr
 		{
-			struct node * eq = create_node("Eq", "");
+			struct node * eq = create_node("Eq", "", @2.first_line, @2.first_column);
 			add_child(eq, $1);
 			$$ = add_child(eq, $3);
 		}
 	| Expr NE Expr
 		{
-			struct node * ne = create_node("Ne", "");
+			struct node * ne = create_node("Ne", "", @2.first_line, @2.first_column);
 			add_child(ne, $1);
 			$$ = add_child(ne, $3);
 		}
 	| Expr LE Expr
 		{
-			struct node * le = create_node("Le", "");
+			struct node * le = create_node("Le", "", @2.first_line, @2.first_column);
 			add_child(le, $1);
 			$$ = add_child(le, $3);
 		}
 	| Expr GE Expr
 		{
-			struct node * ge = create_node("Ge", "");
+			struct node * ge = create_node("Ge", "", @2.first_line, @2.first_column);
 			add_child(ge, $1);
 			$$ = add_child(ge, $3);
 		}
 	| INTLIT
 		{
-			$$ = create_node("IntLit", $1);
+			$$ = create_node("IntLit", $1, @1.first_line, @1.first_column);
 		}
 	| REALLIT
 		{
-			$$ = create_node("RealLit", $1);
+			$$ = create_node("RealLit", $1, @1.first_line, @1.first_column);
 		}
 	| ID
 		{
-			$$ = create_node("Id", $1);
+			$$ = create_node("Id", $1, @1.first_line, @1.first_column);
 		}
 	| FuncInvocation
 		{

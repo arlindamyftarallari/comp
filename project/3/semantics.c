@@ -88,7 +88,7 @@ void check_func_decl(struct node * node) {
 		*var_type = tolower(*var_type);
 
 		if (insert_vardecl(paramdecl->children[1]->value, var_type, &(function_symbol->decl.func.params)) == NULL) {
-			printf("Trouble inserting parameter declaration inside function\n");
+			printf("Line %d, column %d: Symbol %s already defined\n", paramdecl->children[1]->line, paramdecl->children[1]->column, paramdecl->children[1]->value);
 		}
 
 		free(var_type);

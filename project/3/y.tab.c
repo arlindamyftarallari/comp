@@ -1611,7 +1611,7 @@ yyreduce:
         case 2:
 #line 48 "gocompiler.y"
     {
-		root = create_node("Program", "");
+		root = create_node("Program", "", 0, 0);
 		if ((yyvsp[(4) - (4)].node) != NULL) add_child(root, (yyvsp[(4) - (4)].node));
 		(yyval.node) = root;
 	}
@@ -1644,28 +1644,28 @@ yyreduce:
   case 6:
 #line 76 "gocompiler.y"
     {
-			(yyval.node) = create_node("Int", "");
+			(yyval.node) = create_node("Int", "", (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column);
 		}
     break;
 
   case 7:
 #line 80 "gocompiler.y"
     {
-			(yyval.node) = create_node("Float32", "");
+			(yyval.node) = create_node("Float32", "", (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column);
 		}
     break;
 
   case 8:
 #line 84 "gocompiler.y"
     {
-			(yyval.node) = create_node("Bool", "");
+			(yyval.node) = create_node("Bool", "", (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column);
 		}
     break;
 
   case 9:
 #line 88 "gocompiler.y"
     {
-			(yyval.node) = create_node("String", "");
+			(yyval.node) = create_node("String", "", (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column);
 		}
     break;
 
@@ -1686,9 +1686,9 @@ yyreduce:
   case 12:
 #line 104 "gocompiler.y"
     {
-			struct node * varDecl = create_node("VarDecl", "");
+			struct node * varDecl = create_node("VarDecl", "", 0, 0);
 			add_child(varDecl, (yyvsp[(3) - (3)].node));
-			add_child(varDecl, create_node("Id", (yyvsp[(1) - (3)].string)));
+			add_child(varDecl, create_node("Id", (yyvsp[(1) - (3)].string), (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column));
 
 			//when there are several variable declarations inside one VarSpec
 			//we need to make new nodes VarDecl for each one and make them siblings
@@ -1723,8 +1723,8 @@ yyreduce:
 
 				//creates a new VarDecl node for each Id received from the IdOpt
 				for (int n=0; n<k; n++) { //iterates ids array
-					varDecls[n] = create_node("VarDecl", "");
-					auxType = create_node((yyvsp[(3) - (3)].node)->type, "");
+					varDecls[n] = create_node("VarDecl", "", 0, 0);
+					auxType = create_node((yyvsp[(3) - (3)].node)->type, "", (yylsp[(3) - (3)]).first_line, (yylsp[(3) - (3)]).first_column);
 					add_child(varDecls[n], auxType);
 					add_child(varDecls[n], ids[n]);
 					i++;
@@ -1744,7 +1744,7 @@ yyreduce:
   case 13:
 #line 161 "gocompiler.y"
     {
-			struct node * id = create_node("Id", (yyvsp[(2) - (3)].string));
+			struct node * id = create_node("Id", (yyvsp[(2) - (3)].string), (yylsp[(2) - (3)]).first_line, (yylsp[(2) - (3)]).first_column);
 			if ((yyvsp[(3) - (3)].node) == NULL) {
 				(yyval.node) = id;
 			}
@@ -1764,9 +1764,9 @@ yyreduce:
   case 15:
 #line 177 "gocompiler.y"
     {
-			struct node * funcDecl = create_node("FuncDecl", "");
-			struct node * funcHeader = create_node("FuncHeader", "");
-			add_child(funcHeader, create_node("Id", (yyvsp[(2) - (7)].string)));
+			struct node * funcDecl = create_node("FuncDecl", "", 0, 0);
+			struct node * funcHeader = create_node("FuncHeader", "", 0, 0);
+			add_child(funcHeader, create_node("Id", (yyvsp[(2) - (7)].string), (yylsp[(2) - (7)]).first_line, (yylsp[(2) - (7)]).first_column));
 			if ((yyvsp[(6) - (7)].node) != NULL) add_child(funcHeader, (yyvsp[(6) - (7)].node));
 			add_child(funcHeader, (yyvsp[(4) - (7)].node));
 			add_child(funcDecl, funcHeader);
@@ -1785,7 +1785,7 @@ yyreduce:
   case 17:
 #line 194 "gocompiler.y"
     {
-			(yyval.node) = create_node("FuncParams", ""); 
+			(yyval.node) = create_node("FuncParams", "", 0, 0); 
 			//this node is not going to have any sons, but it is mandatory
 		}
     break;
@@ -1807,10 +1807,10 @@ yyreduce:
   case 20:
 #line 211 "gocompiler.y"
     {
-			struct node * funcParams = create_node("FuncParams", "");
-			struct node * paramDecl = create_node("ParamDecl", "");
+			struct node * funcParams = create_node("FuncParams", "", 0, 0);
+			struct node * paramDecl = create_node("ParamDecl", "", 0, 0);
 			add_child(paramDecl, (yyvsp[(2) - (3)].node));
-			add_child(paramDecl, create_node("Id", (yyvsp[(1) - (3)].string)));
+			add_child(paramDecl, create_node("Id", (yyvsp[(1) - (3)].string), (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column));
 			add_child(funcParams, paramDecl);
 
 			if ((yyvsp[(3) - (3)].node) != NULL) {
@@ -1824,9 +1824,9 @@ yyreduce:
   case 21:
 #line 227 "gocompiler.y"
     {
-			struct node * paramDecl = create_node("ParamDecl", "");
+			struct node * paramDecl = create_node("ParamDecl", "", 0, 0);
 			add_child(paramDecl, (yyvsp[(3) - (4)].node));
-			(yyval.node) = add_child(paramDecl, create_node("Id", (yyvsp[(2) - (4)].string)));
+			(yyval.node) = add_child(paramDecl, create_node("Id", (yyvsp[(2) - (4)].string), (yylsp[(2) - (4)]).first_line, (yylsp[(2) - (4)]).first_column));
 			if ((yyvsp[(4) - (4)].node) != NULL) add_sibling(paramDecl, (yyvsp[(4) - (4)].node));
 		}
     break;
@@ -1841,7 +1841,7 @@ yyreduce:
   case 23:
 #line 240 "gocompiler.y"
     {
-			struct node* funcBody = create_node("FuncBody", "");
+			struct node* funcBody = create_node("FuncBody", "", 0, 0);
 			if ((yyvsp[(2) - (3)].node) != NULL) add_child(funcBody, (yyvsp[(2) - (3)].node));
 			(yyval.node) = funcBody;
 		}
@@ -1888,8 +1888,8 @@ yyreduce:
   case 29:
 #line 275 "gocompiler.y"
     {
-			struct node * assign = create_node("Assign", "");
-			add_child(assign, create_node("Id", (yyvsp[(1) - (3)].string)));
+			struct node * assign = create_node("Assign", "", 0, 0);
+			add_child(assign, create_node("Id", (yyvsp[(1) - (3)].string), (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column));
 			if((yyvsp[(3) - (3)].node)!=NULL) (yyval.node) = add_child(assign, (yyvsp[(3) - (3)].node));
 			else (yyval.node) = NULL;
 		}
@@ -1899,7 +1899,7 @@ yyreduce:
 #line 282 "gocompiler.y"
     {
 				if ((yyvsp[(2) - (3)].node) != NULL && (yyvsp[(2) - (3)].node)->bro != NULL) { //creating block for multiple statements
-					struct node * block = create_node("Block", "");
+					struct node * block = create_node("Block", "", 0, 0);
 					add_child(block, (yyvsp[(2) - (3)].node));
 					(yyval.node) = block;
 				}
@@ -1912,9 +1912,9 @@ yyreduce:
   case 31:
 #line 293 "gocompiler.y"
     {
-			struct node * iff = create_node("If", "");
+			struct node * iff = create_node("If", "", 0, 0);
 			if ((yyvsp[(2) - (6)].node)!=NULL) add_child(iff, (yyvsp[(2) - (6)].node));
-			struct node * block = create_node("Block", "");
+			struct node * block = create_node("Block", "", 0, 0);
 			if ((yyvsp[(4) - (6)].node) != NULL) add_child(block, (yyvsp[(4) - (6)].node));	
 			add_child(iff, block);
 			(yyval.node) = add_child(iff, (yyvsp[(6) - (6)].node));
@@ -1924,9 +1924,9 @@ yyreduce:
   case 32:
 #line 302 "gocompiler.y"
     {
-			struct node * forr = create_node("For", "");
+			struct node * forr = create_node("For", "", 0, 0);
 			if ((yyvsp[(2) - (5)].node) != NULL) add_child(forr, (yyvsp[(2) - (5)].node));
-			struct node * block = create_node("Block", "");
+			struct node * block = create_node("Block", "", 0, 0);
 			if ((yyvsp[(4) - (5)].node) != NULL) add_child(block, (yyvsp[(4) - (5)].node));
 			(yyval.node) = add_child(forr, block);
 		}
@@ -1935,7 +1935,7 @@ yyreduce:
   case 33:
 #line 310 "gocompiler.y"
     {
-			struct node * returnn = create_node("Return", "");
+			struct node * returnn = create_node("Return", "", 0, 0);
 			if ((yyvsp[(2) - (2)].node) != NULL) add_child(returnn, (yyvsp[(2) - (2)].node));
 			(yyval.node) = returnn;
 		}
@@ -1958,7 +1958,7 @@ yyreduce:
   case 36:
 #line 324 "gocompiler.y"
     {
-			struct node * print = create_node("Print", "");
+			struct node * print = create_node("Print", "", 0, 0);
 			(yyval.node) = add_child(print, (yyvsp[(3) - (4)].node));
 		}
     break;
@@ -1974,7 +1974,7 @@ yyreduce:
   case 38:
 #line 336 "gocompiler.y"
     {
-			(yyval.node) = create_node("StrLit", (yyvsp[(1) - (1)].string));
+			(yyval.node) = create_node("StrLit", (yyvsp[(1) - (1)].string), (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column);
 		}
     break;
 
@@ -2020,7 +2020,7 @@ yyreduce:
   case 44:
 #line 370 "gocompiler.y"
     {
-			struct node * block = create_node("Block", "");
+			struct node * block = create_node("Block", "", 0, 0);
 			if ((yyvsp[(3) - (4)].node) != NULL) add_child(block, (yyvsp[(3) - (4)].node));
 			(yyval.node) = block;
 		}
@@ -2029,15 +2029,15 @@ yyreduce:
   case 45:
 #line 376 "gocompiler.y"
     {
-			(yyval.node) = create_node("Block", "");
+			(yyval.node) = create_node("Block", "", 0, 0);
 		}
     break;
 
   case 46:
 #line 382 "gocompiler.y"
     {
-			struct node * parseArgs = create_node("ParseArgs", "");
-			add_child(parseArgs, create_node("Id", (yyvsp[(1) - (11)].string)));
+			struct node * parseArgs = create_node("ParseArgs", "", 0, 0);
+			add_child(parseArgs, create_node("Id", (yyvsp[(1) - (11)].string), (yylsp[(1) - (11)]).first_line, (yylsp[(1) - (11)]).first_column));
 			(yyval.node) = add_child(parseArgs, (yyvsp[(9) - (11)].node));
 		}
     break;
@@ -2053,8 +2053,8 @@ yyreduce:
   case 48:
 #line 395 "gocompiler.y"
     {
-			struct node * call = create_node("Call", "");
-			add_child(call, create_node("Id", (yyvsp[(1) - (4)].string)));
+			struct node * call = create_node("Call", "", 0, 0);
+			add_child(call, create_node("Id", (yyvsp[(1) - (4)].string), (yylsp[(1) - (4)]).first_line, (yylsp[(1) - (4)]).first_column));
 			if ((yyvsp[(3) - (4)].node) != NULL) add_child(call, (yyvsp[(3) - (4)].node));
 			(yyval.node) = call;
 		}
@@ -2120,28 +2120,28 @@ yyreduce:
   case 56:
 #line 444 "gocompiler.y"
     {
-			(yyval.node) = add_child(create_node("Not", ""), (yyvsp[(2) - (2)].node));
+			(yyval.node) = add_child(create_node("Not", "", (yylsp[(1) - (2)]).first_line, (yylsp[(1) - (2)]).first_column), (yyvsp[(2) - (2)].node));
 		}
     break;
 
   case 57:
 #line 448 "gocompiler.y"
     {
-			(yyval.node) = add_child(create_node("Minus", ""), (yyvsp[(2) - (2)].node));
+			(yyval.node) = add_child(create_node("Minus", "", (yylsp[(1) - (2)]).first_line, (yylsp[(1) - (2)]).first_column), (yyvsp[(2) - (2)].node));
 		}
     break;
 
   case 58:
 #line 452 "gocompiler.y"
     {
-			(yyval.node) = add_child(create_node("Plus", ""), (yyvsp[(2) - (2)].node));
+			(yyval.node) = add_child(create_node("Plus", "", (yylsp[(1) - (2)]).first_line, (yylsp[(1) - (2)]).first_column), (yyvsp[(2) - (2)].node));
 		}
     break;
 
   case 59:
 #line 456 "gocompiler.y"
     {
-			struct node * add = create_node("Add", "");
+			struct node * add = create_node("Add", "", (yylsp[(2) - (3)]).first_line, (yylsp[(2) - (3)]).first_column);
 			add_child(add, (yyvsp[(1) - (3)].node));
 			(yyval.node) = add_child(add, (yyvsp[(3) - (3)].node));
 		}
@@ -2150,7 +2150,7 @@ yyreduce:
   case 60:
 #line 462 "gocompiler.y"
     {
-			struct node * sub = create_node("Sub", "");
+			struct node * sub = create_node("Sub", "", (yylsp[(2) - (3)]).first_line, (yylsp[(2) - (3)]).first_column);
 			add_child(sub, (yyvsp[(1) - (3)].node));
 			(yyval.node) = add_child(sub, (yyvsp[(3) - (3)].node));
 		}
@@ -2159,7 +2159,7 @@ yyreduce:
   case 61:
 #line 468 "gocompiler.y"
     {
-			struct node * mul = create_node("Mul", "");
+			struct node * mul = create_node("Mul", "", (yylsp[(2) - (3)]).first_line, (yylsp[(2) - (3)]).first_column);
 			add_child(mul, (yyvsp[(1) - (3)].node));
 			(yyval.node) = add_child(mul, (yyvsp[(3) - (3)].node));
 		}
@@ -2168,7 +2168,7 @@ yyreduce:
   case 62:
 #line 474 "gocompiler.y"
     {
-			struct node * div = create_node("Div", "");
+			struct node * div = create_node("Div", "", (yylsp[(2) - (3)]).first_line, (yylsp[(2) - (3)]).first_column);
 			add_child(div, (yyvsp[(1) - (3)].node));
 			(yyval.node) = add_child(div, (yyvsp[(3) - (3)].node));
 		}
@@ -2177,7 +2177,7 @@ yyreduce:
   case 63:
 #line 480 "gocompiler.y"
     {
-			struct node * mod = create_node("Mod", "");
+			struct node * mod = create_node("Mod", "", (yylsp[(2) - (3)]).first_line, (yylsp[(2) - (3)]).first_column);
 			add_child(mod, (yyvsp[(1) - (3)].node));
 			(yyval.node) = add_child(mod, (yyvsp[(3) - (3)].node));
 		}
@@ -2186,7 +2186,7 @@ yyreduce:
   case 64:
 #line 486 "gocompiler.y"
     {
-			struct node * or = create_node("Or", "");
+			struct node * or = create_node("Or", "", (yylsp[(2) - (3)]).first_line, (yylsp[(2) - (3)]).first_column);
 			add_child(or, (yyvsp[(1) - (3)].node));
 			(yyval.node) = add_child(or, (yyvsp[(3) - (3)].node));
 		}
@@ -2195,7 +2195,7 @@ yyreduce:
   case 65:
 #line 492 "gocompiler.y"
     {
-			struct node * and = create_node("And", "");
+			struct node * and = create_node("And", "", (yylsp[(2) - (3)]).first_line, (yylsp[(2) - (3)]).first_column);
 			add_child(and, (yyvsp[(1) - (3)].node));
 			(yyval.node) = add_child(and, (yyvsp[(3) - (3)].node));
 		}
@@ -2204,7 +2204,7 @@ yyreduce:
   case 66:
 #line 498 "gocompiler.y"
     {
-			struct node * lt = create_node("Lt", "");
+			struct node * lt = create_node("Lt", "", (yylsp[(2) - (3)]).first_line, (yylsp[(2) - (3)]).first_column);
 			add_child(lt, (yyvsp[(1) - (3)].node));
 			(yyval.node) = add_child(lt, (yyvsp[(3) - (3)].node));
 		}
@@ -2213,7 +2213,7 @@ yyreduce:
   case 67:
 #line 504 "gocompiler.y"
     {
-			struct node * gt = create_node("Gt", "");
+			struct node * gt = create_node("Gt", "", (yylsp[(2) - (3)]).first_line, (yylsp[(2) - (3)]).first_column);
 			add_child(gt, (yyvsp[(1) - (3)].node));
 			(yyval.node) = add_child(gt, (yyvsp[(3) - (3)].node));
 		}
@@ -2222,7 +2222,7 @@ yyreduce:
   case 68:
 #line 510 "gocompiler.y"
     {
-			struct node * eq = create_node("Eq", "");
+			struct node * eq = create_node("Eq", "", (yylsp[(2) - (3)]).first_line, (yylsp[(2) - (3)]).first_column);
 			add_child(eq, (yyvsp[(1) - (3)].node));
 			(yyval.node) = add_child(eq, (yyvsp[(3) - (3)].node));
 		}
@@ -2231,7 +2231,7 @@ yyreduce:
   case 69:
 #line 516 "gocompiler.y"
     {
-			struct node * ne = create_node("Ne", "");
+			struct node * ne = create_node("Ne", "", (yylsp[(2) - (3)]).first_line, (yylsp[(2) - (3)]).first_column);
 			add_child(ne, (yyvsp[(1) - (3)].node));
 			(yyval.node) = add_child(ne, (yyvsp[(3) - (3)].node));
 		}
@@ -2240,7 +2240,7 @@ yyreduce:
   case 70:
 #line 522 "gocompiler.y"
     {
-			struct node * le = create_node("Le", "");
+			struct node * le = create_node("Le", "", (yylsp[(2) - (3)]).first_line, (yylsp[(2) - (3)]).first_column);
 			add_child(le, (yyvsp[(1) - (3)].node));
 			(yyval.node) = add_child(le, (yyvsp[(3) - (3)].node));
 		}
@@ -2249,7 +2249,7 @@ yyreduce:
   case 71:
 #line 528 "gocompiler.y"
     {
-			struct node * ge = create_node("Ge", "");
+			struct node * ge = create_node("Ge", "", (yylsp[(2) - (3)]).first_line, (yylsp[(2) - (3)]).first_column);
 			add_child(ge, (yyvsp[(1) - (3)].node));
 			(yyval.node) = add_child(ge, (yyvsp[(3) - (3)].node));
 		}
@@ -2258,21 +2258,21 @@ yyreduce:
   case 72:
 #line 534 "gocompiler.y"
     {
-			(yyval.node) = create_node("IntLit", (yyvsp[(1) - (1)].string));
+			(yyval.node) = create_node("IntLit", (yyvsp[(1) - (1)].string), (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column);
 		}
     break;
 
   case 73:
 #line 538 "gocompiler.y"
     {
-			(yyval.node) = create_node("RealLit", (yyvsp[(1) - (1)].string));
+			(yyval.node) = create_node("RealLit", (yyvsp[(1) - (1)].string), (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column);
 		}
     break;
 
   case 74:
 #line 542 "gocompiler.y"
     {
-			(yyval.node) = create_node("Id", (yyvsp[(1) - (1)].string));
+			(yyval.node) = create_node("Id", (yyvsp[(1) - (1)].string), (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column);
 		}
     break;
 

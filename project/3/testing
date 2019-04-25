@@ -1,7 +1,77 @@
-Line 3, column 5: syntax error: ++
-Line 4, column 4: syntax error: ++
-Line 5, column 4: syntax error: --
-Line 6, column 5: syntax error: ++
-Line 8, column 8: syntax error: =
-Line 11, column 1: syntax error: ;
-Line 11, column 3: syntax error: 
+===== Global Symbol Table =====
+oneFunc	()	none
+twoFunc	(int)	none
+treeFunc	(int,float32)	none
+fourFunc	(int,float32,string)	none
+fiveFunc	(int,float32,string,bool)	none
+sixFunc	(int)	int
+sevenFunc	(int,float32)	float32
+eightFunc	(int,float32,string)	string
+nineFunc	(int,float32,string,bool)	bool
+tenFunc	(int)	int
+variable_func_declarations	()	none
+
+===== Function oneFunc() Symbol Table =====
+return		none
+
+===== Function twoFunc(int) Symbol Table =====
+return		none
+one		int	param
+
+===== Function treeFunc(int,float32) Symbol Table =====
+return		none
+one		int	param
+two		float32	param
+thisDoesNothingHere		float32
+
+===== Function fourFunc(int,float32,string) Symbol Table =====
+return		none
+one		int	param
+two		float32	param
+three		string	param
+
+===== Function fiveFunc(int,float32,string,bool) Symbol Table =====
+return		none
+one		int	param
+two		float32	param
+three		string	param
+four		bool	param
+
+===== Function sixFunc(int) Symbol Table =====
+return		int
+one		int	param
+oneInSixFunc		int
+
+===== Function sevenFunc(int,float32) Symbol Table =====
+return		float32
+one		int	param
+two		float32	param
+oneTwoSevenFunc		float32
+twoTwoSevenFunc		float32
+
+===== Function eightFunc(int,float32,string) Symbol Table =====
+return		string
+one		int	param
+two		float32	param
+three		string	param
+
+===== Function nineFunc(int,float32,string,bool) Symbol Table =====
+return		bool
+one		int	param
+two		float32	param
+three		string	param
+four		bool	param
+oneThing		bool
+
+===== Function tenFunc(int) Symbol Table =====
+return		int
+one		int	param
+a		float32
+b		float32
+c		float32
+d		float32
+j		int
+
+===== Function variable_func_declarations() Symbol Table =====
+return		none
+stringThing		string
