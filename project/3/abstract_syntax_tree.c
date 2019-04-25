@@ -151,20 +151,24 @@ void annotate_tree(struct node * node) {
 		}
 	}
 	else if (strcmp(node->type, "Call") == 0) {
-		
+		for (int i = 0; i < node->number_children; i++){
+			annotate_tree(node->children[i]);
+		}
+		annotate_node(node, node->children[0]->annotation);
 	}
 	else if (strcmp(node->type, "Not") == 0) {
+		
 		annotate_tree(node->children[0]);
-		annotate_node(node->children[0]->annotation)
+		annotate_node(node,node->children[0]->annotation);
 
 	}
 	else if (strcmp(node->type, "Minus") == 0) {
 		annotate_tree(node->children[0]);
-		annotate_node(node->children[0]->annotation)
+		annotate_node(node, node->children[0]->annotation);
 	}
 	else if (strcmp(node->type, "Plus") == 0) {
 		annotate_tree(node->children[0]);
-		annotate_node(node->children[0]->annotation)
+		annotate_node(node,node->children[0]->annotation);
 	}
 	else if(strcmp(node->type, "Or") == 0) {
 		annotate_tree(node->children[0]);
@@ -380,7 +384,7 @@ void annotate_tree(struct node * node) {
 	else if(strcmp(node->type, "Mod") == 0) {
 		annotate_tree(node->children[0]);
 		annotate_tree(node->children[1]);
-		annotate_node(node, "int")
+		annotate_node(node, "int");
 	}
 
 	else {
