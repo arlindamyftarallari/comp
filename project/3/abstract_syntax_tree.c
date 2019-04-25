@@ -145,9 +145,137 @@ void annotate_tree(struct node * node) {
 			if (symbol->decl_type == var) {
 				annotate_node(node, symbol->decl.var.type);
 			}
-			else {
+			else { //the ID matches to a function
 				annotate_node(node, symbol->decl.func.return_type);
 			}
+		}
+	}
+	else if (strcmp(node->type, "Call") == 0) {
+		
+	}
+	else if (strcmp(node->type, "Not") == 0) {
+		annotate_tree(node->children[0]);
+
+	}
+	else if (strcmp(node->type, "Minus") == 0) {
+		annotate_tree(node->children[0]);
+	}
+	else if (strcmp(node->type, "Plus") == 0) {
+		annotate_tree(node->children[0]);
+	}
+	else if(strcmp(node->type, "Or") == 0) {
+		annotate_tree(node->children[0]);
+		annotate_tree(node->children[1]);
+	}
+	else if(strcmp(node->type, "And") == 0) {
+		annotate_tree(node->children[0]);
+		annotate_tree(node->children[1]);
+	}
+	else if(strcmp(node->type, "Lt") == 0) {
+		annotate_tree(node->children[0]);
+		annotate_tree(node->children[1]);
+	}
+	else if(strcmp(node->type, "Gt") == 0) {
+		annotate_tree(node->children[0]);
+		annotate_tree(node->children[1]);
+	}
+	else if(strcmp(node->type, "Eq") == 0) {
+		annotate_tree(node->children[0]);
+		annotate_tree(node->children[1]);
+
+	}
+	else if(strcmp(node->type, "Ne") == 0) {
+		annotate_tree(node->children[0]);
+		annotate_tree(node->children[1]);
+	}
+	else if(strcmp(node->type, "Le") == 0) {
+		annotate_tree(node->children[0]);
+		annotate_tree(node->children[1]);
+	}
+	else if(strcmp(node->type, "Ge") == 0) {
+		annotate_tree(node->children[0]);
+		annotate_tree(node->children[1]);
+	}
+	else if(strcmp(node->type, "Add") == 0) {
+		annotate_tree(node->children[0]);
+		annotate_tree(node->children[1]);
+
+		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+			/* ERROR */
+			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
+													node->line,
+													node->column,
+													node->type,
+													node->children[0]->annotation,
+													node->children[1]->annotation);
+			annotate_node(node, "undef");
+		}
+		else { //same type
+			annotate_node(node, node->children[0]->annotation);
+		}
+	}
+	else if(strcmp(node->type, "Sub") == 0) {
+		annotate_tree(node->children[0]);
+		annotate_tree(node->children[1]);
+
+		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+			/* ERROR */
+			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
+													node->line,
+													node->column,
+													node->type,
+													node->children[0]->annotation,
+													node->children[1]->annotation);
+			annotate_node(node, "undef");
+		}
+		else { //same type
+			annotate_node(node, node->children[0]->annotation);
+		}
+	}
+	else if(strcmp(node->type, "Mul") == 0) {
+		annotate_tree(node->children[0]);
+		annotate_tree(node->children[1]);
+
+		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+			/* ERROR */
+			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
+													node->line,
+													node->column,
+													node->type,
+													node->children[0]->annotation,
+													node->children[1]->annotation);
+			annotate_node(node, "undef");
+		}
+		else { //same type
+			annotate_node(node, node->children[0]->annotation);
+		}
+	}
+	else if(strcmp(node->type, "Div") == 0) {
+		annotate_tree(node->children[0]);
+		annotate_tree(node->children[1]);
+
+		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+			/* ERROR */
+			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
+													node->line,
+													node->column,
+													node->type,
+													node->children[0]->annotation,
+													node->children[1]->annotation);
+			annotate_node(node, "undef");
+		}
+		else { //same type
+			annotate_node(node, node->children[0]->annotation);
+		}
+	}
+	else if(strcmp(node->type, "Mod") == 0) {
+		annotate_tree(node->children[0]);
+		annotate_tree(node->children[1]);
+	}
+
+	else {
+		for (int i=0; i<node->number_children; i++) {
+			annotate_tree(node->children[i]);
 		}
 	}
 }

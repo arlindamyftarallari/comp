@@ -573,6 +573,8 @@ int main(int argc, char **argv) {
 			yyparse();
 			check_root(root);
 			print_table();
+			annotate_tree(root);
+			print_annotated_node(root, 0);
 
 			//cleaning up
 			free_table(global_symtab);
