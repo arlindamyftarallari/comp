@@ -75,3 +75,105 @@ j		int
 ===== Function variable_func_declarations() Symbol Table =====
 return		none
 stringThing		string
+
+Annotating node Program
+Annotating node FuncDecl
+Annotating node FuncHeader
+Annotating node Id
+Now tracking function: oneFunc
+Annotating node FuncParams
+About to enter FuncBody, tracking oneFunc
+Annotating node FuncBody
+Annotating node FuncDecl
+Annotating node FuncHeader
+Annotating node Id
+Now tracking function: twoFunc
+Annotating node FuncParams
+Annotating node ParamDecl
+Annotating node Int
+Annotating node Id
+About to enter FuncBody, tracking twoFunc
+Annotating node FuncBody
+Annotating node FuncDecl
+Annotating node FuncHeader
+Annotating node Id
+Now tracking function: treeFunc
+Annotating node FuncParams
+Annotating node ParamDecl
+Annotating node Int
+Annotating node Id
+Annotating node ParamDecl
+Annotating node Float32
+Annotating node Id
+About to enter FuncBody, tracking treeFunc
+Annotating node FuncBody
+Annotating node VarDecl
+Annotating node Float32
+Annotating node Id
+Annotating node For
+Annotating node Le
+Annotating node Id
+Annotating node IntLit
+Annotating node Block
+Annotating node Assign
+Annotating node Id
+Annotating node Add
+Annotating node Add
+Annotating node Id
+Annotating node Id
+Annotating node RealLit
+Annotating node Assign
+Annotating node Id
+Annotating node Add
+Annotating node Add
+Annotating node Add
+Annotating node Add
+Annotating node Id
+Annotating node Id
+Annotating node Id
+Annotating node Id
+Annotating node IntLit
+Annotating node FuncDecl
+Annotating node FuncHeader
+Annotating node Id
+Now tracking function: fourFunc
+Annotating node FuncParams
+Annotating node ParamDecl
+Annotating node Int
+Annotating node Id
+Annotating node ParamDecl
+Annotating node Float32
+Annotating node Id
+Annotating node ParamDecl
+Annotating node String
+Annotating node Id
+About to enter FuncBody, tracking fourFunc
+Annotating node FuncBody
+Annotating node FuncDecl
+Annotating node FuncHeader
+Annotating node Id
+Now tracking function: fiveFunc
+Annotating node FuncParams
+Annotating node ParamDecl
+Annotating node Int
+Annotating node Id
+Annotating node ParamDecl
+Annotating node Float32
+Annotating node Id
+Annotating node ParamDecl
+Annotating node String
+Annotating node Id
+Annotating node ParamDecl
+Annotating node Bool
+Annotating node Id
+About to enter FuncBody, tracking fiveFunc
+Annotating node FuncBody
+Annotating node FuncDecl
+Annotating node FuncHeader
+Annotating node Id
+Now tracking function: sixFunc
+Annotating node Int
+Annotating node FuncParams
+Annotating node ParamDecl
+Annotating node Int
+Annotati

@@ -69,21 +69,25 @@ whitespace          " "|"\t"
 ";"						{
 							parse_error=0; 
 							LOCATION; 
+							yylval.string = yytext;
 							if (!handle_token("SEMICOLON", "")) return SEMICOLON;
 						}
 "_"						{
 							parse_error=0; 
 							LOCATION; 
+							yylval.string = yytext;
 							if (!handle_token("BLANKID", "")) return BLANKID; 
 						}
 package					{
 							parse_error=0;
 							LOCATION;
+							yylval.string = yytext;
 							if (!handle_token("PACKAGE", "")) return PACKAGE;
 						}
 return					{
 							parse_error=0;
 							LOCATION;
+							yylval.string = yytext;
 							BEGIN SEMICOLON_STATE;
 							if (!handle_token("RETURN", "")) return RETURN;
 						}
@@ -179,6 +183,7 @@ return					{
 						}
 "+"						{
 							parse_error=0;
+							yylval.string = yytext;
 							LOCATION;
 							if (!handle_token("PLUS", "")) return PLUS;
 						}

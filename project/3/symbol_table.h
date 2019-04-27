@@ -9,8 +9,8 @@ typedef struct _t1 {
 
 typedef struct _t2 {
 	char * return_type;
-	struct table_element * params;
 	struct table_element * function_vars;
+	int number_params;
 } funcdecl;
 
 //global symbol table elements can be either function or variable declarations

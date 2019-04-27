@@ -1,5 +1,4 @@
 #include "abstract_syntax_tree.h"
-#include "symbol_table.h"
 
 //this function receives the root of the ast
 void check_root(struct node * root);

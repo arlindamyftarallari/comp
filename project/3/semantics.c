@@ -82,12 +82,13 @@ void check_func_decl(struct node * node) {
 
 	//for each param declaration inside the function parameters, we want to add a new symbol inside the function symbol (params)
 	for (int i=0; i<funcparams->number_children; i++) {
+		function_symbol->decl.func.number_params++;
 		paramdecl = funcparams->children[i];
 		var_type = (char*)malloc(strlen(paramdecl->children[0]->type)*sizeof(char*));
 		strcpy(var_type, paramdecl->children[0]->type);
 		*var_type = tolower(*var_type);
 
-		if (insert_vardecl(paramdecl->children[1]->value, var_type, &(function_symbol->decl.func.params)) == NULL) {
+		if (insert_vardecl(paramdecl->children[1]->value, var_type, &(function_symbol->decl.func.function_vars)) == NULL) {
 			printf("Line %d, column %d: Symbol %s already defined\n", paramdecl->children[1]->line, paramdecl->children[1]->column, paramdecl->children[1]->value);
 		}
 
@@ -109,7 +110,7 @@ void check_func_decl(struct node * node) {
 			*var_type = tolower(*var_type);
 
 			if (insert_vardecl(funcbody->children[i]->children[1]->value, var_type, &(function_symbol->decl.func.function_vars)) == NULL) {
-				printf("Troube inserting local variable declaration inside function\n");
+				printf("Line %d, column %d: Symbol %s already defined\n", funcbody->children[i]->line, funcbody->children[i]->column, funcbody->children[i]->value);
 			}
 		}
 	}

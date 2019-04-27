@@ -45,7 +45,7 @@ table_element * insert_funcdecl(char * identifier, char * return_type) {
 	strcpy(new_symbol->decl.func.return_type, return_type);
 
 	new_symbol->decl.func.function_vars = NULL;
-	new_symbol->decl.func.params = NULL;
+	new_symbol->decl.func.number_params = 0;
 
 	return insert_element(new_symbol, &global_symtab);
 }
@@ -114,15 +114,15 @@ void print_table() {
 		else {
 			printf("%s\t(", aux->identifier);
 
-			if (aux->decl.func.params != NULL) { //iterates over parameters and prints their type
+			if (aux->decl.func.number_params != 0) { //iterates over parameters and prints their type
 
-				params = aux->decl.func.params;
-
+				params = aux->decl.func.function_vars;
 				printf("%s", params->decl.var.type);
+				params = params->next;
 
-				while (params->next != NULL) {
-					params = params->next;
+				for (int i=1; i<aux->decl.func.number_params; i++) {
 					printf(",%s", params->decl.var.type);
+					params = params->next;
 				}
 			}
 
@@ -147,12 +147,12 @@ void print_table() {
 
 		printf("\n===== Function %s(", aux->identifier);
 
-		if (aux->decl.func.params != NULL) {
-			params = aux->decl.func.params;
+		if (aux->decl.func.number_params != 0) {
+			params = aux->decl.func.function_vars;
 
 			printf("%s", params->decl.var.type);
 
-			while (params->next != NULL) {
+			for (int i=1; i<aux->decl.func.number_params; i++) {
 					params = params->next;
 					printf(",%s", params->decl.var.type);
 				}
@@ -164,16 +164,15 @@ void print_table() {
 
 		//prints the parameters
 
-		params = aux->decl.func.params;
+		params = aux->decl.func.function_vars;
 
-		while (params != NULL) {
+		for (int i=0; i<aux->decl.func.number_params; i++) {
 			printf("\n%s\t\t%s\tparam", params->identifier, params->decl.var.type);
 			params = params->next;
 		}
 
 		//prints the local variables
-
-		params = aux->decl.func.function_vars;
+		//params now holds the start of the function vars
 
 		while (params != NULL) {
 			printf("\n%s\t\t%s", params->identifier, params->decl.var.type);
@@ -184,6 +183,7 @@ void print_table() {
 
 		aux = aux->next;
 	}
+	printf("\n");
 }
 
 void free_table(table_element * symtab) {
@@ -207,7 +207,6 @@ void free_table(table_element * symtab) {
 			free(to_clean->identifier);
 			free(to_clean->decl.func.return_type);
 			free_table(to_clean->decl.func.function_vars);
-			free_table(to_clean->decl.func.params);
 			free(to_clean);
 		}
 	}

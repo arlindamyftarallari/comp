@@ -49,45 +49,45 @@ extern int yydebug;
     BLANKID = 259,
     PACKAGE = 260,
     RETURN = 261,
-    AND = 262,
-    ASSIGN = 263,
-    STAR = 264,
-    COMMA = 265,
-    DIV = 266,
-    EQ = 267,
-    GE = 268,
-    GT = 269,
-    LBRACE = 270,
-    LE = 271,
-    LPAR = 272,
-    LSQ = 273,
-    LT = 274,
-    CMDARGS = 275,
-    MINUS = 276,
-    MOD = 277,
-    NE = 278,
-    NOT = 279,
-    OR = 280,
-    PLUS = 281,
-    RBRACE = 282,
-    RPAR = 283,
-    RSQ = 284,
-    ELSE = 285,
-    FOR = 286,
-    IF = 287,
-    VAR = 288,
-    INT = 289,
-    FLOAT32 = 290,
-    BOOL = 291,
-    STRING = 292,
-    PRINT = 293,
-    PARSEINT = 294,
-    FUNC = 295,
-    RESERVED = 296,
-    STRLIT = 297,
-    INTLIT = 298,
-    ID = 299,
-    REALLIT = 300,
+    COMMA = 262,
+    LBRACE = 263,
+    LPAR = 264,
+    LSQ = 265,
+    CMDARGS = 266,
+    RBRACE = 267,
+    RPAR = 268,
+    RSQ = 269,
+    ELSE = 270,
+    FOR = 271,
+    IF = 272,
+    VAR = 273,
+    INT = 274,
+    FLOAT32 = 275,
+    BOOL = 276,
+    STRING = 277,
+    PRINT = 278,
+    PARSEINT = 279,
+    FUNC = 280,
+    RESERVED = 281,
+    STRLIT = 282,
+    INTLIT = 283,
+    ID = 284,
+    REALLIT = 285,
+    ASSIGN = 286,
+    NOT = 287,
+    MINUS = 288,
+    PLUS = 289,
+    GE = 290,
+    NE = 291,
+    LE = 292,
+    EQ = 293,
+    GT = 294,
+    LT = 295,
+    AND = 296,
+    OR = 297,
+    MOD = 298,
+    DIV = 299,
+    STAR = 300,
     UNARY = 301
   };
 #endif
@@ -96,45 +96,45 @@ extern int yydebug;
 #define BLANKID 259
 #define PACKAGE 260
 #define RETURN 261
-#define AND 262
-#define ASSIGN 263
-#define STAR 264
-#define COMMA 265
-#define DIV 266
-#define EQ 267
-#define GE 268
-#define GT 269
-#define LBRACE 270
-#define LE 271
-#define LPAR 272
-#define LSQ 273
-#define LT 274
-#define CMDARGS 275
-#define MINUS 276
-#define MOD 277
-#define NE 278
-#define NOT 279
-#define OR 280
-#define PLUS 281
-#define RBRACE 282
-#define RPAR 283
-#define RSQ 284
-#define ELSE 285
-#define FOR 286
-#define IF 287
-#define VAR 288
-#define INT 289
-#define FLOAT32 290
-#define BOOL 291
-#define STRING 292
-#define PRINT 293
-#define PARSEINT 294
-#define FUNC 295
-#define RESERVED 296
-#define STRLIT 297
-#define INTLIT 298
-#define ID 299
-#define REALLIT 300
+#define COMMA 262
+#define LBRACE 263
+#define LPAR 264
+#define LSQ 265
+#define CMDARGS 266
+#define RBRACE 267
+#define RPAR 268
+#define RSQ 269
+#define ELSE 270
+#define FOR 271
+#define IF 272
+#define VAR 273
+#define INT 274
+#define FLOAT32 275
+#define BOOL 276
+#define STRING 277
+#define PRINT 278
+#define PARSEINT 279
+#define FUNC 280
+#define RESERVED 281
+#define STRLIT 282
+#define INTLIT 283
+#define ID 284
+#define REALLIT 285
+#define ASSIGN 286
+#define NOT 287
+#define MINUS 288
+#define PLUS 289
+#define GE 290
+#define NE 291
+#define LE 292
+#define EQ 293
+#define GT 294
+#define LT 295
+#define AND 296
+#define OR 297
+#define MOD 298
+#define DIV 299
+#define STAR 300
 #define UNARY 301
 
 /* Value type.  */
