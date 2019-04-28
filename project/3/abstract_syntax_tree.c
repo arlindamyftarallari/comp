@@ -71,7 +71,7 @@ int get_number_siblings(struct node* node) {
 
 //function to print the tree in order
 void print_node(struct node * root, int depth) {
-	char * points = "";
+
 	int i;
 
 	if (root == NULL) return;
@@ -85,10 +85,10 @@ void print_node(struct node * root, int depth) {
 	}
 
 	if (!root->to_print) {
-		printf("%s%s\n", points, root->type);
+		printf("%s\n", root->type);
 	}
 	else {
-		printf("%s%s(%s)\n", points, root->type, root->value);
+		printf("%s(%s)\n", root->type, root->value);
 	}
 
 	for (int j=0; j<root->number_children; j++) {
@@ -100,7 +100,6 @@ void print_node(struct node * root, int depth) {
 }
 
 void print_annotated_node(struct node * root, int depth) {
-	char * points = "";
 	int i;
 
 	if (root == NULL) return;
@@ -110,16 +109,23 @@ void print_annotated_node(struct node * root, int depth) {
 	}
 
 	if (!root->to_print) {
-		printf("%s%s", points, root->type);
+		printf("%s", root->type);
 	}
 	else {
-		printf("%s%s(%s)", points, root->type, root->value);
+		printf("%s(%s)", root->type, root->value);
 	}
 
-	if (strcmp(root->annotation, "") != 0) {
+	if (root->annotation != NULL) {
 		printf(" - %s\n", root->annotation);
 	}
 	else printf("\n");
+
+	for (int j=0; j<root->number_children; j++) {
+		print_node(root->children[j], depth+1);
+	}
+
+	free(root);
+
 }
 
 void annotate_node(struct node * node, char * annotation) {
@@ -138,8 +144,11 @@ void annotate_tree(struct node * node, struct table_element * symtab) {
 		annotate_node(node, "float32");
 	}
 	else if (strcmp(node->type, "Id") == 0) {
+		printf("reached ID=%s\n", node->value);
 		//search for the symbol in the symbol table
 		struct table_element * symbol = search_element(node->value, symtab);
+
+		if (symbol == NULL) printf("it is NULL\n");
 
 		if (symbol == NULL && symtab != global_symtab) {
 			printf("OI\n");
@@ -181,7 +190,13 @@ void annotate_tree(struct node * node, struct table_element * symtab) {
 
 		struct node * functionID = node->children[0];
 
-		table_element * functionID_symbol = search_element(functionID->value, symtab);
+		/* searching for the function ID in table_element of the function where the call is */
+		table_element * functionID_symbol = search_element(functionID->value, symtab); 
+
+
+
+		/* if the function symbol is null, now lets search it in the */
+		if (functionID_symbol == NULL) functionID_symbol = search_element(functionID->value, global_symtab);
 
 		if (functionID_symbol == NULL) {
 			printf("Line %d, column %d: Cannot find symbol %s\n", functionID->line, functionID->column, functionID->value);
@@ -201,33 +216,37 @@ void annotate_tree(struct node * node, struct table_element * symtab) {
 			table_element * aux = functionID_symbol->decl.func.function_vars;
 
 			// what argument types are really used?
-			for (int i=1; i<node->number_children-1; i++) { //the first child is the function ID
+			for (int i=1; i<node->number_children; i++) { //the first child is the function ID
 				type = node->children[i]->annotation;
 				strcat(arguments, type);
 				strcat(arguments, ",");
 			}
 			arguments[strlen(arguments)-1] = '\0';
 			strcat(arguments, ")");
+			printf("Given arguments: %s\n", arguments);
 
 			// what parameter types were expected?
 			for (int i=0; i<functionID_symbol->decl.func.number_params; i++) {
-				type = aux->decl.func.function_vars->decl.var.type;
+				type = aux->decl.var.type;
 				strcat(expected, type);
 				strcat(expected, ",");
 			}
 
+
 			expected[strlen(expected)-1] = '\0';
 			strcat(expected, ")");
+			printf("Expected parameters: %s\n", expected);
 
 			if (strcmp(expected, arguments) != 0) { // this means that the types used don't match to the ones expected, or the number of arguments is not correct
 				printf("Line %d, column %d: Cannot find symbol %s%s\n", node->line, node->column, node->type, arguments);
 				annotate_node(node, "undef");
 			}
 			else {
+				printf("THEY ARE THE SAME\n");
 				annotate_node(node, functionID_symbol->decl.func.return_type);
 			}
-
 			annotate_node(functionID, expected);
+			printf("ok\n");
 		}
 
 	}
@@ -297,6 +316,7 @@ void annotate_tree(struct node * node, struct table_element * symtab) {
 		annotate_tree(node->children[0], symtab);
 		annotate_tree(node->children[1], symtab);
 
+
 		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
 			/* ERROR */
 			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
@@ -361,6 +381,7 @@ void annotate_tree(struct node * node, struct table_element * symtab) {
 		//at this point, function_tracker has the symbol of the function
 		printf("About to enter FuncBody, tracking %s\n", function_tracker->identifier);
 		annotate_tree(node->children[1], function_tracker->decl.func.function_vars);
+		printf("OK\n");
 	}
 
 	else if (strcmp(node->type, "FuncHeader") == 0) {
@@ -375,14 +396,18 @@ void annotate_tree(struct node * node, struct table_element * symtab) {
 	else if (strcmp(node->type, "Program") == 0) {
 		function_tracker = global_symtab;
 		for (int i=0; i<node->number_children; i++) {
+			printf("Going to annotate %s\n", node->children[i]->type);
 			annotate_tree(node->children[i], function_tracker);
 		}
+		printf("ENDING\n");
 	}
 
 	else {
 		for (int i=0; i<node->number_children; i++) {
 			annotate_tree(node->children[i], symtab);
 		}
+
+		printf("OK\n");
 	}
 }
 
