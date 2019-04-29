@@ -1884,7 +1884,7 @@ yyreduce:
   case 29:
 #line 275 "gocompiler.y"
     {
-			struct node * assign = create_node("Assign", (yyvsp[(2) - (3)].string), 0, 0, 0);
+			struct node * assign = create_node("Assign", "=", 0, 0, 0);
 			add_child(assign, create_node("Id", (yyvsp[(1) - (3)].string), (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column, 1));
 			if((yyvsp[(3) - (3)].node)!=NULL) (yyval.node) = add_child(assign, (yyvsp[(3) - (3)].node));
 			else (yyval.node) = NULL;
@@ -2527,7 +2527,7 @@ int main(int argc, char **argv) {
 			yyparse();
 			check_root(root);
 			print_table();
-			annotate_tree(root, global_symtab);
+			annotate_tree(&root, global_symtab);
 			print_annotated_node(root, 0);
 
 			//cleaning up

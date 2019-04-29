@@ -4,7 +4,6 @@ func factorial(n int) int {
 	if n == 0 {
 		return 1;
 	};
-	n = 1 + 1.0;
 	return n * factorial(n-1);
 };
 

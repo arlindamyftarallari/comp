@@ -273,7 +273,7 @@ varsAndStatementsOpt: VarDeclaration
 
 Statement: ID ASSIGN Expr
 		{
-			struct node * assign = create_node("Assign", $2, 0, 0, 0);
+			struct node * assign = create_node("Assign", "=", 0, 0, 0);
 			add_child(assign, create_node("Id", $1, @1.first_line, @1.first_column, 1));
 			if($3!=NULL) $$ = add_child(assign, $3);
 			else $$ = NULL;
@@ -573,7 +573,7 @@ int main(int argc, char **argv) {
 			yyparse();
 			check_root(root);
 			print_table();
-			annotate_tree(root, global_symtab);
+			annotate_tree(&root, global_symtab);
 			print_annotated_node(root, 0);
 
 			//cleaning up

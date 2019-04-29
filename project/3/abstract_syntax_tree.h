@@ -24,7 +24,7 @@ struct node * add_child(struct node * parent, struct node * child);
 int get_number_siblings(struct node * node);
 void print_node(struct node * root, int depth);
 void print_annotated_node(struct node * root, int depth);
-void annotate_node(struct node * node, char * annotation);
-void annotate_tree(struct node * node, table_element * symtab);
+void annotate_node(struct node ** node, char * annotation);
+void annotate_tree(struct node ** node, table_element * symtab);
 
 extern struct node * root;

@@ -16,6 +16,7 @@ struct node * create_node (char* type, char* value, int line, int column, int to
 	new->line = line;
 	new->column = column;
 	new->to_print = to_print;
+	new->annotation = "";
 
 	//printf("created new node %s(%s)\n\n", type, value);
 	return new;
@@ -115,48 +116,44 @@ void print_annotated_node(struct node * root, int depth) {
 		printf("%s(%s)", root->type, root->value);
 	}
 
-	if (root->annotation != NULL) {
-		printf(" - %s\n", root->annotation);
-	}
+
+
+	if (strcmp(root->annotation, "") != 0 && strcmp(root->parent->type, "ParamDecl") != 0 && strcmp(root->parent->type, "FuncHeader") != 0 && strcmp(root->parent->type, "VarDecl") != 0) printf(" - %s\n", root->annotation);
+
 	else printf("\n");
 
 	for (int j=0; j<root->number_children; j++) {
-		print_node(root->children[j], depth+1);
+		print_annotated_node(root->children[j], depth+1);
 	}
 
 	free(root);
-
 }
 
-void annotate_node(struct node * node, char * annotation) {
-	node->annotation = (char*)malloc(strlen(annotation)*sizeof(char));
-	strcpy(node->annotation, annotation);
+void annotate_node(struct node ** node, char * annotation) {
+	(*node)->annotation = (char*)malloc(strlen(annotation)*sizeof(char));
+	//strcpy((*node)->annotation, annotation);
+	(*node)->annotation = strdup(annotation);
+	//(*node)->annotation[strlen(annotation)] = '\0';
 }
 
-void annotate_tree(struct node * node, struct table_element * symtab) {
+void annotate_tree(struct node ** node, struct table_element * symtab) {
 
-	printf("Annotating node %s\n", node->type);
-
-	if (strcmp(node->type, "IntLit") == 0) {
+	if (strcmp((*node)->type, "IntLit") == 0) {
 		annotate_node(node, "int");
 	} 
-	else if (strcmp(node->type, "RealLit") == 0) {
+	else if (strcmp((*node)->type, "RealLit") == 0) {
 		annotate_node(node, "float32");
 	}
-	else if (strcmp(node->type, "Id") == 0) {
-		printf("reached ID=%s\n", node->value);
+	else if (strcmp((*node)->type, "Id") == 0) {
 		//search for the symbol in the symbol table
-		struct table_element * symbol = search_element(node->value, symtab);
-
-		if (symbol == NULL) printf("it is NULL\n");
+		struct table_element * symbol = search_element((*node)->value, symtab);
 
 		if (symbol == NULL && symtab != global_symtab) {
-			printf("OI\n");
-			symbol = search_element(node->value, global_symtab);
+			symbol = search_element((*node)->value, global_symtab);
 		}
 
 		if (symbol == NULL) {
-			printf("Line %d, column %d: Cannot find symbol %s\n", node->line, node->column, node->value);
+			printf("Line %d, column %d: Cannot find symbol %s\n", (*node)->line, (*node)->column, (*node)->value);
 			annotate_node(node, "undef");
 		}
 
@@ -169,245 +166,275 @@ void annotate_tree(struct node * node, struct table_element * symtab) {
 				
 				/* if this ID matches a function, we want to start looking up things in 
 				the symbol table of that function, unless we're dealing with a funcinvocation */
-				if (node->parent != NULL && strcmp(node->parent->type, "Call") != 0) function_tracker = symbol; 
-				printf("Now tracking function: %s\n", function_tracker->identifier);
+				if ((*node)->parent != NULL && strcmp((*node)->parent->type, "Call") != 0) function_tracker = symbol; 
 				annotate_node(node, symbol->decl.func.return_type);
 			}
 		}
 	}
-	else if (strcmp(node->type, "Call") == 0) {
+	else if (strcmp((*node)->type, "Call") == 0) {
 
 		/* first, we have to annotate the nodes of the vars given as arguments,
 		so that later on we can check if they match with the expected types */
 
-		for (int i=1; i<node->number_children; i++) {
-			annotate_tree(node->children[i], symtab);
+		for (int i=1; i<(*node)->number_children; i++) {
+			annotate_tree(&((*node)->children[i]), symtab);
 		}
 
 		// node = Call
 		
 		// annotating the ID of the function Call with the types of the parameters 
 
-		struct node * functionID = node->children[0];
+		struct node * functionID = (*node)->children[0];
 
 		/* searching for the function ID in table_element of the function where the call is */
 		table_element * functionID_symbol = search_element(functionID->value, symtab); 
 
+		//getting the types of the arguments in the function invocation
+		char * arguments = (char*)malloc(500*sizeof(char));
+		strcat(arguments, "(");
+		char * type;
 
+		for (int i=1; i<(*node)->number_children; i++) { //the first child is the function ID
+				type = (*node)->children[i]->annotation;
+				strcat(arguments, type);
+				strcat(arguments, ",");
+		}
+		if ((*node)->number_children > 1) arguments[strlen(arguments)-1] = '\0';
+		strcat(arguments, ")");
 
 		/* if the function symbol is null, now lets search it in the */
 		if (functionID_symbol == NULL) functionID_symbol = search_element(functionID->value, global_symtab);
 
 		if (functionID_symbol == NULL) {
-			printf("Line %d, column %d: Cannot find symbol %s\n", functionID->line, functionID->column, functionID->value);
+			printf("Line %d, column %d: Cannot find symbol %s%s\n", functionID->line, functionID->column, functionID->value, arguments);
 			annotate_node(node, "undef");
-			annotate_node(functionID, "undef");
+			annotate_node(&functionID, "undef");
 		}
 
 		else {
 
-			char * arguments = (char*)malloc(500*sizeof(char));
-			strcat(arguments, "(");
-
 			char * expected = (char*)malloc(500*sizeof(char));
 			strcat(expected, "(");
 
-			char * type;
 			table_element * aux = functionID_symbol->decl.func.function_vars;
-
-			// what argument types are really used?
-			for (int i=1; i<node->number_children; i++) { //the first child is the function ID
-				type = node->children[i]->annotation;
-				strcat(arguments, type);
-				strcat(arguments, ",");
-			}
-			arguments[strlen(arguments)-1] = '\0';
-			strcat(arguments, ")");
-			printf("Given arguments: %s\n", arguments);
 
 			// what parameter types were expected?
 			for (int i=0; i<functionID_symbol->decl.func.number_params; i++) {
 				type = aux->decl.var.type;
 				strcat(expected, type);
 				strcat(expected, ",");
+				aux = aux->next;
 			}
 
+			if (functionID_symbol->decl.func.number_params > 0) expected[strlen(expected)-1] = '\0';
 
-			expected[strlen(expected)-1] = '\0';
 			strcat(expected, ")");
-			printf("Expected parameters: %s\n", expected);
 
 			if (strcmp(expected, arguments) != 0) { // this means that the types used don't match to the ones expected, or the number of arguments is not correct
-				printf("Line %d, column %d: Cannot find symbol %s%s\n", node->line, node->column, node->type, arguments);
+				printf("Line %d, column %d: Cannot find symbol %s%s\n", (*node)->line, (*node)->column, (*node)->children[0]->value, arguments);
 				annotate_node(node, "undef");
 			}
 			else {
-				printf("THEY ARE THE SAME\n");
-				annotate_node(node, functionID_symbol->decl.func.return_type);
+				if (strcmp(functionID_symbol->decl.func.return_type, "none") != 0) annotate_node(node, functionID_symbol->decl.func.return_type);
 			}
-			annotate_node(functionID, expected);
-			printf("ok\n");
+			annotate_node(&functionID, expected);
 		}
 
 	}
-	else if (strcmp(node->type, "Not") == 0) {
-		annotate_tree(node->children[0], symtab);
+	else if(strcmp((*node)->type, "Assign") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_tree(&(*node)->children[1], symtab);
 
+		if (strcmp((*node)->children[0]->annotation, (*node)->children[1]->annotation) != 0) { /* cannot be assigned */
+			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", (*node)->line, (*node)->column, (*node)->value, (*node)->children[0]->annotation, (*node)->children[1]->annotation);
+			annotate_node(node, "undef");
+		}
+		else {
+			annotate_node(node, (*node)->children[0]->annotation);
+		}
 	}
-	else if (strcmp(node->type, "Minus") == 0) {
-		annotate_tree(node->children[0], symtab);
-	}
-	else if (strcmp(node->type, "Plus") == 0) {
-		annotate_tree(node->children[0], symtab);
-	}
-	else if(strcmp(node->type, "Or") == 0) {
-		annotate_tree(node->children[0], symtab);
-		annotate_tree(node->children[1], symtab);
-	}
-	else if(strcmp(node->type, "And") == 0) {
-		annotate_tree(node->children[0], symtab);
-		annotate_tree(node->children[1], symtab);
-	}
-	else if(strcmp(node->type, "Lt") == 0) {
-		annotate_tree(node->children[0], symtab);
-		annotate_tree(node->children[1], symtab);
-	}
-	else if(strcmp(node->type, "Gt") == 0) {
-		annotate_tree(node->children[0], symtab);
-		annotate_tree(node->children[1], symtab);
-	}
-	else if(strcmp(node->type, "Eq") == 0) {
-		annotate_tree(node->children[0], symtab);
-		annotate_tree(node->children[1], symtab);
+	else if(strcmp((*node)->type, "ParseArgs") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_tree(&(*node)->children[1], symtab);
 
+		annotate_node(node, (*node)->children[0]->annotation);
 	}
-	else if(strcmp(node->type, "Ne") == 0) {
-		annotate_tree(node->children[0], symtab);
-		annotate_tree(node->children[1], symtab);
+	else if (strcmp((*node)->type, "Not") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_node(node, (*node)->children[0]->annotation);
 	}
-	else if(strcmp(node->type, "Le") == 0) {
-		annotate_tree(node->children[0], symtab);
-		annotate_tree(node->children[1], symtab);
+	else if (strcmp((*node)->type, "Minus") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_node(node, (*node)->children[0]->annotation);
 	}
-	else if(strcmp(node->type, "Ge") == 0) {
-		annotate_tree(node->children[0], symtab);
-		annotate_tree(node->children[1], symtab);
+	else if (strcmp((*node)->type, "Plus") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_node(node, (*node)->children[0]->annotation);
 	}
-	else if(strcmp(node->type, "Add") == 0) {
-		annotate_tree(node->children[0], symtab);
-		annotate_tree(node->children[1], symtab);
+	else if(strcmp((*node)->type, "Or") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_tree(&(*node)->children[1], symtab);
+		annotate_node(node, "bool");
+		
+	}
+	else if(strcmp((*node)->type, "And") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_tree(&(*node)->children[1], symtab);
+		annotate_node(node, "bool");
+	}
+	else if(strcmp((*node)->type, "Lt") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_tree(&(*node)->children[1], symtab);
+		annotate_node(node, "bool");
+	}
+	else if(strcmp((*node)->type, "Gt") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_tree(&(*node)->children[1], symtab);
+		annotate_node(node, "bool");
+	}
+	else if(strcmp((*node)->type, "Eq") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_tree(&(*node)->children[1], symtab);
+		annotate_node(node, "bool");
+	}
+	else if(strcmp((*node)->type, "Ne") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_tree(&(*node)->children[1], symtab);
+		annotate_node(node, "bool");
+	}
+	else if(strcmp((*node)->type, "Le") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_tree(&(*node)->children[1], symtab);
+		annotate_node(node, "bool");
+	}
+	else if(strcmp((*node)->type, "Ge") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_tree(&(*node)->children[1], symtab);
+		annotate_node(node, "bool");
+	}
+	else if(strcmp((*node)->type, "Add") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_tree(&(*node)->children[1], symtab);
 
-		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+		if (strcmp((*node)->children[0]->annotation, (*node)->children[1]->annotation) != 0) {
 			/* ERROR */
 
 			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
-													node->line,
-													node->column,
-													node->value,
-													node->children[0]->annotation,
-													node->children[1]->annotation);
+													(*node)->line,
+													(*node)->column,
+													(*node)->value,
+													(*node)->children[0]->annotation,
+													(*node)->children[1]->annotation);
 			annotate_node(node, "undef");
 		}
 		else { //same type
-			annotate_node(node, node->children[0]->annotation);
+			annotate_node(node, (*node)->children[0]->annotation);
 		}
 	}
-	else if(strcmp(node->type, "Sub") == 0) {
-		annotate_tree(node->children[0], symtab);
-		annotate_tree(node->children[1], symtab);
+	else if(strcmp((*node)->type, "Sub") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_tree(&(*node)->children[1], symtab);
 
 
-		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+		if (strcmp((*node)->children[0]->annotation, (*node)->children[1]->annotation) != 0) {
 			/* ERROR */
 			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
-													node->line,
-													node->column,
-													node->type,
-													node->children[0]->annotation,
-													node->children[1]->annotation);
+													(*node)->line,
+													(*node)->column,
+													(*node)->type,
+													(*node)->children[0]->annotation,
+													(*node)->children[1]->annotation);
 			annotate_node(node, "undef");
 		}
 		else { //same type
-			annotate_node(node, node->children[0]->annotation);
+			annotate_node(node, (*node)->children[0]->annotation);
 		}
 	}
-	else if(strcmp(node->type, "Mul") == 0) {
-		annotate_tree(node->children[0], symtab);
-		annotate_tree(node->children[1], symtab);
+	else if(strcmp((*node)->type, "Mul") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_tree(&(*node)->children[1], symtab);
 
-		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+		if (strcmp((*node)->children[0]->annotation, (*node)->children[1]->annotation) != 0) {
 			/* ERROR */
 			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
-													node->line,
-													node->column,
-													node->type,
-													node->children[0]->annotation,
-													node->children[1]->annotation);
+													(*node)->line,
+													(*node)->column,
+													(*node)->type,
+													(*node)->children[0]->annotation,
+													(*node)->children[1]->annotation);
 			annotate_node(node, "undef");
 		}
 		else { //same type
-			annotate_node(node, node->children[0]->annotation);
+			annotate_node(node, (*node)->children[0]->annotation);
 		}
 	}
-	else if(strcmp(node->type, "Div") == 0) {
-		annotate_tree(node->children[0], symtab);
-		annotate_tree(node->children[1], symtab);
+	else if(strcmp((*node)->type, "Div") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_tree(&(*node)->children[1], symtab);
 
-		if (strcmp(node->children[0]->annotation, node->children[1]->annotation) != 0) {
+		if (strcmp((*node)->children[0]->annotation, (*node)->children[1]->annotation) != 0) {
 			/* ERROR */
 			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
-													node->line,
-													node->column,
-													node->type,
-													node->children[0]->annotation,
-													node->children[1]->annotation);
+													(*node)->line,
+													(*node)->column,
+													(*node)->type,
+													(*node)->children[0]->annotation,
+													(*node)->children[1]->annotation);
 			annotate_node(node, "undef");
 		}
 		else { //same type
-			annotate_node(node, node->children[0]->annotation);
+			annotate_node(node, (*node)->children[0]->annotation);
 		}
 	}
-	else if(strcmp(node->type, "Mod") == 0) {
-		annotate_tree(node->children[0], symtab);
-		annotate_tree(node->children[1], symtab);
+	else if(strcmp((*node)->type, "Mod") == 0) {
+		annotate_tree(&(*node)->children[0], symtab);
+		annotate_tree(&(*node)->children[1], symtab);
+
+		if (strcmp((*node)->children[0]->annotation, (*node)->children[1]->annotation) != 0) {
+			/* ERROR */
+			printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",
+													(*node)->line,
+													(*node)->column,
+													(*node)->type,
+													(*node)->children[0]->annotation,
+													(*node)->children[1]->annotation);
+			annotate_node(node, "undef");
+		}
+		else { //same type
+			annotate_node(node, (*node)->children[0]->annotation);
+		}
 	}
 
 	/* FuncDecls need to be treated specially */
-	else if (strcmp(node->type, "FuncDecl") == 0) {
+	else if (strcmp((*node)->type, "FuncDecl") == 0) {
 		function_tracker = global_symtab;
 
-		annotate_tree(node->children[0], function_tracker);
+		annotate_tree(&(*node)->children[0], function_tracker);
 
 		//at this point, function_tracker has the symbol of the function
-		printf("About to enter FuncBody, tracking %s\n", function_tracker->identifier);
-		annotate_tree(node->children[1], function_tracker->decl.func.function_vars);
-		printf("OK\n");
+		annotate_tree(&(*node)->children[1], function_tracker->decl.func.function_vars);
 	}
 
-	else if (strcmp(node->type, "FuncHeader") == 0) {
-		annotate_tree(node->children[0], function_tracker); /* after executing this, function_tracker will change
+	else if (strcmp((*node)->type, "FuncHeader") == 0) {
+		annotate_tree(&(*node)->children[0], function_tracker); /* after executing this, function_tracker will change
 		to be the symbol of the function in the table */
 
-		for (int i=1; i<node->number_children; i++) {
-			annotate_tree(node->children[i], function_tracker->decl.func.function_vars);
+		for (int i=1; i<(*node)->number_children; i++) {
+			annotate_tree(&(*node)->children[i], function_tracker->decl.func.function_vars);
 		}
 	}
 
-	else if (strcmp(node->type, "Program") == 0) {
+	else if (strcmp((*node)->type, "Program") == 0) {
 		function_tracker = global_symtab;
-		for (int i=0; i<node->number_children; i++) {
-			printf("Going to annotate %s\n", node->children[i]->type);
-			annotate_tree(node->children[i], function_tracker);
+		for (int i=0; i<(*node)->number_children; i++) {
+			annotate_tree(&(*node)->children[i], function_tracker);
 		}
-		printf("ENDING\n");
 	}
 
 	else {
-		for (int i=0; i<node->number_children; i++) {
-			annotate_tree(node->children[i], symtab);
+		for (int i=0; i<(*node)->number_children; i++) {
+			annotate_tree(&(*node)->children[i], symtab);
 		}
-
-		printf("OK\n");
 	}
 }
 
